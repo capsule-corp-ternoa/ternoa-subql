@@ -1,0 +1,45 @@
+specVersion: 0.0.1
+description: asas
+repository: ''
+schema: ./schema.graphql
+network:
+  endpoint: "ws://127.0.0.1:9944"
+  types: {
+    Address: "AccountId",
+    CapsuleID: "u32",
+    CapsuleIDOf: "NFTId",
+    CapsuleData: {
+      offchain_uri: "Vec<u8>",
+      pk_hash: "Hash",
+      creator: "AccountId",
+      owner: "AccountId",
+      locked: "bool"
+    },
+    NFTId: "u32",
+    NFTIdOf: "NFTId",
+    NFTData: {
+      owner: "AccountId",
+      details: "NFTDetails",
+      sealed: "bool",
+      locked: "bool"
+    },
+    NFTDetails: {
+      offchain_uri: "Vec<u8>"
+    },
+    LookupSource: "AccountId"
+  }
+
+dataSources:
+  - name: main
+    kind: substrate/Runtime
+    startBlock: 1
+    mapping:
+      handlers:
+        - handler: handleBlock
+          kind: substrate/BlockHandler
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+        - handler: handleCall
+          kind: substrate/CallHandler

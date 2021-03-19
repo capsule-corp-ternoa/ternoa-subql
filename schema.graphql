@@ -1,0 +1,31 @@
+
+type starterEntity @entity {
+
+  id: ID! #id is a required field
+
+  field1: Int!
+
+  field2: String #filed2 is an optional field
+
+  field3: BigInt
+
+  field4: Date
+
+
+}
+
+
+type TransferEntity @entity {
+  id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
+  isBatch: Int!
+  isSudo: Int!
+  isSuccess: Int!
+
+  block: String! #the block which the extrinsic send hash
+  timestamp: Date! #the block which the extrinsic send number
+
+  from: String! #transfer from
+  to: String! #transfer to
+  currency: String! #the currency of the transfer
+  amount: String! #the amount of the transfer
+}
