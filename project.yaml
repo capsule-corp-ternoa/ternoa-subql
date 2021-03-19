@@ -1,5 +1,5 @@
 specVersion: 0.0.1
-description: asas
+description: "Ternoa data indexer"
 repository: ''
 schema: ./schema.graphql
 network:
