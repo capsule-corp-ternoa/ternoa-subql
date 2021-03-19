@@ -1,0 +1,106 @@
+version: '3'
+
+services:
+
+  ternoa:
+    image: netickfr/ternoa-chain:latest
+    # Note: these parameters allow unsafe ws and all cors origin but as the port is unexposed there are no security risks
+    command: '--name ternoa-archive --chain chaos -d /data --pruning archive --prometheus-external --prometheus-port 9615 --ws-port 9944 --unsafe-ws-external --rpc-cors all'
+    user: "${UID}:${GID}" # fix disk permissions by setting the docker user ID to be the one from the host system (typically 1000:1000)
+    restart: always
+    volumes:
+      - .data/ternoa-node:/data
+    ports:
+      - 30333:30333
+      #- 9615:9615 # Uncomment to expose prometheus metrics
+    ulimits:
+      nofile:
+        soft: 10000
+        hard: 10000
+    #labels:
+    #  - 'com.centurylinklabs.watchtower.enable=true' # Automatically update container to new published docker images
+
+  postgres:
+    image: postgres:12-alpine
+    volumes:
+      - .data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_DB_PASSWORD}
+
+  subquery:
+    image: pbesson/subquery-node:latest
+    depends_on:
+      - "postgres"
+      - "ternoa"
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: ${POSTGRES_DB_PASSWORD}
+      DB_DATABASE: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+    command:
+      - '-f'
+      - '/app'
+      - '--subquery-name=subql-ternoa'
+      - '--network-endpoint'
+      - 'ws://ternoa:9944'
+    labels:
+      - 'com.centurylinklabs.watchtower.enable=true' # Automatically update containerto new published docker images
+
+  graphql:
+    image: onfinality/subql-query:v0.2.0
+    ports:
+      - 3000
+    depends_on:
+      - "postgres"
+      - "ternoa"
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: ${POSTGRES_DB_PASSWORD}
+      DB_DATABASE: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+    command:
+      - '--name'
+      - 'subql-ternoa' #Same as your project name
+      - '--playground'
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.graphql-router.entrypoints=web"
+      - "traefik.http.routers.graphql-router.rule=Host(`indexer.chaos.ternoa.com`)"
+      - "traefik.http.routers.graphql-router.tls.certresolver=letsencrypt"
+
+  traefik:
+    image: "traefik:v2.4"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.email=${LETSENCRYPT_ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory"
+    ports:
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - .data/letsencrypt:/letsencrypt
+
+  watchtower:
+    image: containrrr/watchtower
+    environment:
+      WATCHTOWER_NOTIFICATIONS: "slack"
+      WATCHTOWER_NOTIFICATION_SLACK_HOOK_URL: "${WEBHOOK_URL}"
+      WATCHTOWER_NOTIFICATION_SLACK_IDENTIFIER: "indexer.chaos.ternoa.com"
+      WATCHTOWER_NOTIFICATION_SLACK_CHANNEL: "#devops"
+      WATCHTOWER_NOTIFICATION_SLACK_ICON_EMOJI: ":whale:"
+      WATCHTOWER_NOTIFICATION_SLACK_ICON_URL: "https://www.ternoa.com/assets/img/logo/logo.png"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - /root/.docker/config.json:/config.json # Uncomment to use system docker hub credentials
+    command: '--interval 60 --cleanup --label-enable'
