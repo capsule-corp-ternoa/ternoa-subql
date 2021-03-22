@@ -6,6 +6,11 @@ import {NftEntity} from "../types/models/NftEntity";
 export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
 
+}
+
+export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic } = extrinsic
+
   const signer = _extrinsic.signer.toString()
   const [to, amount] = call.args
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
@@ -13,6 +18,4 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
 
   // apply common extrinsic data to record
   insertDataToEntity(nftRecord, commonExtrinsicData)
-
-  await transferRecord.save()
 }

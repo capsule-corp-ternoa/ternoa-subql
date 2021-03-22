@@ -19,9 +19,8 @@ type NftEntity @entity {
   timestampList: Date!
   currency: String! #the currency of the transfer
   price: String! #the price of the nft
+  account: String!
+  listed: Int!
 }
 
-type Person @entity {
-  id: ID!
-  nfts: [NftEntity]
-}
+

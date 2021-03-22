@@ -17,7 +17,7 @@ const extrinsicDispatcher = new ExtrinsicDispatcher()
 
 // apply extrinsic handler
 extrinsicDispatcher.add('balances', 'transfer', transferHandler)
-extrinsicDispatcher.add('marketplace', 'list', listHandler)
+extrinsicDispatcher.add('marketplace', 'create', listHandler)
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     await extrinsicDispatcher.emit(extrinsic)
