@@ -16,11 +16,11 @@ type TransferEntity @entity {
 type NftEntity @entity {
   id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
   uri: String
-  timestampList: Date!
+  timestampList: Date
   currency: String! #the currency of the transfer
-  price: String! #the price of the nft
-  account: String!
+  price: String #the price of the nft
   listed: Int!
+  owner: String!
 }
 
 
