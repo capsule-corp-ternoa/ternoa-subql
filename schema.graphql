@@ -1,20 +1,3 @@
-
-type starterEntity @entity {
-
-  id: ID! #id is a required field
-
-  field1: Int!
-
-  field2: String #filed2 is an optional field
-
-  field3: BigInt
-
-  field4: Date
-
-
-}
-
-
 type TransferEntity @entity {
   id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
   isBatch: Int!
@@ -28,4 +11,17 @@ type TransferEntity @entity {
   to: String! #transfer to
   currency: String! #the currency of the transfer
   amount: String! #the amount of the transfer
+}
+
+type NftEntity @entity {
+  id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
+  uri: String
+  timestampList: Date!
+  currency: String! #the currency of the transfer
+  price: String! #the price of the nft
+}
+
+type Person @entity {
+  id: ID!
+  nfts: [NftEntity]
 }
