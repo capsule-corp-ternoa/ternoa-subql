@@ -14,6 +14,8 @@ export class NftEntity implements Entity {
 
     public id: string;
 
+    public nftId?: string;
+
     public uri?: string;
 
     public timestampList?: Date;

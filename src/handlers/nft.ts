@@ -3,26 +3,48 @@ import { ExtrinsicHandler } from './types'
 import { Balance } from "@polkadot/types/interfaces";
 import {NftEntity} from "../types/models/NftEntity";
 
-export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
-  const { extrinsic: _extrinsic } = extrinsic
-  console.log(call.args);
-
-}
-
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
-  const { extrinsic: _extrinsic } = extrinsic
-
-  const signer = _extrinsic.signer.toString()
-  const [to, amount] = call.args
-  console.log(call.args);
+  const { extrinsic: _extrinsic, events } = extrinsic
 
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const nftRecord = new NftEntity(commonExtrinsicData.hash)
+  const record = new NftEntity(commonExtrinsicData.hash)
 
   // apply common extrinsic data to record
-  insertDataToEntity(nftRecord, commonExtrinsicData)
-  nftRecord.owner = signer.toString();
-  nftRecord.currency = 'CAPS';
-  nftRecord.listed = 0;
+  insertDataToEntity(record, commonExtrinsicData)
+
+  const signer = _extrinsic.signer.toString()
+  const nftId = events[0].event.data[0].toString()
+  const nftData = await api.query.nfts.data(nftId);
+
+  if(events.length > 0 && events[0].event !== undefined ){
+    record.currency = 'CAPS';
+    record.listed = 0;
+    record.owner = signer;
+    record.id = nftId;
+    // @ts-ignore
+    const offchain_uri = Buffer.from(nftData.details.offchain_uri, 'hex');
+    record.uri = offchain_uri.toString();
+    await record.save()
+
+  }
+}
+
+export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic, events } = extrinsic
+
+  if(events.length > 0 && events[0].event !== undefined ){
+    const nftId = events[0].event.data[0].toString()
+    const price = events[0].event.data[1]
+
+    const record = await NftEntity.get(nftId);
+    if( record !== undefined ){
+      record.listed = 1;
+      record.timestampList = new Date();
+      record.price = (price as Balance).toBigInt().toString();
+      await record.save()
+    }
+
+
+  }
 
 }

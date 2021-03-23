@@ -5,7 +5,6 @@ import { Balance } from "@polkadot/types/interfaces";
 
 export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
-
   const signer = _extrinsic.signer.toString()
   const [to, amount] = call.args
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
