@@ -22,6 +22,7 @@ type NftEntity @entity {
   price: String #the price of the nft
   listed: Int!
   owner: String!
+  creator: String!
 }
 
 

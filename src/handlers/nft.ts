@@ -20,6 +20,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
     record.currency = 'CAPS';
     record.listed = 0;
     record.owner = signer;
+    record.creator = signer;
     record.id = nftId;
     // @ts-ignore
     const offchain_uri = Buffer.from(nftData.details.offchain_uri, 'hex');
