@@ -18,6 +18,7 @@ const extrinsicDispatcher = new ExtrinsicDispatcher()
 
 // apply extrinsic handler
 extrinsicDispatcher.add('balances', 'transfer', transferHandler)
+extrinsicDispatcher.add('balances', 'transferKeepAlive', transferHandler)
 extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
 

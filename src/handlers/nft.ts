@@ -37,6 +37,7 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
     const nftId = events[0].event.data[0].toString()
     const price = events[0].event.data[1]
 
+    // retieve the nft
     const record = await NftEntity.get(nftId);
     if( record !== undefined ){
       record.listed = 1;
