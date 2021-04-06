@@ -62,7 +62,6 @@ export class ExtrinsicDispatcher {
         const calls = _extrinsic.args[0] as unknown as Call[]
         const batchInterruptedIndex = getBatchInterruptedIndex(extrinsic)
 
-        console.log(batchInterruptedIndex)
 
         return Promise.all(calls.map(async (call, index) => {
             const { section, method, args } = call
