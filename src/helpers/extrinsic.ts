@@ -27,7 +27,6 @@ export const getBatchInterruptedIndex = (extrinsic: SubstrateExtrinsic): number 
     return section === 'utility' && method === 'BatchInterrupted'
   })
 
-  console.log(interruptedEvent)
 
   if (interruptedEvent) {
     const { data } = (interruptedEvent.event as unknown) as IEvent<[u32, DispatchError]>
