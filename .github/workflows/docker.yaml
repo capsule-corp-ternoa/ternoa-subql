@@ -22,5 +22,5 @@ jobs:
         with:
           push: true
           tags: |
-            pbesson/subquery-node:latest
-            pbesson/subquery-node:${{ github.sha }}
+            ternoa/subquery-node:latest
+            ternoa/subquery-node:${{ github.sha }}
