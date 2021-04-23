@@ -26,9 +26,17 @@ export class NftEntity implements Entity {
 
     public listed: number;
 
+    public timestampBurn?: Date;
+
     public owner: string;
 
     public creator: string;
+
+    public itemId?: number;
+
+    public itemTotal?: number;
+
+    public internalId?: string;
 
 
     async save(): Promise<void>{

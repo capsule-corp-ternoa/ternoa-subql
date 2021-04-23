@@ -21,8 +21,12 @@ type NftEntity @entity {
   currency: String! #the currency of the transfer
   price: String #the price of the nft
   listed: Int!
+  timestampBurn: Date #when nft is burned
   owner: String!
   creator: String!
+  itemId: Int #for series of nfts
+  itemTotal: Int #for series of nfts
+  internalId: String #for series of nfts
 }
 
 
