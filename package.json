@@ -1,7 +1,7 @@
 {
   "name": "subql-ternoa",
   "version": "1.0.0",
-  "description": "ternoa indexe : Indexes main events triggered by ternoa blockchain",
+  "description": "ternoa indexer : Indexes main events triggered by ternoa blockchain",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
@@ -16,7 +16,7 @@
     "schema.graphql",
     "project.yaml"
   ],
-  "author": "yb",
+  "author": "ternoa",
   "license": "Apache-2.0",
   "devDependencies": {
     "@polkadot/api": "^3",
