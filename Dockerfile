@@ -1,4 +1,4 @@
-FROM onfinality/subql-node:v0.9.1
+FROM onfinality/subql-node:v0.12.2
 
 COPY . /app
 RUN cd /app && npm install
