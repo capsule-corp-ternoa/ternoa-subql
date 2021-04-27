@@ -50,31 +50,39 @@ import { TransferEntity } from "../types/models/TransferEntity";
   }
 
 export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
-  const {extrinsic: _extrinsic, events} = extrinsic
-  if (events.length > 0 && events[0].event !== undefined) {
-    const nftId = events[0].event.data[0].toString()
-    const signer = _extrinsic.signer.toString()
+  const {extrinsic: _extrinsic, events} = extrinsic;
 
-    // retrieve the nft
-    const record = await NftEntity.get(nftId);
-    if (record !== undefined) {
-
+  for (const {event: {data, method, section}} of events) {
+    if (`${section}.${method}` === 'balances.Transfer') {
+      // transfer
       const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
       const transferRecord = new TransferEntity(commonExtrinsicData.hash)
-      // new transaction
+      const [from,to, amount] = data;
+      // apply common extrinsic data to record
       insertDataToEntity(transferRecord, commonExtrinsicData)
-      transferRecord.from = signer.toString()
-      transferRecord.to = record.owner
+      transferRecord.from = from.toString()
+      transferRecord.to = to.toString()
       transferRecord.currency = 'CAPS'
-      transferRecord.amount = record.price;
+      transferRecord.amount = (amount as Balance).toBigInt().toString();
 
       await transferRecord.save()
 
-      record.owner = signer.toString();
-      record.listed = 0;
-      await record.save()
+    }else if (`${section}.${method}` === 'marketplace.NftSold'){
+      // sold event
+      const nftId = data[0].toString()
+      const signer = _extrinsic.signer.toString()
+
+      // retrieve the nft
+      const record = await NftEntity.get(nftId);
+      if (record !== undefined) {
+        record.owner = signer.toString();
+        record.listed = 0;
+        await record.save()
+      }
     }
+
   }
+
 }
 
   export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {

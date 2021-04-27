@@ -39,7 +39,5 @@ dataSources:
           kind: substrate/BlockHandler
         - handler: handleEvent
           kind: substrate/EventHandler
-          filter:
-            module: balances
         - handler: handleCall
           kind: substrate/CallHandler
