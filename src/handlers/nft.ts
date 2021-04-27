@@ -71,6 +71,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
       await transferRecord.save()
 
       record.owner = signer.toString();
+      record.listed = 0;
       await record.save()
     }
   }
