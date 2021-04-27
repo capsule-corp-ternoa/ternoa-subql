@@ -2,6 +2,7 @@ import { insertDataToEntity, getCommonExtrinsicData } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { Balance } from "@polkadot/types/interfaces";
 import { NftEntity } from "../types/models/NftEntity";
+import { TransferEntity } from "../types/models/TransferEntity";
 
   export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const { extrinsic: _extrinsic, events } = extrinsic
@@ -47,6 +48,33 @@ import { NftEntity } from "../types/models/NftEntity";
       }
     }
   }
+
+export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const {extrinsic: _extrinsic, events} = extrinsic
+  if (events.length > 0 && events[0].event !== undefined) {
+    const nftId = events[0].event.data[0].toString()
+    const signer = _extrinsic.signer.toString()
+
+    // retrieve the nft
+    const record = await NftEntity.get(nftId);
+    if (record !== undefined) {
+
+      const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+      const transferRecord = new TransferEntity(commonExtrinsicData.hash)
+      // new transaction
+      insertDataToEntity(transferRecord, commonExtrinsicData)
+      transferRecord.from = signer.toString()
+      transferRecord.to = record.owner
+      transferRecord.currency = 'CAPS'
+      transferRecord.amount = record.price;
+
+      await transferRecord.save()
+
+      record.owner = signer.toString();
+      await record.save()
+    }
+  }
+}
 
   export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const { extrinsic: _extrinsic, events } = extrinsic

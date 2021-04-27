@@ -6,6 +6,7 @@ import {
     listHandler,
     createHandler,
     burnHandler,
+    buyHandler,
 } from '../handlers'
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
@@ -23,6 +24,7 @@ extrinsicDispatcher.add('balances', 'transferKeepAlive', transferHandler)
 extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('nfts', 'burn', burnHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
+extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     await extrinsicDispatcher.emit(extrinsic)
