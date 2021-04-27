@@ -24,7 +24,7 @@ extrinsicDispatcher.add('balances', 'transferKeepAlive', transferHandler)
 extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('nfts', 'burn', burnHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
-extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
+extrinsicDispatcher.add('marketplace', 'nftSold', buyHandler)
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     await extrinsicDispatcher.emit(extrinsic)
