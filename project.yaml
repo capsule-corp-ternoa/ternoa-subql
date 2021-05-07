@@ -21,7 +21,8 @@ network:
       owner: "AccountId",
       details: "NFTDetails",
       sealed: "bool",
-      locked: "bool"
+      locked: "bool",
+      series_id: "NFTSeriesId"
     },
     NFTDetails: {
       offchain_uri: "Vec<u8>"
