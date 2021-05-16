@@ -14,21 +14,23 @@ import { TransferEntity } from "../types/models/TransferEntity";
 
     const signer = _extrinsic.signer.toString()
     const nftId = events[0].event.data[0].toString()
-    const nftData = await api.query.nfts.data(nftId);
-
-    if(events.length > 0 && events[0].event !== undefined ){
-      record.currency = 'CAPS';
-      record.listed = 0;
-      record.owner = signer;
-      record.creator = signer;
-      record.id = nftId;
-      // @ts-ignore
-      const offchain_uri = Buffer.from(nftData.details.offchain_uri, 'hex');
-      record.uri = offchain_uri.toString();
-      // check if series of nfts
-      // @TODO: waiting for pallet
-      await record.save()
-
+    try{
+      const nftData = await api.query.nfts.data(nftId);
+      if(events.length > 0 && events[0].event !== undefined ){
+        record.currency = 'CAPS';
+        record.listed = 0;
+        record.owner = signer;
+        record.creator = signer;
+        record.id = nftId;
+        // @ts-ignore
+        const offchain_uri = Buffer.from(nftData.details.offchain_uri, 'hex');
+        record.uri = offchain_uri.toString();
+        // check if series of nfts
+        // @TODO: waiting for pallet
+        await record.save()
+      }
+    }catch( err ){
+      console.log('error of nft id')
     }
   }
 
