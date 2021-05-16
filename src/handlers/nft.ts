@@ -8,29 +8,27 @@ import { TransferEntity } from "../types/models/TransferEntity";
     const { extrinsic: _extrinsic, events } = extrinsic
     const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
     const record = new NftEntity(commonExtrinsicData.hash)
-    // apply common extrinsic data to record
-    insertDataToEntity(record, commonExtrinsicData)
 
-    const signer = _extrinsic.signer.toString()
-    const nftId = events[0].event.data[0].toString()
-    try{
-      const nftData = await api.query.nfts.data(nftId);
-      if(events.length > 0 && events[0].event !== undefined ){
+    for (const {event: {data, method, section}} of events) {
+      if (`${section}.${method}` === 'nfts.Created') {
+        // apply common extrinsic data to record
+        insertDataToEntity(record, commonExtrinsicData)
+        const signer = _extrinsic.signer.toString()
+        const nftId = data[0].toString()
+        const nftData = await api.query.nfts.data(nftId);
         record.currency = 'CAPS';
         record.listed = 0;
         record.owner = signer;
+        record.serieId = data[2].toString();
         record.creator = signer;
         record.id = nftId;
         // @ts-ignore
         const offchain_uri = Buffer.from(nftData.details.offchain_uri, 'hex');
         record.uri = offchain_uri.toString();
-        // check if series of nfts
-        // @TODO: waiting for pallet
         await record.save()
       }
-    }catch( err ){
-      console.log('error of nft id')
     }
+
   }
 
   export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {

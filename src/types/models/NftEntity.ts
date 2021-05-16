@@ -32,11 +32,7 @@ export class NftEntity implements Entity {
 
     public creator: string;
 
-    public itemId?: number;
-
-    public itemTotal?: number;
-
-    public internalId?: string;
+    public serieId: string;
 
 
     async save(): Promise<void>{

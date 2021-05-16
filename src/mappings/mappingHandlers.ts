@@ -27,7 +27,6 @@ extrinsicDispatcher.add('marketplace', 'list', listHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
-    console.log('handlecall');
     await extrinsicDispatcher.emit(extrinsic)
 }
 

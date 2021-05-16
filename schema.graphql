@@ -24,9 +24,7 @@ type NftEntity @entity {
   timestampBurn: Date #when nft is burned
   owner: String!
   creator: String!
-  itemId: Int #for series of nfts
-  itemTotal: Int #for series of nfts
-  internalId: String #for series of nfts
+  serieId: String! #for series of nfts
 }
 
 
