@@ -26,7 +26,8 @@ network:
       series_id: "NFTSeriesId"
     },
     NFTDetails: {
-      offchain_uri: "Vec<u8>"
+      offchain_uri: "Vec<u8>",
+      series_id: "NFTSeriesId"
     },
     NFTSeriesDetails: {
       owner: 'AccountId',

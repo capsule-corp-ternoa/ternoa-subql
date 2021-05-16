@@ -6,7 +6,6 @@ import { TransferEntity } from "../types/models/TransferEntity";
 
   export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const { extrinsic: _extrinsic, events } = extrinsic
-
     const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
     const record = new NftEntity(commonExtrinsicData.hash)
     // apply common extrinsic data to record
