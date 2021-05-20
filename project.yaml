@@ -3,9 +3,10 @@ description: "Ternoa data indexer"
 repository: ''
 schema: ./schema.graphql
 network:
-  #endpoint: "ws://127.0.0.1:9944"
-  endpoint: "wss://dev.chaos.ternoa.com"
+  endpoint: "ws://127.0.0.1:9944"
+  #endpoint: "wss://dev.chaos.ternoa.com"
   types: {
+    AccountDataOf: "AccountData",
     Address: "AccountId",
     CapsuleID: "u32",
     CapsuleIDOf: "NFTId",

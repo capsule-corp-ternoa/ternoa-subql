@@ -27,4 +27,10 @@ type NftEntity @entity {
   serieId: String! #for series of nfts
 }
 
+type AccountEntity @entity {
+  id: ID!
+  capsAmount: String
+  tiimeAmount: String
+}
+
 
