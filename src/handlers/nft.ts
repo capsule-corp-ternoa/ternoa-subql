@@ -19,7 +19,7 @@ import { TransferEntity } from "../types/models/TransferEntity";
         record.currency = 'CAPS';
         record.listed = 0;
         record.owner = signer;
-        //record.serieId = data[2].toString();
+        record.serieId = data[2].toString();
         record.creator = signer;
         record.id = nftId;
         // @ts-ignore
