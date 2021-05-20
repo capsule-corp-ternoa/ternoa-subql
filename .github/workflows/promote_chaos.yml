@@ -1,0 +1,22 @@
+name: Docker
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  promote-chaos:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Push with chaos tag
+        run: |
+          docker pull ternoa/subquery-node:${{ github.sha }}
+          docker tag ternoa/subquery-node:${{ github.sha }} ternoa/subquery-node:chaos
+          docker push ternoa/subquery-node:chaos
