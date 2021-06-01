@@ -87,8 +87,9 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
   export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const { extrinsic: _extrinsic, events } = extrinsic
 
-    if(events.length > 0 && events[0].event !== undefined ){
-      const nftId = events[0].event.data[0].toString()
+
+    for (const {event: {data, method, section}} of events) {
+      const nftId = data[0].toString()
 
       // retrieve the nft
       const record = await NftEntity.get(nftId);
@@ -97,7 +98,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         record.timestampBurn = new Date();
         await record.save()
       }
-    }
 
+    }
 
 }
