@@ -1,4 +1,4 @@
-import { insertDataToEntity, getCommonExtrinsicData } from '../helpers'
+import { insertDataToEntity, getCommonExtrinsicData, updateAccount } from '../helpers'
 import { TransferEntity } from '../types/models/TransferEntity'
 import { ExtrinsicHandler } from './types'
 import { Balance } from "@polkadot/types/interfaces";
@@ -19,51 +19,14 @@ export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promis
   transferRecord.amount = (amount as Balance).toBigInt().toString();
 
   await transferRecord.save()
-
+  console.log('transfer');
   // update account
-  // retrieve the user
-  let record = await AccountEntity.get(to.toString());
-  if( record === undefined ){
-    const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-    record = new AccountEntity(commonExtrinsicData.hash)
-    record.id = to.toString();
-  }
+  await updateAccount(to, call, extrinsic);
+  await updateAccount(signer, call, extrinsic);
 
-  await api.query.system.account(to, ({ data: balance }) => {
-    record.capsAmount = (balance.free as Balance).toBigInt().toString();
-    record.save()
-  });
-
-  // @ts-ignore
-  await api.query.tiimeAccountStore.account(to, (balance) => {
-    // @ts-ignore
-    record.tiimeAmount = (balance.free as Balance).toBigInt().toString();
-    record.save()
-  });
-  await record.save()
-
-  // update account signer
-  // retrieve the user
-  let recordSigner = await AccountEntity.get(signer.toString());
-  if( recordSigner === undefined ){
-    const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-    recordSigner = new AccountEntity(commonExtrinsicData.hash)
-    recordSigner.id = signer.toString();
-  }
-  await api.query.system.account(to, ({ data: balance }) => {
-    record.capsAmount = (balance.free as Balance).toBigInt().toString();
-    record.save()
-  });
-
-
-  // @ts-ignore
-  await api.query.tiimeAccountStore.account(signer, (balance) => {
-    // @ts-ignore
-    recordSigner.tiimeAmount = balance.free.toString();
-    recordSigner.save()
-  });
-  await recordSigner.save()
 }
+
+
 
 export const transferTiimeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
@@ -82,46 +45,8 @@ export const transferTiimeHandler: ExtrinsicHandler = async (call, extrinsic): P
   await transferRecord.save()
 
   // update account
-  // retrieve the user
-  let record = await AccountEntity.get(to.toString());
-  if( record === undefined ){
-    const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-    record = new AccountEntity(commonExtrinsicData.hash)
-    record.id = to.toString();
-  }
-  await api.query.system.account(to, ({ data: balance }) => {
-    record.capsAmount = (balance.free as Balance).toBigInt().toString();
-    record.save()
-  });
-
-  // @ts-ignore
-  await api.query.tiimeAccountStore.account(to, (balance) => {
-    // @ts-ignore
-    record.tiimeAmount = balance.free.toString();
-    record.save()
-  });
-  await record.save()
-
-  // update account signer
-  // retrieve the user
-  let recordSigner = await AccountEntity.get(signer.toString());
-  if( recordSigner === undefined ){
-    const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-    recordSigner = new AccountEntity(commonExtrinsicData.hash)
-    recordSigner.id = signer.toString();
-  }
-  await api.query.system.account(to, ({ data: balance }) => {
-    recordSigner.capsAmount = (balance.free as Balance).toBigInt().toString();
-    recordSigner.save()
-  });
-
-
-  // @ts-ignore
-  await api.query.tiimeAccountStore.account(signer, (balance) => {
-    // @ts-ignore
-    recordSigner.tiimeAmount = balance.free.toString();
-    recordSigner.save()
-  });
-  await recordSigner.save()
+  // update account
+  await updateAccount(to, call, extrinsic);
+  await updateAccount(signer, call, extrinsic);
 
 }
