@@ -1,4 +1,4 @@
-import { insertDataToEntity, getCommonExtrinsicData } from '../helpers'
+import {insertDataToEntity, getCommonExtrinsicData, updateAccount} from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { Balance } from "@polkadot/types/interfaces";
 import { NftEntity } from "../types/models/NftEntity";
@@ -63,6 +63,9 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
       transferRecord.to = to.toString()
       transferRecord.currency = 'CAPS'
       transferRecord.amount = (amount as Balance).toBigInt().toString();
+
+      await updateAccount(from, call, extrinsic);
+      await updateAccount(to, call, extrinsic);
 
       await transferRecord.save()
 
