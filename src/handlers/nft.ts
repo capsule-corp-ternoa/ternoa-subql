@@ -87,6 +87,26 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
 
 }
 
+export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic, events } = extrinsic
+
+  if(events.length > 0 && events[0].event !== undefined ){
+    const nftId = events[0].event.data[0].toString()
+    const oldOwner = events[0].event.data[1].toString()
+    const newOwner = events[0].event.data[2]
+
+    // retrieve the nft
+    const record = await NftEntity.get(nftId);
+    if( record !== undefined ){
+      record.listed = 0;
+      record.owner = newOwner
+
+      await record.save()
+    }
+  }
+
+}
+
 export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
 
