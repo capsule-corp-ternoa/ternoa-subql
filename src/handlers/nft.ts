@@ -91,9 +91,10 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
   const { extrinsic: _extrinsic, events } = extrinsic
 
   if(events.length > 0 && events[0].event !== undefined ){
+    console.log('events[0].event.data',events[0].event.data)
     const nftId = events[0].event.data[0].toString()
     const oldOwner = events[0].event.data[1].toString()
-    const newOwner = events[0].event.data[2]
+    const newOwner = events[0].event.data[2].toString()
 
     // retrieve the nft
     const record = await NftEntity.get(nftId);
