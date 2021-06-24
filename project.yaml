@@ -7,7 +7,7 @@ network:
   #endpoint: "wss://chaos.ternoa.com"
   types: {
     AccountDataOf: "AccountData",
-    Address: "AccountId",
+    Address: "MultiAddress",
     CapsuleID: "u32",
     CapsuleIDOf: "NFTId",
     CapsuleData: {
@@ -36,7 +36,24 @@ network:
       nfts: 'Vec<NFTId>'
     },
     NFTSeriesId: 'u32',
-    LookupSource: "AccountId"
+    LookupSource: "MultiAddress",
+    "NFTCurrencyCombined": {
+      "caps": "Balance",
+      "tiime": "Balance"
+    },
+    "NFTCurrency": {
+      "_enum": {
+        "CAPS": "Balance",
+        "TIIME": "Balance",
+        "COMBINED": "NFTCurrencyCombined"
+      }
+    },
+    "NFTCurrencyId": {
+      "_enum": [
+          "CAPS",
+          "TIIME"
+      ]
+    }
   }
 
 dataSources:
