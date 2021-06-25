@@ -3,58 +3,56 @@ description: "Ternoa data indexer"
 repository: ''
 schema: ./schema.graphql
 network:
-  endpoint: "ws://127.0.0.1:9944"
-  #endpoint: "wss://chaos.ternoa.com"
+  # endpoint: "ws://127.0.0.1:9944"
+  endpoint: "wss://dev.chaos.ternoa.com"
   types: {
-    AccountDataOf: "AccountData",
-    Address: "MultiAddress",
-    CapsuleID: "u32",
-    CapsuleIDOf: "NFTId",
-    CapsuleData: {
-      offchain_uri: "Vec<u8>",
-      pk_hash: "Hash",
-      creator: "AccountId",
-      owner: "AccountId",
-      locked: "bool"
+  AccountDataOf: 'AccountData',
+  Address: 'MultiAddress',
+  NFTId: 'u32',
+  NFTIdOf: 'NFTId',
+  NFTSeriesId: 'u32',
+  NFTData: {
+    owner: 'AccountId',
+    details: 'NFTDetails',
+    sealed: 'bool',
+    locked: 'bool',
+  },
+  NFTDetails: {
+    offchain_uri: 'Vec<u8>',
+    series_id: 'NFTSeriesId',
+    is_capsule: 'bool',
+  },
+  LookupSource: 'MultiAddress',
+  NFTSeriesDetails: {
+    owner: 'AccountId',
+    nfts: 'Vec<NFTId>',
+  },
+  NFTCurrencyCombined: {
+    caps: 'Balance',
+    tiime: 'Balance',
+  },
+  NFTCurrency: {
+    _enum: {
+      CAPS: 'Balance',
+      TIIME: 'Balance',
+      COMBINED: 'NFTCurrencyCombined',
     },
-    NFTId: "u32",
-    NFTIdOf: "NFTId",
-    NFTData: {
-      owner: "AccountId",
-      details: "NFTDetails",
-      sealed: "bool",
-      locked: "bool",
-      series_id: "NFTSeriesId"
-    },
-    NFTDetails: {
-      offchain_uri: "Vec<u8>",
-      series_id: "NFTSeriesId",
-      is_capsule: "bool"
-    },
-    NFTSeriesDetails: {
-      owner: 'AccountId',
-      nfts: 'Vec<NFTId>'
-    },
-    NFTSeriesId: 'u32',
-    LookupSource: "MultiAddress",
-    "NFTCurrencyCombined": {
-      "caps": "Balance",
-      "tiime": "Balance"
-    },
-    "NFTCurrency": {
-      "_enum": {
-        "CAPS": "Balance",
-        "TIIME": "Balance",
-        "COMBINED": "NFTCurrencyCombined"
-      }
-    },
-    "NFTCurrencyId": {
-      "_enum": [
-          "CAPS",
-          "TIIME"
-      ]
-    }
-  }
+  },
+  NFTCurrencyId: {
+    _enum: ['CAPS', 'TIIME'],
+  },
+  ShardIdentifier: 'Hash',
+  Request: {
+    shard: 'ShardIdentifier',
+    cyphertext: 'Vec<u8>',
+  },
+  Enclave: {
+    pubkey: 'AccountId',
+    mrenclave: 'Hash',
+    timestamp: 'u64',
+    url: 'Text',
+  },
+}
 
 dataSources:
   - name: main
