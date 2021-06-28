@@ -40,18 +40,7 @@ network:
   },
   NFTCurrencyId: {
     _enum: ['CAPS', 'TIIME'],
-  },
-  ShardIdentifier: 'Hash',
-  Request: {
-    shard: 'ShardIdentifier',
-    cyphertext: 'Vec<u8>',
-  },
-  Enclave: {
-    pubkey: 'AccountId',
-    mrenclave: 'Hash',
-    timestamp: 'u64',
-    url: 'Text',
-  },
+  }
 }
 
 dataSources:
