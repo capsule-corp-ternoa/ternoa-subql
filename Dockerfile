@@ -1,4 +1,4 @@
-FROM onfinality/subql-node:v0.12.2
+FROM onfinality/subql-node:v0.16.2
 
 COPY . /app
 RUN cd /app && yarn
