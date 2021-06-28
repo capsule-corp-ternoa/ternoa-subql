@@ -23,5 +23,8 @@
     "@subql/cli": "^0.7.3",
     "@subql/types": "^0.7.1",
     "typescript": "^4.1.3"
+  },
+  "dependencies": {
+    "pino": "^6.11.3"
   }
 }
