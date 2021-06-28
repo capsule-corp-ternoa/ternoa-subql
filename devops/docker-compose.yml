@@ -49,7 +49,7 @@ services:
       - 'com.centurylinklabs.watchtower.enable=true' # Automatically update containerto new published docker images
 
   graphql:
-    image: onfinality/subql-query:v0.2.0
+    image: onfinality/subql-query:v0.6.0
     ports:
       - 3000
     depends_on:
