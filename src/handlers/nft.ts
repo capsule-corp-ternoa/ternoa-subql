@@ -64,8 +64,8 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
       transferRecord.currency = 'CAPS'
       transferRecord.amount = (amount as Balance).toBigInt().toString();
 
-      await updateAccount(from, call, extrinsic);
-      await updateAccount(to, call, extrinsic);
+      await updateAccount(transferRecord.from, call, extrinsic);
+      await updateAccount(transferRecord.to, call, extrinsic);
 
       await transferRecord.save()
 
