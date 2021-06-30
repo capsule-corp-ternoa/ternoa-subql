@@ -2,15 +2,13 @@ import { AccountEntity } from "../types/models/AccountEntity";
 import { getCommonExtrinsicData } from "./extrinsic";
 import { Balance } from "@polkadot/types/interfaces";
 
-export const updateAccount = async (user, call, extrinsic) => {
+export const updateAccount = async (user: string, call, extrinsic) => {
   // update account
   // retrieve the user
-  let record = await AccountEntity.get(user.toString());
+  let record = await AccountEntity.get(user);
 
   if( record === undefined ){
-    const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-    record = new AccountEntity(commonExtrinsicData.hash)
-    record.id = user.toString();
+    record = new AccountEntity(user)
   }
 
   await api.query.system.account(user, ({ data: balance })  =>  {

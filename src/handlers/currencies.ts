@@ -21,7 +21,7 @@ export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promis
   await transferRecord.save()
   console.log('transfer');
   // update account
-  await updateAccount(to, call, extrinsic);
+  await updateAccount(transferRecord.to, call, extrinsic);
   await updateAccount(signer, call, extrinsic);
 
 }
