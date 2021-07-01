@@ -1,6 +1,7 @@
 import {insertDataToEntity, getCommonExtrinsicData, updateAccount} from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { Balance } from "@polkadot/types/interfaces";
+import { bnToBn } from '@polkadot/util/bn';
 import { NftEntity } from "../types/models/NftEntity";
 import { TransferEntity } from "../types/models/TransferEntity";
 
@@ -8,6 +9,7 @@ import { TransferEntity } from "../types/models/TransferEntity";
     const { extrinsic: _extrinsic, events } = extrinsic
     const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
     const record = new NftEntity(commonExtrinsicData.hash)
+    logger.info('Create Nft');
 
     for (const {event: {data, method, section}} of events) {
       if (`${section}.${method}` === 'nfts.Created') {
@@ -33,17 +35,37 @@ import { TransferEntity } from "../types/models/TransferEntity";
 
   export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const {extrinsic: _extrinsic, events} = extrinsic
+    logger.info('List Nft');
+
     if (events.length > 0 && events[0].event !== undefined) {
       const nftId = events[0].event.data[0].toString()
-      const price = events[0].event.data[1]
 
+      let price = '';
+      let priceTiime = '';
+      const priceObject = JSON.parse(events[0].event.data[1].toString());
+      if(priceObject.caps) {
+        price = bnToBn(priceObject.caps).toString();
+      } else if (priceObject.tiime) {
+        priceTiime = bnToBn(priceObject.tiime).toString();
+      }else if (priceObject.combined !== undefined) {
+        price = bnToBn(priceObject.combined.caps).toString();
+        priceTiime = bnToBn(priceObject.combined.tiime).toString();
+
+      }
       // retieve the nft
       const record = await NftEntity.get(nftId);
       if (record !== undefined) {
         record.listed = 1;
         record.timestampList = new Date();
-        record.price = (price as Balance).toBigInt().toString();
-        await record.save()
+
+        try {
+          record.price = price
+          record.priceTiime = priceTiime
+          await record.save()
+        } catch (e) {
+          // @ts-ignore
+          logger.error(events[0].event.data[1].toString());
+        }
       }
     }
   }
