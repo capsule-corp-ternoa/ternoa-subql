@@ -24,6 +24,8 @@ export class NftEntity implements Entity {
 
     public price?: string;
 
+    public priceTiime?: string;
+
     public listed: number;
 
     public timestampBurn?: Date;
