@@ -19,7 +19,7 @@ export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promis
   transferRecord.amount = (amount as Balance).toBigInt().toString();
 
   await transferRecord.save()
-  console.log('transfer');
+  logger.info('transfer');
   // update account
   await updateAccount(transferRecord.to, call, extrinsic);
   await updateAccount(signer, call, extrinsic);

@@ -19,6 +19,7 @@ export class ExtrinsicDispatcher {
     public async emit (extrinsic: SubstrateExtrinsic) {
         const { extrinsic: _extrinsic } = extrinsic
         const { method, section, args } = _extrinsic.method;
+        logger.info(`${section}_${method}`);
         switch (`${section}_${method}`) {
             case 'utility_batch': {
                 return this.batchHandler(extrinsic)
