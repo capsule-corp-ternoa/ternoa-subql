@@ -12,7 +12,7 @@ import {
 } from '../handlers'
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
-    logger.info('block yb : '+block.toString())
+    logger.info('block yb 2: '+block.toString())
 }
 
 
