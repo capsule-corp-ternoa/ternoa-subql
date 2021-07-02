@@ -3,9 +3,9 @@ description: "Ternoa data indexer"
 repository: ''
 schema: ./schema.graphql
 network:
-  endpoint: "ws://127.0.0.1:9944"
+  #endpoint: "ws://127.0.0.1:9944"
   #endpoint: "wss://dev.chaos.ternoa.com"
-  #endpoint: "wss://chaos.ternoa.com"
+  endpoint: "wss://chaos.ternoa.com"
   types: {
   AccountDataOf: 'AccountData',
   Address: 'AccountId',
@@ -23,11 +23,10 @@ network:
     details: 'NFTDetails',
     sealed: 'bool',
     locked: 'bool',
+    series_id: "NFTSeriesId"
   },
   NFTDetails: {
-    offchain_uri: 'Vec<u8>',
-    series_id: 'NFTSeriesId',
-    is_capsule: 'bool',
+    offchain_uri: 'Vec<u8>'
   },
   LookupSource: 'AccountId',
   NFTSeriesDetails: {
