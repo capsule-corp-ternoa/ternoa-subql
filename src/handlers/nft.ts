@@ -9,7 +9,7 @@ import { TransferEntity } from "../types/models/TransferEntity";
     const { extrinsic: _extrinsic, events } = extrinsic
     const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
     const record = new NftEntity(commonExtrinsicData.hash)
-    logger.info('Create Nft');
+    logger.info('Create Nft '+commonExtrinsicData.block);
 
     for (const {event: {data, method, section}} of events) {
       if (`${section}.${method}` === 'nfts.Created') {
@@ -35,7 +35,8 @@ import { TransferEntity } from "../types/models/TransferEntity";
 
   export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const {extrinsic: _extrinsic, events} = extrinsic
-    logger.info('List Nft');
+    const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+    logger.info('List Nft '+commonExtrinsicData.block);
 
     if (events.length > 0 && events[0].event !== undefined) {
       const nftId = events[0].event.data[0].toString()
@@ -72,7 +73,8 @@ import { TransferEntity } from "../types/models/TransferEntity";
 
 export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const {extrinsic: _extrinsic, events} = extrinsic;
-
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  logger.info('Buy Nft '+commonExtrinsicData.block);
   for (const {event: {data, method, section}} of events) {
     if (`${section}.${method}` === 'balances.Transfer') {
       // transfer
@@ -111,7 +113,8 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
 
 export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
-
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  logger.info('Transfer Nft '+commonExtrinsicData.block);
   if(events.length > 0 && events[0].event !== undefined ){
     console.log('events[0].event.data',events[0].event.data)
     const nftId = events[0].event.data[0].toString()
@@ -132,7 +135,8 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
 
 export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
-
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  logger.info('burn Nft '+commonExtrinsicData.block);
   if(events.length > 0 && events[0].event !== undefined ){
     const nftId = events[0].event.data[0].toString()
 
