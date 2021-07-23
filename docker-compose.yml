@@ -28,6 +28,8 @@ services:
       - '/app'
       - '--subquery-name=subql-ternoa'
       - '--local'
+      - '--timeout'
+      - '270'
 
   graphql-engine:
     image: onfinality/subql-query:v0.6.0
