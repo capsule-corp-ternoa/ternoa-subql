@@ -72,6 +72,50 @@ yarn build
 
 ## Indexing and Query
 
+Recommended way is to do it without Docker.
+
+### Indexer (subql/node)
+
+Be sure that your postgresql database is installed, and export the configuration
+
+```bash
+export DB_USER=postgres
+export DB_PASS=postgres
+export DB_DATABASE=postgres
+export DB_HOST=postgres
+export DB_PORT=5432
+```
+
+Then,
+
+```bash
+yarn
+yarn build
+./node_modules/.bin/subql-node -f . --subquery-name=subql-ternoa --network-endpoint wss://dev.chaos.ternoa.com
+```
+
+On the last line, you can Obviously switch from dev.chaos, to any other network endpoint.
+
+### Running a Query Service (subql/query)
+
+Same as the previous step, be sure that your postgresql database is installed, and export the configuration
+
+```bash
+export DB_USER=postgres
+export DB_PASS=postgres
+export DB_DATABASE=postgres
+export DB_HOST=postgres
+export DB_PORT=5432
+```
+
+Then,
+
+```bash
+yarn
+yarn build
+./node_modules/.bin/subql-query --name subql-ternoa --playground
+```
+
 #### Run required systems in docker
 
 First open `docker-compose.yml`, in the `graphql-engine` section and make sure the project name is identical to you have provided previously .

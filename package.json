@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
-    "prepack": "rm -rf dist && npm build",
+    "prepack": "rm -rf dist && yarn build",
     "test": "jest",
     "codegen": "./node_modules/.bin/subql codegen"
   },
@@ -20,9 +20,11 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@polkadot/api": "4.15.2-2",
-    "@subql/cli": "^0.7.3",
-    "@subql/types": "^0.7.1",
-    "typescript": "^4.1.3"
+    "@subql/cli": "0.10.0",
+    "@subql/node": "0.18.0",
+    "@subql/query": "0.7.0",
+    "@subql/types": "0.8.0",
+    "typescript": "4.2.3"
   },
   "dependencies": {
     "pino": "^6.11.3"
