@@ -89,9 +89,10 @@ export DB_PORT=5432
 Then,
 
 ```bash
+yarn global add @subql/node
 yarn
 yarn build
-./node_modules/.bin/subql-node -f . --subquery-name=subql-ternoa --network-endpoint wss://dev.chaos.ternoa.com
+subql-node -f . --subquery-name=subql-ternoa --network-endpoint wss://dev.chaos.ternoa.com
 ```
 
 On the last line, you can Obviously switch from dev.chaos, to any other network endpoint.
@@ -111,9 +112,10 @@ export DB_PORT=5432
 Then,
 
 ```bash
+yarn global add @subql/query
 yarn
 yarn build
-./node_modules/.bin/subql-query --name subql-ternoa --playground
+subql-query --name subql-ternoa --playground
 ```
 
 #### Run required systems in docker

@@ -1,9 +1,7 @@
-// Copyright 2020-2021 OnFinality Limited authors & contributors
-// SPDX-License-Identifier: Apache-2.0
-
 // Auto-generated , DO NOT EDIT
 import {Entity} from "@subql/types";
 import assert from 'assert';
+
 
 export class NftEntity implements Entity {
 
@@ -47,8 +45,8 @@ export class NftEntity implements Entity {
         await store.remove('NftEntity', id.toString());
     }
 
-    static async get(id:string): Promise<NftEntity>{
-        assert(id !== null, "Cannot get NftEntity entity without an ID");
+    static async get(id:string): Promise<NftEntity | undefined>{
+        assert((id !== null && id !== undefined), "Cannot get NftEntity entity without an ID");
         const record = await store.get('NftEntity', id.toString());
         if (record){
             return NftEntity.create(record);
@@ -56,6 +54,8 @@ export class NftEntity implements Entity {
             return;
         }
     }
+
+
 
     static create(record){
         let entity = new NftEntity(record.id);
