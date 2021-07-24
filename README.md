@@ -81,7 +81,7 @@ Be sure that your postgresql database is installed, and export the configuration
 ```bash
 export DB_USER=postgres
 export DB_PASS=postgres
-export DB_DATABASE=postgres
+export DB_DATABASE=ternoa
 export DB_HOST=postgres
 export DB_PORT=5432
 ```
@@ -89,7 +89,7 @@ export DB_PORT=5432
 Then,
 
 ```bash
-yarn global add @subql/node
+npm install -g @subql/node
 yarn
 yarn build
 subql-node -f . --subquery-name=subql-ternoa --network-endpoint wss://dev.chaos.ternoa.com
@@ -104,7 +104,7 @@ Same as the previous step, be sure that your postgresql database is installed, a
 ```bash
 export DB_USER=postgres
 export DB_PASS=postgres
-export DB_DATABASE=postgres
+export DB_DATABASE=ternoa
 export DB_HOST=postgres
 export DB_PORT=5432
 ```
@@ -112,7 +112,7 @@ export DB_PORT=5432
 Then,
 
 ```bash
-yarn global add @subql/query
+npm install -g @subql/query
 yarn
 yarn build
 subql-query --name subql-ternoa --playground
