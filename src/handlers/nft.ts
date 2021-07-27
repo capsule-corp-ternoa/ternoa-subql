@@ -36,10 +36,11 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
 export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [nftId, priceObject] = call.args
+  const [nftId, _priceObject] = call.args
   logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.block);
   let price = '';
   let priceTiime = '';
+  const priceObject= JSON.parse(_priceObject)
   if (priceObject.caps) {
     price = bnToBn(priceObject.caps).toString();
   } else if (priceObject.tiime) {
