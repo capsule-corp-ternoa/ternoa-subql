@@ -28,7 +28,7 @@ extrinsicDispatcher.add('tiimeBalances', 'transfer', transferTiimeHandler)
 extrinsicDispatcher.add('tiimeBalances', 'transferKeepAlive', transferTiimeHandler)
 extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('nfts', 'burn', burnHandler)
-extrinsicDispatcher.add('nfts', 'Transfer', NFTtransferHandler)
+extrinsicDispatcher.add('nfts', 'transfer', NFTtransferHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 
