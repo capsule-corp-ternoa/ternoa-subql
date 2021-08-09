@@ -40,7 +40,7 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
   logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.block);
   let price = '';
   let priceTiime = '';
-  const priceObject= JSON.parse(_priceObject)
+  const priceObject = JSON.parse(_priceObject)
   if (priceObject.caps) {
     price = bnToBn(priceObject.caps).toString();
   } else if (priceObject.tiime) {
@@ -110,14 +110,23 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
 export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [nftId, oldOwner, newOwner] = call.args
-  logger.info('Transfer Nft ' + commonExtrinsicData.block);
-
+  const [nftId, newOwner] = call.args
+  logger.info('Transfer Nft id:' + nftId + '-- block' + commonExtrinsicData.block);
+  // logger.info('Transfer Nft newOwner:' + newOwner);
+  // logger.info('Transfer Nft newOwner.id:' + newOwner.id);
+  // logger.info('Transfer Nft call.args:' + call.args);
+  // logger.info('Transfer Nft string call.args:' + JSON.stringify(call.args));
+  let data = JSON.parse(JSON.stringify(newOwner))
+  // logger.info('Transfer Nft data:' + data);
+  // logger.info('Transfer Nft data.id:' + data.id);
+  //REASON: newOwner logs as address but saved as .id, 
+  //.id is not accessable on it
+  //that is way need to stringify->parse->get id
   // retrieve the nft
   const record = await NftEntity.get(nftId);
   if (record !== undefined) {
     record.listed = 0;
-    record.owner = newOwner
+    record.owner = data.id
 
     await record.save()
   }
