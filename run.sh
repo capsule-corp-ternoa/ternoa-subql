@@ -22,4 +22,5 @@ set -e
 env | grep DB_
 
 
+npm install -g @subql/query
 subql-query --name subql-ternoa --playground

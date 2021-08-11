@@ -21,7 +21,6 @@ set -x
 
 env | grep DB_
 
-npm install -g yarn
 npm install -g @subql/node
 npm install -g @subql/query
 npm install

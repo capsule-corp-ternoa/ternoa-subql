@@ -23,4 +23,5 @@ env | grep DB_
 [ -z "$NETWORK_ENDPOINT" ] && export NETWORK_ENDPOINT="wss://dev.chaos.ternoa.com"
 [ -z "$TIMEOUT" ] && export TIMEOUT="270"
 
+npm install -g @subql/node
 subql-node -f . --subquery-name=subql-ternoa --network-endpoint $NETWORK_ENDPOINT --timeout $TIMEOUT
