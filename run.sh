@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-
+set -x
 
 [ -z "$APP_HOME" ] && export APP_HOME=$(pwd)
 
