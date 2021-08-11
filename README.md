@@ -133,6 +133,7 @@ Then, under the project directory run following command:
 ```
 docker-compose up
 ```
+
 #### Query the project
 
 Open your browser and head to `http://localhost:3000`.
