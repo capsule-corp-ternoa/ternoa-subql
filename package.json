@@ -27,5 +27,8 @@
   },
   "dependencies": {
     "pino": "6.13.0"
+  },
+  "engines": {
+    "node": "16.6.1"
   }
 }
