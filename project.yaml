@@ -7,55 +7,67 @@ network:
   #endpoint: "wss://dev.chaos.ternoa.com"
  # endpoint: "wss://chaos.ternoa.com"
   types: {
-    "AccountDataOf": "AccountData",
-    "Address": "MultiAddress",
-    "Enclave": {
-      "pubkey": "AccountId",
-      "mrenclave": "Hash",
-      "timestamp": "u64",
-      "url": "Text"
-    },
-    "NFTId": "u32",
-    "NFTIdOf": "NFTId",
-    "NFTSeriesId": "u32",
-    "NFTData": {
-      "owner": "AccountId",
-      "details": "NFTDetails",
-      "sealed": "bool",
-      "locked": "bool"
-    },
-    "NFTDetails": {
-      "offchain_uri": "Vec<u8>",
-      "series_id": "NFTSeriesId",
-      "is_capsule": "bool"
-    },
-    "LookupSource": "MultiAddress",
-    "NFTSeriesDetails": {
-      "owner": "AccountId",
-      "nfts": "Vec<NFTId>"
-    },
-    "NFTCurrencyCombined": {
-      "caps": "Balance",
-      "tiime": "Balance"
-    },
-    "NFTCurrency": {
-      "_enum": {
-        "CAPS": "Balance",
-        "TIIME": "Balance",
-        "COMBINED": "NFTCurrencyCombined"
-      }
-    },
-    "NFTCurrencyId": {
-      "_enum": [
-          "CAPS",
-          "TIIME"
-      ]
-    },
-    "Request": {
-      "shard": "ShardIdentifier",
-      "cyphertext": "Vec<u8>"
-    },
-    "ShardIdentifier": "Hash"
+  "AccountDataOf": "AccountData",
+  "Address": "MultiAddress",
+  "Enclave": {
+    "pubkey": "AccountId",
+    "mrenclave": "Hash",
+    "timestamp": "u64",
+    "url": "Text"
+  },
+  "NFTId": "u32",
+  "NFTIdOf": "NFTId",
+  "NFTSeriesId": "u32",
+  "NFTData": {
+    "owner": "AccountId",
+    "details": "NFTDetails",
+    "sealed": "bool",
+    "locked": "bool"
+  },
+  "NFTDetails": {
+    "offchain_uri": "Vec<u8>",
+    "series_id": "NFTSeriesId",
+    "is_capsule": "bool"
+  },
+  "LookupSource": "MultiAddress",
+  "NFTSeriesDetails": {
+    "owner": "AccountId",
+    "nfts": "Vec<NFTId>"
+  },
+  "NFTCurrencyCombined": {
+    "caps": "Balance",
+    "tiime": "Balance"
+  },
+  "NFTCurrency": {
+    "_enum": {
+      "CAPS": "Balance",
+      "TIIME": "Balance",
+      "COMBINED": "NFTCurrencyCombined"
+    }
+  },
+  "NFTCurrencyId": {
+    "_enum": [
+      "CAPS",
+      "TIIME"
+    ]
+  },
+  "Request": {
+    "shard": "ShardIdentifier",
+    "cyphertext": "Vec<u8>"
+  },
+  "ShardIdentifier": "Hash",
+  "MarketplaceId": "u32",
+  "SaleInformation": {
+    "account_id": "AccountId",
+    "price": "NFTCurrency",
+    "marketplace_id": "MarketplaceId"
+  },
+  "Status": {
+    "_enum": [
+      "Free",
+      "Reserved"
+    ]
+  }
 }
 
 dataSources:
