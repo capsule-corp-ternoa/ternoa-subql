@@ -36,7 +36,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
 export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [nftId, marketplaceId, _priceObject] = call.args
+  const [nftId, _priceObject, marketplaceId] = call.args
   logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.block + ' (marketplaceId: ' + marketplaceId);
   let price = '';
   let priceTiime = '';
