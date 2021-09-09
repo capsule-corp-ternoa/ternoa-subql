@@ -21,7 +21,14 @@ set -x
 
 env | grep DB_
 
+# ----Installing Ternoa-Query----
+./scripts/build-submodule.sh
+
+# ----Installing Subql-Node----
 npm install -g @subql/node
-npm install -g @subql/query
+
+# ----Installing dependencies----
 npm install
+
+# ----Building Ternoa-Subql----
 npm run build
