@@ -1,6 +1,5 @@
 git submodule update --init
 
-cd ../../..
 cd subql/packages/types
 npm install
 npm run build
