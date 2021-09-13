@@ -25,4 +25,10 @@ env | grep DB_
 [ -z "$TIMEOUT" ] && export TIMEOUT="270"
 
 #npm install -g @subql/node
+
+git clone https://github.com/capsule-corp-ternoa/subql.git
+cd subql/packages/node
+npm install
+npm run build
+
 subql-node -f . --subquery-name=subql-ternoa --network-endpoint $NETWORK_ENDPOINT --timeout $TIMEOUT --network-dictionary=https://api.subquery.network/sq/subquery/dictionary-polkadot
