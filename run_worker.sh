@@ -26,7 +26,6 @@ env | grep DB_
 
 #npm install -g @subql/node
 
-git clone https://github.com/capsule-corp-ternoa/subql.git
 cd subql/packages/node
 npm install
 npm run build
