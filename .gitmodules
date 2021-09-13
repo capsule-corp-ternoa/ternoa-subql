@@ -1,3 +1,4 @@
 [submodule "subql"]
 	path = subql
 	url = https://github.com/capsule-corp-ternoa/subql
+	branch=main-patch-1
