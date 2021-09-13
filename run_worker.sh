@@ -25,7 +25,7 @@ env | grep DB_
 [ -z "$TIMEOUT" ] && export TIMEOUT="270"
 
 #npm install -g @subql/node
-
+npm i --save-dev @types/jest
 cd subql
 git checkout main-patch-1
 cd packages/node
