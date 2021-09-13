@@ -26,7 +26,9 @@ env | grep DB_
 
 #npm install -g @subql/node
 
-cd subql/packages/node
+cd subql
+git checkout main-patch-1
+cd packages/node
 npm install
 npm run build
 
