@@ -1,7 +1,9 @@
-rm -rf subql
-git submodule update --init
+git submodule update --init --recusrive
+cd subql
+git checkout main
+git pull origin main
 
-cd subql/packages/query
+cd packages/query
 
 npm install
 npm run build
