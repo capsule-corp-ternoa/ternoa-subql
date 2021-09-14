@@ -27,7 +27,7 @@ env | grep DB_
 #npm install -g @subql/node
 npm i --save-dev @types/jest
 cd subql
-git checkout main-patch-1
+git checkout main
 cd packages/node
 npm install
 npm run build
