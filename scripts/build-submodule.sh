@@ -1,4 +1,5 @@
-git submodule update --init --recusrive
+git submodule update --init --recusrive --remote --merge
+
 cd subql
 git checkout main
 git pull origin main
