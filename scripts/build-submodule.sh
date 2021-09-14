@@ -1,10 +1,8 @@
-git submodule update --init --recusrive --remote --merge
+rm -rf subql
+git submodule update --init
+git submodule update --remote --merge
 
-cd subql
-git checkout main
-git pull origin main
-
-cd packages/query
+cd subql/packages/query
 
 npm install
 npm run build
