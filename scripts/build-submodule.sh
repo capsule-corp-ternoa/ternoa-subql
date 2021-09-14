@@ -1,3 +1,4 @@
+rm -rf subql
 git submodule update --init
 
 cd subql/packages/query
