@@ -22,7 +22,7 @@ set -x
 env | grep DB_
 
 [ -z "$NETWORK_ENDPOINT" ] && export NETWORK_ENDPOINT="wss://dev.chaos.ternoa.com"
-[ -z "$TIMEOUT" ] && export TIMEOUT="12000"
+[ -z "$TIMEOUT" ] && export TIMEOUT="20000"
 
 npm install -g @subql/node
 subql-node -f . --subquery-name=subql-ternoa --network-endpoint $NETWORK_ENDPOINT --timeout $TIMEOUT --network-dictionary=https://api.subquery.network/sq/subquery/dictionary-polkadot
