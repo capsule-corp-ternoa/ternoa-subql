@@ -5,6 +5,7 @@ import {
     transferHandler,
     transferTiimeHandler,
     listHandler,
+    unlistHandler,
     createHandler,
     burnHandler,
     buyHandler,
@@ -30,6 +31,7 @@ extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('nfts', 'burn', burnHandler)
 extrinsicDispatcher.add('nfts', 'transfer', NFTtransferHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
+extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {

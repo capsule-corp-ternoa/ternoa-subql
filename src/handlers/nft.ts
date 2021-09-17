@@ -69,6 +69,31 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
 
 }
 
+export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [nftId, marketplaceId] = call.args
+  logger.info('nftId:' + nftId + ':new Unlist Nft ' + commonExtrinsicData.block + ' (marketplaceId: ' + marketplaceId);
+  let price = '';
+  let priceTiime = '';
+  // retieve the nft
+  const record = await NftEntity.get(nftId);
+  if (record !== undefined) {
+    record.listed = 0;
+    record.timestampList = new Date();
+    try {
+      record.price = price
+      record.priceTiime = priceTiime
+      record.marketplaceId = marketplaceId
+      await record.save()
+    } catch (e) {
+      // @ts-ignore
+      logger.error('unlist nft error:' + nftId);
+    }
+  }
+
+}
+
 export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic;
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
