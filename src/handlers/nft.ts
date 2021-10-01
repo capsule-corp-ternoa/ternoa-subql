@@ -9,10 +9,27 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const record = new NftEntity(commonExtrinsicData.hash)
-  logger.info('Create Nft ' + commonExtrinsicData.block);
+  // logger.info('Create Nft ' + commonExtrinsicData.block);
 
   for (const { event: { data, method, section } } of events) {
-    if (`${section}.${method}` === 'nfts.Created') {
+    
+    if (`${section}.${method}` === 'treasury.Deposit') {
+      // apply common extrinsic data to record
+      const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+      const transferRecord = new TransferEntity(commonExtrinsicData.hash)
+      const from = _extrinsic.signer.toString()
+      const [ amount] = data;
+      // apply common extrinsic data to record
+      insertDataToEntity(transferRecord, commonExtrinsicData)
+      transferRecord.from = from.toString()
+      transferRecord.to = 'Treasury'
+      transferRecord.currency = 'CAPS'
+      transferRecord.amount = (amount as Balance).toBigInt().toString();
+
+      await updateAccount(transferRecord.from, call, extrinsic);
+
+      await transferRecord.save()
+    }else  if (`${section}.${method}` === 'nfts.Created') {
       // apply common extrinsic data to record
       insertDataToEntity(record, commonExtrinsicData)
       const signer = _extrinsic.signer.toString()
