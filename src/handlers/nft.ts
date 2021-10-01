@@ -30,16 +30,15 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         // apply common extrinsic data to record
         insertDataToEntity(record, commonExtrinsicData)
         const signer = _extrinsic.signer.toString()
-        const nftId = data[0].toString()
-        const nftData = await api.query.nfts.data(nftId);
+        const [nftId, owner, seriesId, _offchain_uri]= data;
         record.currency = 'CAPS';
         record.listed = 0;
         record.owner = signer;
-        record.serieId = data[2].toString();
+        record.serieId = seriesId.toString();
         record.creator = signer;
-        record.id = nftId;
+        record.id = nftId.toString();
         // @ts-ignore
-        const offchain_uri = Buffer.from(nftData.details.offchain_uri, 'hex');
+        const offchain_uri = Buffer.from(_offchain_uri, 'hex');
         record.uri = offchain_uri.toString();
         await record.save()
       }
