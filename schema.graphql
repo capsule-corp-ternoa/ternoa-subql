@@ -1,12 +1,44 @@
+type BlockEntity @entity{
+  id: ID!
+  number: Int!
+  hash: String!
+  timestamp: Date!
+  parentHash: String!
+  stateRoot: String!
+  extrinsicsRoot: String!
+  runtimeVersion: Int!
+  nbExtrinsics: Int!
+  Author: String
+  sessionId: Int
+}
+
+type ExtrinsicEntity @entity{
+  id: ID!
+  block: BlockEntity!
+  blockNumber: Int!
+  extrinsicIndex: Int!
+  hash: String!
+  timestamp: Date!
+  module: String!
+  call: String!
+  description: String!
+  signer: String!
+  isSigned: Boolean!
+  signature: String!
+  nonce: Int!
+  success: Boolean!
+  argsName: [String]!
+  argsValue: [String]!
+  nbEvents: Int!
+}
+
 type TransferEntity @entity {
   id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
   isBatch: Int!
   isSudo: Int!
   isSuccess: Int!
-
   block: String! #the block which the extrinsic send hash
   timestamp: Date! #the block which the extrinsic send number
-
   from: String! #transfer from
   to: String! #transfer to
   currency: String! #the currency of the transfer

@@ -10,19 +10,12 @@ import {
     burnHandler,
     buyHandler,
     NFTtransferHandler,
+    blockHandler,
+    genericExtrinsicHandler,
 } from '../handlers'
 
-export async function handleBlock(block: SubstrateBlock): Promise<void> {
-    // logger.info('block yb 2: '+block.toString())
-}
-
-
-export async function handleEvent(event: SubstrateEvent): Promise<void> {
-}
-
+// init and populate extrinsicDispatcher for specific extrinsic to record
 const extrinsicDispatcher = new ExtrinsicDispatcher()
-
-// apply extrinsic handler
 extrinsicDispatcher.add('balances', 'transfer', transferHandler)
 extrinsicDispatcher.add('balances', 'transferKeepAlive', transferHandler)
 extrinsicDispatcher.add('tiimeBalances', 'transfer', transferTiimeHandler)
@@ -34,7 +27,14 @@ extrinsicDispatcher.add('marketplace', 'list', listHandler)
 extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 
+export async function handleBlock(block: SubstrateBlock): Promise<void> {
+    blockHandler(block)
+}
+
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
+    genericExtrinsicHandler(extrinsic)
     await extrinsicDispatcher.emit(extrinsic)
 }
 
+export async function handleEvent(event: SubstrateEvent): Promise<void> {
+}
