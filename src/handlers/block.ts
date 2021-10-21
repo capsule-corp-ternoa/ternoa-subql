@@ -14,6 +14,7 @@ export const blockHandler = async (block: SubstrateBlock): Promise<void> => {
         blockRecord.extrinsicsRoot = blockHeader.extrinsicsRoot.toString()
         blockRecord.nbExtrinsics = blockExtrinsics.length
         blockRecord.runtimeVersion = block.specVersion
+        blockRecord.sessionId = (await api.query.session.currentIndex()).toNumber()
         await blockRecord.save()
     }catch(err){
         logger.error('record block error:' + block.block.header.number.toNumber());
