@@ -12,13 +12,19 @@ export class TransferEntity implements Entity {
 
     public id: string;
 
+    public blockId: string;
+
+    public blockHash: string;
+
+    public extrinsicId: string;
+
+    public eventId: string;
+
     public isBatch: number;
 
     public isSudo: number;
 
     public isSuccess: number;
-
-    public block: string;
 
     public timestamp: Date;
 

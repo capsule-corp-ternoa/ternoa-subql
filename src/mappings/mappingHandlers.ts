@@ -12,6 +12,7 @@ import {
     NFTtransferHandler,
     blockHandler,
     genericExtrinsicHandler,
+    genericEventHandler,
 } from '../handlers'
 
 // init and populate extrinsicDispatcher for specific extrinsic to record
@@ -28,11 +29,12 @@ extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
-    blockHandler(block)
+    await blockHandler(block)
 }
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
-    genericExtrinsicHandler(extrinsic)
+    await genericExtrinsicHandler(extrinsic)
+    await genericEventHandler(extrinsic)
     await extrinsicDispatcher.emit(extrinsic)
 }
 

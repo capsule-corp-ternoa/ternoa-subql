@@ -5,13 +5,13 @@ export const blockHandler = async (block: SubstrateBlock): Promise<void> => {
     try{
         const blockHeader = block.block.header
         const blockExtrinsics = block.block.extrinsics
-        const blockRecord = new BlockEntity(block.block.header.hash.toHex())
+        const blockRecord = new BlockEntity(blockHeader.number.toString())
         blockRecord.number = blockHeader.number.toNumber()
-        blockRecord.hash = blockHeader.hash.toHex()
+        blockRecord.hash = blockHeader.hash.toString()
         blockRecord.timestamp = block.timestamp
-        blockRecord.parentHash = blockHeader.parentHash.toHex()
-        blockRecord.stateRoot = blockHeader.stateRoot.toHex()
-        blockRecord.extrinsicsRoot = blockHeader.extrinsicsRoot.toHex()
+        blockRecord.parentHash = blockHeader.parentHash.toString()
+        blockRecord.stateRoot = blockHeader.stateRoot.toString()
+        blockRecord.extrinsicsRoot = blockHeader.extrinsicsRoot.toString()
         blockRecord.nbExtrinsics = blockExtrinsics.length
         blockRecord.runtimeVersion = block.specVersion
         await blockRecord.save()

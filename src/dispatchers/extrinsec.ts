@@ -49,12 +49,18 @@ export class ExtrinsicDispatcher {
         call: CallData,
         extrinsic: ExtrinsicData,
     ) {
-        const { section, method } = call
-        const key = `${section}_${method}`
-        const handler = this.handlers.get(key)
-
-        if (handler) {
-            await handler(call, extrinsic)
+        try{
+            const { section, method } = call
+            const key = `${section}_${method}`
+            const handler = this.handlers.get(key)
+    
+            if (handler) {
+                await handler(call, extrinsic)
+            }
+        }catch(err){
+            logger.info("Error in call " + call.section+"_"+call.method)
+            logger.info("Error detail " + err)
+            if (err.sql) logger.info("Error detail sql " + err.sql)
         }
     }
 

@@ -15,7 +15,6 @@ type BlockEntity @entity{
 type ExtrinsicEntity @entity{
   id: ID!
   block: BlockEntity!
-  blockNumber: Int!
   extrinsicIndex: Int!
   hash: String!
   timestamp: Date!
@@ -32,12 +31,27 @@ type ExtrinsicEntity @entity{
   nbEvents: Int!
 }
 
+type EventEntity @entity {
+  id: ID!
+  block: BlockEntity!
+  extrinsic: ExtrinsicEntity!
+  eventIndex: Int!
+  module: String!
+  call: String!
+  description: String!
+  argsName: [String]!
+  argsValue: [String]!
+}
+
 type TransferEntity @entity {
   id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
+  block: BlockEntity!
+  blockHash: String!
+  extrinsic: ExtrinsicEntity!
+  event: EventEntity!
   isBatch: Int!
   isSudo: Int!
   isSuccess: Int!
-  block: String! #the block which the extrinsic send hash
   timestamp: Date! #the block which the extrinsic send number
   from: String! #transfer from
   to: String! #transfer to
@@ -59,6 +73,21 @@ type NftEntity @entity {
   creator: String!
   serieId: String! #for series of nfts
   marketplaceId: String
+}
+
+type NftTransferEntity @entity {
+  id: ID!
+  block: BlockEntity!
+  extrinsic: ExtrinsicEntity!
+  event: EventEntity!
+  sender: String!
+  receiver: String!
+  timestamp: Date!
+  nftId: String!
+  nftUri: String!
+  nftCreator: String!
+  typeOfTransaction: String!
+  amount: String!
 }
 
 type AccountEntity @entity {

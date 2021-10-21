@@ -45,7 +45,6 @@ export const transferTiimeHandler: ExtrinsicHandler = async (call, extrinsic): P
   await transferRecord.save()
 
   // update account
-  // update account
   await updateAccount(transferRecord.to, call, extrinsic);
   await updateAccount(signer, call, extrinsic);
 
