@@ -2,7 +2,6 @@ import { insertDataToEntity, getCommonExtrinsicData, updateAccount } from '../he
 import { TransferEntity } from '../types/models/TransferEntity'
 import { ExtrinsicHandler } from './types'
 import { Balance } from "@polkadot/types/interfaces";
-import { AccountEntity } from "../types/models/AccountEntity";
 
 export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic

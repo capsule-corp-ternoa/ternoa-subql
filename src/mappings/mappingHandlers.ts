@@ -34,9 +34,9 @@ export async function handleBlock(block: SubstrateBlock): Promise<void> {
 
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     await genericExtrinsicHandler(extrinsic)
-    await genericEventHandler(extrinsic)
-    await extrinsicDispatcher.emit(extrinsic)
+    extrinsicDispatcher.emit(extrinsic)
 }
 
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
+    genericEventHandler(event)
 }

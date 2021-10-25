@@ -18,8 +18,6 @@ export class TransferEntity implements Entity {
 
     public extrinsicId: string;
 
-    public eventId: string;
-
     public isBatch: number;
 
     public isSudo: number;

@@ -10,6 +10,13 @@ export const updateAccount = async (user: string, call, extrinsic) => {
     }
     await api.query.system.account(user, ({ data: balance })  =>  {
       record.capsAmount = (balance.free as Balance).toBigInt().toString();
+      // const balanceFrozenFee = balance.feeFrozen.toBigInt()
+      // const balanceFrozenMisc = balance.miscFrozen.toBigInt()
+      // const balanceReserved = balance.reserved.toBigInt()
+      // const balanceFree = balance.free.toBigInt()
+      // const frozen = balanceFrozenFee > balanceFrozenMisc ? balanceFrozenMisc : balanceFrozenMisc
+      // const total = balanceFree + balanceReserved
+      // const free = total - (balanceReserved + frozen)
     });
     await record.save();
     // @ts-ignore

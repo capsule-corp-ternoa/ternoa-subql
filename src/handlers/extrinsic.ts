@@ -1,19 +1,16 @@
 import { SubstrateExtrinsic } from "@subql/types";
 import { checkIfExtrinsicExecuteSuccess } from "../helpers";
-import { ExtrinsicEntity } from "../types";
+import { EventEntity, ExtrinsicEntity } from "../types";
 
 export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Promise<void> => {
     try{
         const ext = extrinsic.extrinsic
         const block = extrinsic.block
-        const events = extrinsic.events
         const methodData = ext.method
-        const blockExtrinsics = block.block.extrinsics
-        const extrinsicIndex = blockExtrinsics.findIndex(x => x.hash.toString() === ext.hash.toString())
         /* Record Extrinsic data */
-        const extrinsicRecord = new ExtrinsicEntity(`${block.block.header.number.toString()}-${extrinsicIndex}`)
+        const extrinsicRecord = new ExtrinsicEntity(`${block.block.header.number.toString()}-${extrinsic.idx}`)
         extrinsicRecord.blockId = block.block.header.number.toString()
-        extrinsicRecord.extrinsicIndex = extrinsicIndex
+        extrinsicRecord.extrinsicIndex = extrinsic.idx
         extrinsicRecord.hash = ext.hash.toString()
         extrinsicRecord.timestamp = block.timestamp
         extrinsicRecord.module = methodData.section
@@ -26,7 +23,7 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         extrinsicRecord.success = checkIfExtrinsicExecuteSuccess(extrinsic)
         extrinsicRecord.argsName = methodData.meta.args.map(a => a.name.toString())
         extrinsicRecord.argsValue = methodData.args.map((a) => a.toString())
-        extrinsicRecord.nbEvents = events.length
+        extrinsicRecord.nbEvents = extrinsic.events.length
         await extrinsicRecord.save()
     }catch(err){
         logger.error(`record extrinsic error at : hash(${extrinsic.extrinsic.hash}) and block nb ${extrinsic.block.block.header.number.toNumber()}`);

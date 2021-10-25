@@ -14,7 +14,7 @@ export class EventEntity implements Entity {
 
     public blockId: string;
 
-    public extrinsicId: string;
+    public extrinsicId?: string;
 
     public eventIndex: number;
 

@@ -20,7 +20,7 @@ export class ExtrinsicDispatcher {
         const { extrinsic: _extrinsic } = extrinsic
         const { method, section, args } = _extrinsic.method;
         
-        logger.info(`EMIT section_method: ${section}_${method} hash: ${extrinsic.block.block.hash.toString()}`);
+        //logger.info(`EMIT section_method: ${section}_${method} hash: ${extrinsic.block.block.hash.toString()}`);
         switch (`${section}_${method}`) {
             case 'utility_batch': {
                 return this.batchHandler(extrinsic)

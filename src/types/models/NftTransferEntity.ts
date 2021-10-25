@@ -16,19 +16,13 @@ export class NftTransferEntity implements Entity {
 
     public extrinsicId: string;
 
-    public eventId: string;
-
-    public sender: string;
-
-    public receiver: string;
-
-    public timestamp: Date;
-
     public nftId: string;
 
-    public nftUri: string;
+    public from: string;
 
-    public nftCreator: string;
+    public to: string;
+
+    public timestamp: Date;
 
     public typeOfTransaction: string;
 

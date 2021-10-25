@@ -8,7 +8,6 @@ export const nftTransferEntityHandler = async (
         blockId: string;
         blockHash: string;
         extrinsicId: string;
-        eventId: string;
         timestamp: Date;
         isSuccess: number;
         isBatch: number;
@@ -23,13 +22,10 @@ export const nftTransferEntityHandler = async (
         const nftTransferRecord = new NftTransferEntity(commonExtrinsicData.hash)
         nftTransferRecord.blockId = commonExtrinsicData.blockId
         nftTransferRecord.extrinsicId = commonExtrinsicData.extrinsicId
-        nftTransferRecord.eventId = commonExtrinsicData.eventId
-        nftTransferRecord.sender = oldOwner
-        nftTransferRecord.receiver = record.owner
-        nftTransferRecord.timestamp = commonExtrinsicData.timestamp
         nftTransferRecord.nftId = record.id
-        nftTransferRecord.nftUri = record.uri
-        nftTransferRecord.nftCreator = record.creator
+        nftTransferRecord.from = oldOwner
+        nftTransferRecord.to = record.owner
+        nftTransferRecord.timestamp = commonExtrinsicData.timestamp
         nftTransferRecord.typeOfTransaction = isSale ? "sale" : "transfer"
         nftTransferRecord.amount = amount
         await nftTransferRecord.save()

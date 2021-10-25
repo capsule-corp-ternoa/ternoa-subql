@@ -34,7 +34,7 @@ type ExtrinsicEntity @entity{
 type EventEntity @entity {
   id: ID!
   block: BlockEntity!
-  extrinsic: ExtrinsicEntity!
+  extrinsicId: String
   eventIndex: Int!
   module: String!
   call: String!
@@ -48,13 +48,12 @@ type TransferEntity @entity {
   block: BlockEntity!
   blockHash: String!
   extrinsic: ExtrinsicEntity!
-  event: EventEntity!
   isBatch: Int!
   isSudo: Int!
   isSuccess: Int!
   timestamp: Date! #the block which the extrinsic send number
-  from: String! #transfer from
-  to: String! #transfer to
+  from: String!
+  to: String!
   currency: String! #the currency of the transfer
   amount: String! #the amount of the transfer
 }
@@ -79,13 +78,10 @@ type NftTransferEntity @entity {
   id: ID!
   block: BlockEntity!
   extrinsic: ExtrinsicEntity!
-  event: EventEntity!
-  sender: String!
-  receiver: String!
+  nft: NftEntity!
+  from: String!
+  to: String!
   timestamp: Date!
-  nftId: String!
-  nftUri: String!
-  nftCreator: String!
   typeOfTransaction: String!
   amount: String!
 }

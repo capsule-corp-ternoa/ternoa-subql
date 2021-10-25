@@ -74,12 +74,7 @@ export const getExtrinsicHash = (call: CallData, extrinsic: ExtrinsicData): stri
 export const getCommonExtrinsicData = (call: CallData, extrinsic: ExtrinsicData) => {
   const blockHash = extrinsic.block.block.hash.toString()
   const blockId = extrinsic.block.block.header.number.toString()
-  const extrinsicIndex = extrinsic.block.block.extrinsics.findIndex(x => x.hash.toString() === extrinsic.extrinsic.hash.toString())
-  const extrinsicId = `${blockId}-${extrinsicIndex}`
-  const eventIndex = extrinsic.events.findIndex(x => {
-    return x.event.section === call.section && x.event.method.toLowerCase().substring(0,6) === call.method.toLowerCase().substring(0,6)
-  })
-  const eventId = `${extrinsicId}-${eventIndex === -1 ? 0 : eventIndex}`
+  const extrinsicId = `${blockId}-${extrinsic.idx}`
   const timestamp = extrinsic.block.timestamp
   const hash = getExtrinsicHash(call, extrinsic)
   return {
@@ -87,7 +82,6 @@ export const getCommonExtrinsicData = (call: CallData, extrinsic: ExtrinsicData)
     blockId,
     blockHash,
     extrinsicId,
-    eventId,
     timestamp,
     isSuccess: extrinsic.isExcuteSuccess ? 1 : 0,
     isBatch: extrinsic.isBatch ? 1 : 0,
