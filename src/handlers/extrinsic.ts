@@ -7,6 +7,7 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         const ext = extrinsic.extrinsic
         const block = extrinsic.block
         const methodData = ext.method
+        const documentation = JSON.parse(JSON.stringify(ext.meta)).documentation
         /* Record Extrinsic data */
         const extrinsicRecord = new ExtrinsicEntity(`${block.block.header.number.toString()}-${extrinsic.idx}`)
         extrinsicRecord.blockId = block.block.header.number.toString()
@@ -15,7 +16,7 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         extrinsicRecord.timestamp = block.timestamp
         extrinsicRecord.module = methodData.section
         extrinsicRecord.call = methodData.method
-        extrinsicRecord.description = JSON.parse(JSON.stringify(ext.meta)).documentation.map(d => d.toString()).join('\n')
+        if (documentation) extrinsicRecord.description = documentation.map(d => d.toString()).join('\n')
         extrinsicRecord.signer = ext.signer.toString()
         extrinsicRecord.isSigned = ext.isSigned
         extrinsicRecord.signature = ext.signature.toString()
