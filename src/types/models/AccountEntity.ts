@@ -14,6 +14,10 @@ export class AccountEntity implements Entity {
 
     public capsAmount?: string;
 
+    public capsAmountFrozen?: string;
+
+    public capsAmountTotal?: string;
+
     public tiimeAmount?: string;
 
 

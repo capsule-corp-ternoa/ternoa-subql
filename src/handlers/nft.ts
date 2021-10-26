@@ -38,6 +38,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         record.serieId = seriesId.toString();
         record.creator = signer;
         record.id = nftId.toString();
+        record.nftId = nftId.toString();
         // @ts-ignore
         const offchain_uri = Buffer.from(_offchain_uri, 'hex');
         record.uri = offchain_uri.toString();
