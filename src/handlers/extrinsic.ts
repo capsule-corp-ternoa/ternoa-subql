@@ -15,7 +15,7 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         extrinsicRecord.timestamp = block.timestamp
         extrinsicRecord.module = methodData.section
         extrinsicRecord.call = methodData.method
-        extrinsicRecord.description = (ext.meta as any).documentation.map((d) => d.toString()).join('\n')
+        extrinsicRecord.description = JSON.parse(JSON.stringify(ext.meta)).documentation.map(d => d.toString()).join('\n')
         extrinsicRecord.signer = ext.signer.toString()
         extrinsicRecord.isSigned = ext.isSigned
         extrinsicRecord.signature = ext.signature.toString()
