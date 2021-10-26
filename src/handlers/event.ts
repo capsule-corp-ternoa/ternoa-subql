@@ -6,13 +6,14 @@ export const genericEventHandler = async (event: SubstrateEvent): Promise<void> 
         const blockHeader = event.block.block.header
         const blockNumber = blockHeader.number.toNumber()
         const eventData = event.event
+        const documentation = JSON.parse(JSON.stringify(eventData.meta)).documentation
         const eventRecord = new EventEntity(`${blockNumber}-${event.idx}`)
         eventRecord.blockId = blockNumber.toString()
         if (event.extrinsic) eventRecord.extrinsicId = `${blockNumber}-${event.extrinsic.idx}`
         eventRecord.eventIndex = event.idx
         eventRecord.module = eventData.section
         eventRecord.call = eventData.method
-        eventRecord.description = (eventData.meta as any).documentation.map((d) => d.toString()).join('\n')
+        if (documentation) eventRecord.description = documentation.map((d) => d.toString()).join('\n')
         eventRecord.argsName = eventData.meta.args.map(a => a.toString())
         eventRecord.argsValue = eventData.data.map(a => a.toString())
         await eventRecord.save()

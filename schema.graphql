@@ -20,7 +20,7 @@ type ExtrinsicEntity @entity{
   timestamp: Date!
   module: String!
   call: String!
-  description: String!
+  description: String
   signer: String!
   isSigned: Boolean!
   signature: String!
@@ -38,7 +38,7 @@ type EventEntity @entity {
   eventIndex: Int!
   module: String!
   call: String!
-  description: String!
+  description: String
   argsName: [String]!
   argsValue: [String]!
 }

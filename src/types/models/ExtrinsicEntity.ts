@@ -24,7 +24,7 @@ export class ExtrinsicEntity implements Entity {
 
     public call: string;
 
-    public description: string;
+    public description?: string;
 
     public signer: string;
 
