@@ -28,7 +28,7 @@ export class BlockEntity implements Entity {
 
     public nbExtrinsics: number;
 
-    public Author?: string;
+    public author?: string;
 
     public sessionId?: number;
 
@@ -53,6 +53,42 @@ export class BlockEntity implements Entity {
         }
     }
 
+
+    static async getByHash(hash: string): Promise<BlockEntity | undefined>{
+      
+      const record = await store.getOneByField('BlockEntity', 'hash', hash);
+      if (record){
+          return BlockEntity.create(record);
+      }else{
+          return;
+      }
+      
+    }
+
+    static async getByTimestamp(timestamp: Date): Promise<BlockEntity | undefined>{
+      
+      const record = await store.getOneByField('BlockEntity', 'timestamp', timestamp);
+      if (record){
+          return BlockEntity.create(record);
+      }else{
+          return;
+      }
+      
+    }
+
+    static async getByAuthor(author: string): Promise<BlockEntity[] | undefined>{
+      
+      const records = await store.getByField('BlockEntity', 'author', author);
+      return records.map(record => BlockEntity.create(record));
+      
+    }
+
+    static async getBySessionId(sessionId: number): Promise<BlockEntity[] | undefined>{
+      
+      const records = await store.getByField('BlockEntity', 'sessionId', sessionId);
+      return records.map(record => BlockEntity.create(record));
+      
+    }
 
 
     static create(record){

@@ -10,9 +10,13 @@ import {
     burnHandler,
     buyHandler,
     NFTtransferHandler,
+    convertToCapsuleHandler,
+    convertToNftHandler,
+    lockSerieHandler,
     blockHandler,
     genericExtrinsicHandler,
     genericEventHandler,
+    treasuryDepositHandler,
 } from '../handlers'
 
 // init and populate extrinsicDispatcher for specific extrinsic to record
@@ -27,6 +31,10 @@ extrinsicDispatcher.add('nfts', 'transfer', NFTtransferHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
 extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
+extrinsicDispatcher.add('capsule', 'nftToCapsule', convertToCapsuleHandler)
+extrinsicDispatcher.add('capsule', 'capsuleToNFT', convertToNftHandler)
+extrinsicDispatcher.add('series', 'lock', lockSerieHandler)
+extrinsicDispatcher.add('treasury', 'deposit', treasuryDepositHandler)
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
     await blockHandler(block)

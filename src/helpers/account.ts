@@ -19,18 +19,14 @@ export const updateAccount = async (user: string, call, extrinsic) => {
       record.capsAmount = transferable.toString();
       record.capsAmountFrozen = frozen.toString();
       record.capsAmountTotal = total.toString();
-
     });
-    await record.save();
-    // @ts-ignore
+    //await record.save();
     await api.query.tiimeAccountStore.account(user, async (balance: any) => {
-      // @ts-ignore
       record.tiimeAmount = (balance.free as Balance).toBigInt().toString();
-      await record.save()
+      //await record.save()
     });
     await record.save();
   } catch (e) {
-    // @ts-ignore
     logger.error(e.toString());
   }
 

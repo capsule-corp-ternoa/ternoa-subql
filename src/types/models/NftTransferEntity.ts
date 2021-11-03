@@ -50,6 +50,27 @@ export class NftTransferEntity implements Entity {
     }
 
 
+    static async getByFrom(from: string): Promise<NftTransferEntity[] | undefined>{
+      
+      const records = await store.getByField('NftTransferEntity', 'from', from);
+      return records.map(record => NftTransferEntity.create(record));
+      
+    }
+
+    static async getByTo(to: string): Promise<NftTransferEntity[] | undefined>{
+      
+      const records = await store.getByField('NftTransferEntity', 'to', to);
+      return records.map(record => NftTransferEntity.create(record));
+      
+    }
+
+    static async getByTimestamp(timestamp: Date): Promise<NftTransferEntity[] | undefined>{
+      
+      const records = await store.getByField('NftTransferEntity', 'timestamp', timestamp);
+      return records.map(record => NftTransferEntity.create(record));
+      
+    }
+
 
     static create(record){
         let entity = new NftTransferEntity(record.id);

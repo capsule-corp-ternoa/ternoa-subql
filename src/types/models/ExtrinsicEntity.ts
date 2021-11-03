@@ -32,6 +32,8 @@ export class ExtrinsicEntity implements Entity {
 
     public signature: string;
 
+    public fees?: string;
+
     public nonce: number;
 
     public success: boolean;
@@ -63,6 +65,31 @@ export class ExtrinsicEntity implements Entity {
         }
     }
 
+
+    static async getByHash(hash: string): Promise<ExtrinsicEntity | undefined>{
+      
+      const record = await store.getOneByField('ExtrinsicEntity', 'hash', hash);
+      if (record){
+          return ExtrinsicEntity.create(record);
+      }else{
+          return;
+      }
+      
+    }
+
+    static async getByTimestamp(timestamp: Date): Promise<ExtrinsicEntity[] | undefined>{
+      
+      const records = await store.getByField('ExtrinsicEntity', 'timestamp', timestamp);
+      return records.map(record => ExtrinsicEntity.create(record));
+      
+    }
+
+    static async getBySigner(signer: string): Promise<ExtrinsicEntity[] | undefined>{
+      
+      const records = await store.getByField('ExtrinsicEntity', 'signer', signer);
+      return records.map(record => ExtrinsicEntity.create(record));
+      
+    }
 
 
     static create(record){
