@@ -3,7 +3,7 @@ import { ExtrinsicHandler } from './types'
 import { bnToBn } from '@polkadot/util/bn';
 import { NftEntity } from "../types/models/NftEntity";
 import { nftTransferEntityHandler } from './nftTransfer';
-import { SerieEntity } from '../types';
+import { SerieEntity, TransferEntity } from '../types';
 import { Balance } from '@polkadot/types/interfaces';
 
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
@@ -15,36 +15,52 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       insertDataToEntity(record, commonExtrinsicData)
       const signer = _extrinsic.signer.toString()
       const { series_id } = JSON.parse(call.args[0]);
-      const event = extrinsic.events.find(x => 
+      const eventIndex = extrinsic.events.findIndex(x => 
         x.event.section === "nfts" && 
         x.event.method === "Created" && 
         x.event.data &&
         JSON.parse(JSON.stringify(x.event.data))[2] === series_id
       )
-      if (event && event.event && event.event.data){
-        const [nftId, owner, seriesId, _offchain_uri] = event.event.data;
-        const offchain_uri = Buffer.from(_offchain_uri as any, 'hex');
-        let serieRecord = await SerieEntity.get(seriesId.toString())
-        if (!serieRecord){
-          serieRecord = new SerieEntity(seriesId.toString())
-          serieRecord.owner = signer
-          serieRecord.locked = false
-          await serieRecord.save()
+      if (eventIndex !== -1){
+        const event = extrinsic.events[eventIndex]
+        const treasuryEvent = eventIndex > 0 ? extrinsic.events[eventIndex-1] : null
+        if (event && event.event && event.event.data){
+          const [nftId, owner, seriesId, _offchain_uri] = event.event.data;
+          const offchain_uri = Buffer.from(_offchain_uri as any, 'hex');
+          let serieRecord = await SerieEntity.get(seriesId.toString())
+          if (!serieRecord){
+            serieRecord = new SerieEntity(seriesId.toString())
+            serieRecord.owner = signer
+            serieRecord.locked = false
+            await serieRecord.save()
+          }
+          record.currency = 'CAPS';
+          record.listed = 0;
+          record.owner = signer;
+          record.serieId = serieRecord.id;
+          record.creator = signer;
+          record.id = nftId.toString();
+          record.nftId = nftId.toString();
+          record.uri = offchain_uri.toString();
+          record.nftIpfs = offchain_uri.toString();
+          record.isCapsule = false;
+          record.frozenCaps = "0";
+          await record.save()
+          if (treasuryEvent){
+            const transferRecord = new TransferEntity(commonExtrinsicData.hash)
+            const [amount] = treasuryEvent.event.data
+            logger.info("amount: " + amount)
+            insertDataToEntity(transferRecord, commonExtrinsicData)
+            transferRecord.from = signer
+            transferRecord.to = 'Treasury'
+            transferRecord.currency = 'CAPS'
+            transferRecord.amount = (amount as Balance).toBigInt().toString();
+            await transferRecord.save()
+            await updateAccount(transferRecord.from, call, extrinsic);
+          }
+        }else{
+          logger.info('Create Nft error' + commonExtrinsicData.blockHash);
         }
-        record.currency = 'CAPS';
-        record.listed = 0;
-        record.owner = signer;
-        record.serieId = serieRecord.id;
-        record.creator = signer;
-        record.id = nftId.toString();
-        record.nftId = nftId.toString();
-        record.uri = offchain_uri.toString();
-        record.nftIpfs = offchain_uri.toString();
-        record.isCapsule = false;
-        record.frozenCaps = "0";
-        await record.save()
-      }else{
-        logger.info('Create Nft error' + commonExtrinsicData.blockHash);
       }
     }else{
       logger.info('Create Nft error' + commonExtrinsicData.blockHash);
