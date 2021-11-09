@@ -14,7 +14,7 @@ export const nftTransferEntityHandler = async (
         isSudo: number;
         batchIndex: number;
     }, 
-    isSale=false,
+    typeOfTransaction: string,
     amount="0",
 ): Promise<void> => {
     try{
@@ -24,9 +24,9 @@ export const nftTransferEntityHandler = async (
         nftTransferRecord.extrinsicId = commonExtrinsicData.extrinsicId
         nftTransferRecord.nftId = record.id
         nftTransferRecord.from = oldOwner
-        nftTransferRecord.to = record.owner
+        nftTransferRecord.to = typeOfTransaction !== "burn" ? record.owner : "null address"
         nftTransferRecord.timestamp = commonExtrinsicData.timestamp
-        nftTransferRecord.typeOfTransaction = isSale ? "sale" : "transfer"
+        nftTransferRecord.typeOfTransaction = typeOfTransaction
         nftTransferRecord.amount = amount
         await nftTransferRecord.save()
     }catch(err){

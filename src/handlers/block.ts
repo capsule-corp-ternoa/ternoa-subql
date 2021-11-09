@@ -14,6 +14,9 @@ export const blockHandler = async (block: SubstrateBlock): Promise<void> => {
         blockRecord.number = blockHeader.number.toNumber()
         blockRecord.hash = blockHeader.hash.toString()
         blockRecord.timestamp = block.timestamp
+        logger.info("block timestamp " + block.timestamp)
+        logger.info("date now" + Date.now())
+        logger.info("diff : " + (+Date.now() - +block.timestamp))
         blockRecord.parentHash = blockHeader.parentHash.toString()
         blockRecord.stateRoot = blockHeader.stateRoot.toString()
         blockRecord.extrinsicsRoot = blockHeader.extrinsicsRoot.toString()

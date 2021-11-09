@@ -22,7 +22,7 @@ export class EventEntity implements Entity {
 
     public call: string;
 
-    public description?: string;
+    public descriptionId: string;
 
     public argsName: string[];
 

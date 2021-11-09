@@ -8,7 +8,11 @@ export {SessionEntity} from "./SessionEntity"
 
 export {ExtrinsicEntity} from "./ExtrinsicEntity"
 
+export {ExtrinsicDescriptionEntity} from "./ExtrinsicDescriptionEntity"
+
 export {EventEntity} from "./EventEntity"
+
+export {EventDescriptionEntity} from "./EventDescriptionEntity"
 
 export {TransferEntity} from "./TransferEntity"
 
@@ -19,4 +23,6 @@ export {NftEntity} from "./NftEntity"
 export {NftTransferEntity} from "./NftTransferEntity"
 
 export {AccountEntity} from "./AccountEntity"
+
+export {MarketplaceEntity} from "./MarketplaceEntity"
 

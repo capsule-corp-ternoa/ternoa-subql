@@ -52,7 +52,6 @@ export class ExtrinsicDispatcher {
         try{
             const { section, method } = call
             const key = `${section}_${method}`
-            logger.info(key)
             const handler = this.handlers.get(key)
     
             if (handler) {

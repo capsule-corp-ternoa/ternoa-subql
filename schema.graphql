@@ -25,7 +25,7 @@ type ExtrinsicEntity @entity{
   timestamp: Date! @index
   module: String!
   call: String!
-  description: String
+  description: ExtrinsicDescriptionEntity!
   signer: String! @index
   isSigned: Boolean!
   signature: String!
@@ -37,6 +37,13 @@ type ExtrinsicEntity @entity{
   nbEvents: Int!
 }
 
+type ExtrinsicDescriptionEntity @entity{
+  id: ID!
+  module: String!
+  call: String!
+  description: String!
+}
+
 type EventEntity @entity {
   id: ID!
   block: BlockEntity!
@@ -44,9 +51,16 @@ type EventEntity @entity {
   eventIndex: Int!
   module: String!
   call: String!
-  description: String
+  description: EventDescriptionEntity!
   argsName: [String]!
   argsValue: [String]!
+}
+
+type EventDescriptionEntity @entity{
+  id: ID!
+  module: String!
+  call: String!
+  description: String!
 }
 
 type TransferEntity @entity {
@@ -110,4 +124,10 @@ type AccountEntity @entity {
   tiimeAmount: String
 }
 
-
+type MarketplaceEntity @entity {
+  id: ID!
+  owner: String!
+  kind: String!
+  commissionFee: String!
+  name: String!
+}

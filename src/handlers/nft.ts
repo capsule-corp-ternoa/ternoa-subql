@@ -5,6 +5,7 @@ import { NftEntity } from "../types/models/NftEntity";
 import { nftTransferEntityHandler } from './nftTransfer';
 import { SerieEntity, TransferEntity } from '../types';
 import { Balance } from '@polkadot/types/interfaces';
+import { treasuryEventHandler } from '.';
 
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
     const { extrinsic: _extrinsic } = extrinsic
@@ -23,7 +24,6 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       )
       if (eventIndex !== -1){
         const event = extrinsic.events[eventIndex]
-        const treasuryEvent = eventIndex > 0 ? extrinsic.events[eventIndex-1] : null
         if (event && event.event && event.event.data){
           const [nftId, owner, seriesId, _offchain_uri] = event.event.data;
           const offchain_uri = Buffer.from(_offchain_uri as any, 'hex');
@@ -46,17 +46,13 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
           record.isCapsule = false;
           record.frozenCaps = "0";
           await record.save()
+          // Record NFT Transfer
+          await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
+          // Record Treasury Event
+          const treasuryEvent = eventIndex > 0 ? extrinsic.events[eventIndex-1] : null
           if (treasuryEvent){
-            const transferRecord = new TransferEntity(commonExtrinsicData.hash)
-            const [amount] = treasuryEvent.event.data
-            logger.info("amount: " + amount)
-            insertDataToEntity(transferRecord, commonExtrinsicData)
-            transferRecord.from = signer
-            transferRecord.to = 'Treasury'
-            transferRecord.currency = 'CAPS'
-            transferRecord.amount = (amount as Balance).toBigInt().toString();
-            await transferRecord.save()
-            await updateAccount(transferRecord.from, call, extrinsic);
+            await treasuryEventHandler(treasuryEvent, signer, commonExtrinsicData)
+            await updateAccount(signer, call, extrinsic);
           }
         }else{
           logger.info('Create Nft error' + commonExtrinsicData.blockHash);
@@ -72,7 +68,7 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, _priceObject, marketplaceId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
-    logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.blockHash + ' (marketplaceId: ' + marketplaceId);
+    logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.blockHash + ' (marketplaceId: ' + marketplaceId+")");
     let price = '';
     let priceTiime = '';
     const priceObject = JSON.parse(_priceObject)
@@ -157,7 +153,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         // Record NFT Transfer
         if (eventTransfer && eventTransfer.event && eventTransfer.event.data){
           const amount = (eventTransfer.event.data[2] as Balance).toBigInt().toString();
-          await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, true, amount)
+          await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "sale", amount)
         }else{
           logger.error('nft transaction error:' + commonExtrinsicData.blockHash);
         }
@@ -184,7 +180,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
       record.owner = data.id
       await record.save()
       // Record NFT Transfer
-      await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData)
+      await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "transfer")
       await updateAccount(data.id, call, extrinsic);
     }
   }else{
@@ -202,8 +198,11 @@ export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
     const record = await NftEntity.get(nftId);
     if (record !== undefined) {
       record.listed = 0;
+      record.marketplaceId = null
       record.timestampBurn = new Date();
       await record.save()
+      // Record NFT Transfer
+      await nftTransferEntityHandler(record, record.owner, commonExtrinsicData, "burn")
     }
   }else{
     logger.info('burn failed, Nft id' + nftId + ' block' + commonExtrinsicData.blockHash);

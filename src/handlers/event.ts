@@ -1,5 +1,5 @@
 import { SubstrateEvent } from "@subql/types"
-import { EventEntity } from "../types"
+import { EventDescriptionEntity, EventEntity } from "../types"
 
 export const genericEventHandler = async (event: SubstrateEvent): Promise<void> => {
     try{
@@ -13,9 +13,18 @@ export const genericEventHandler = async (event: SubstrateEvent): Promise<void> 
         eventRecord.eventIndex = event.idx
         eventRecord.module = eventData.section
         eventRecord.call = eventData.method
-        if (documentation) eventRecord.description = documentation.map((d) => d.toString()).join('\n')
         eventRecord.argsName = eventData.meta.args.map(a => a.toString())
         eventRecord.argsValue = eventData.data.map(a => a.toString())
+        let descriptionRecord = await EventDescriptionEntity.get(`${eventData.section}_${eventData.method}`)
+        if (!descriptionRecord){
+            descriptionRecord = new EventDescriptionEntity(`${eventData.section}_${eventData.method}`)
+            descriptionRecord.module = eventData.section
+            descriptionRecord.call = eventData.method
+            descriptionRecord.description = JSON.stringify(documentation.map(d => d.toString()).join('\n'))
+            await descriptionRecord.save()
+            logger.info('new event description recorded')
+        }
+        eventRecord.descriptionId = descriptionRecord.id
         await eventRecord.save()
     }catch(err){
         logger.error('record event error at block number:' + event.block.block.header.number.toNumber());

@@ -9,3 +9,12 @@ export function tcWrapper<F extends AnyFunction>(fn: F) {
     }
   }) as F
 }
+
+export function hexToString(str: string){
+  var hex  = str.toString();
+	var s = '';
+	for (var n = 0; n < hex.length; n += 2) {
+		s += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+	}
+	return s.substr(1, str.length - 1);
+}

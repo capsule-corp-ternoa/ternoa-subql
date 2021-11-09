@@ -1,6 +1,6 @@
 import { SubstrateExtrinsic } from "@subql/types";
 import { checkIfExtrinsicExecuteSuccess } from "../helpers";
-import { ExtrinsicEntity } from "../types";
+import { ExtrinsicDescriptionEntity, ExtrinsicEntity } from "../types";
 
 export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Promise<void> => {
     try{
@@ -16,7 +16,6 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         extrinsicRecord.timestamp = block.timestamp
         extrinsicRecord.module = methodData.section
         extrinsicRecord.call = methodData.method
-        if (documentation) extrinsicRecord.description = documentation.map(d => d.toString()).join('\n')
         extrinsicRecord.signer = ext.signer.toString()
         extrinsicRecord.isSigned = ext.isSigned
         extrinsicRecord.signature = ext.signature.toString()
@@ -26,6 +25,16 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         extrinsicRecord.argsValue = methodData.args.map((a) => a.toString())
         extrinsicRecord.nbEvents = extrinsic.events.length
         extrinsicRecord.fees = await getFees(ext.toHex(), block.block.header.hash.toHex())
+        let descriptionRecord = await ExtrinsicDescriptionEntity.get(`${methodData.section}_${methodData.method}`)
+        if (!descriptionRecord){
+            descriptionRecord = new ExtrinsicDescriptionEntity(`${methodData.section}_${methodData.method}`)
+            descriptionRecord.module = methodData.section
+            descriptionRecord.call = methodData.method
+            descriptionRecord.description = JSON.stringify(documentation.map(d => d.toString()).join('\n'))
+            await descriptionRecord.save()
+            logger.info('new extrinsic description recorded')
+        }
+        extrinsicRecord.descriptionId = descriptionRecord.id
         await extrinsicRecord.save()
     }catch(err){
         logger.error(`record extrinsic error at : hash(${extrinsic.extrinsic.hash}) and block nb ${extrinsic.block.block.header.number.toNumber()}`);
