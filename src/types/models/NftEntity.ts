@@ -16,8 +16,6 @@ export class NftEntity implements Entity {
 
     public nftId: string;
 
-    public uri: string;
-
     public nftIpfs: string;
 
     public capsuleIpfs?: string;

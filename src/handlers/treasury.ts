@@ -34,7 +34,7 @@ export const treasuryEventHandler = async (
     }
 }
 
-export const treasuryEventHandler2 = async (event: SubstrateEvent): Promise<void> => {
+/*export const genericTreasuryEventHandler = async (event: SubstrateEvent): Promise<void> => {
     try{
         const extrinsic = event.extrinsic
         const { section, method, args } = extrinsic.extrinsic.method
@@ -52,4 +52,4 @@ export const treasuryEventHandler2 = async (event: SubstrateEvent): Promise<void
         logger.error('record treasury transfer error at block number:' + event.block.block.header.number.toString());
         logger.error('record treasury transfer error detail:' + err);
     }
-}
+}*/

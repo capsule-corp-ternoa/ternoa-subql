@@ -88,7 +88,6 @@ type NftEntity @entity {
   id: ID!
   serie: SerieEntity!
   nftId: String!
-  uri: String!
   nftIpfs: String!
   capsuleIpfs: String
   isCapsule: Boolean!
@@ -130,4 +129,6 @@ type MarketplaceEntity @entity {
   kind: String!
   commissionFee: String!
   name: String!
+  uri: String
+  logoUri: String
 }

@@ -10,17 +10,23 @@ import {
     burnHandler,
     buyHandler,
     NFTtransferHandler,
-    convertToCapsuleHandler,
-    convertToNftHandler,
-    lockSerieHandler,
     blockHandler,
     genericExtrinsicHandler,
     genericEventHandler,
     createMarketplaceHandler,
-    updateMarketplaceNameHandler,
-    updateMarketplaceKindHandler,
-    updateMarketplaceOwnerHandler,
-    treasuryEventHandler2,
+    setMarketplaceOwnerHandler,
+    setMarketplaceNameHandler,
+    setMarketplaceTypeHandler,
+    setMarketplaceCommissionFeeHandler,
+    setMarketplaceUriHandler,
+    setMarketplaceLogoUriHandler,
+    lockSerieHandler,
+    setNFTIpfsHandler,
+    createFromNftHandler,
+    createCapsuleHandler,
+    removeCapsuleHandler,
+    addFundsHandler,
+    setCapsuleIpfsHandler,
 } from '../handlers'
 
 // init and populate extrinsicDispatcher for specific extrinsic to record
@@ -32,16 +38,23 @@ extrinsicDispatcher.add('tiimeBalances', 'transferKeepAlive', transferTiimeHandl
 extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('nfts', 'burn', burnHandler)
 extrinsicDispatcher.add('nfts', 'transfer', NFTtransferHandler)
-extrinsicDispatcher.add('marketplace', 'list', listHandler)
-extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
+extrinsicDispatcher.add('nfts', 'finishSeries', lockSerieHandler)
+extrinsicDispatcher.add('nfts', 'setIpfsReference', setNFTIpfsHandler)
+extrinsicDispatcher.add('capsules', 'create', createCapsuleHandler)
+extrinsicDispatcher.add('capsules', 'createFromNft', createFromNftHandler)
+extrinsicDispatcher.add('capsules', 'remove', removeCapsuleHandler)
+extrinsicDispatcher.add('capsules', 'addFunds', addFundsHandler)
+extrinsicDispatcher.add('capsules', 'setIpfsReference', setCapsuleIpfsHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
 extrinsicDispatcher.add('marketplace', 'create', createMarketplaceHandler)
-extrinsicDispatcher.add('marketplace', 'setName', updateMarketplaceNameHandler)
-extrinsicDispatcher.add('marketplace', 'changeMarketType', updateMarketplaceKindHandler)
-extrinsicDispatcher.add('marketplace', 'changeOwner', updateMarketplaceOwnerHandler)
-// extrinsicDispatcher.add('capsule', 'nftToCapsule', convertToCapsuleHandler)
-// extrinsicDispatcher.add('capsule', 'capsuleToNFT', convertToNftHandler)
-// extrinsicDispatcher.add('series', 'lock', lockSerieHandler)
+extrinsicDispatcher.add('marketplace', 'list', listHandler)
+extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
+extrinsicDispatcher.add('marketplace', 'setCommissionFee', setMarketplaceCommissionFeeHandler)
+extrinsicDispatcher.add('marketplace', 'setLogoUri', setMarketplaceLogoUriHandler)
+extrinsicDispatcher.add('marketplace', 'setMarketType', setMarketplaceTypeHandler)
+extrinsicDispatcher.add('marketplace', 'setName', setMarketplaceNameHandler)
+extrinsicDispatcher.add('marketplace', 'setOwner', setMarketplaceOwnerHandler)
+extrinsicDispatcher.add('marketplace', 'setUri', setMarketplaceUriHandler)
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
     await blockHandler(block)

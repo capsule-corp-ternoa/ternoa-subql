@@ -1,4 +1,4 @@
-import { getCommonExtrinsicData, hexToString, updateAccount } from '../helpers'
+import { getCommonExtrinsicData, updateAccount } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { MarketplaceEntity } from '../types';
 import { treasuryEventHandler } from '.';
@@ -6,7 +6,7 @@ import { treasuryEventHandler } from '.';
 export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [kind, commissionFee, name] = call.args
+  const [kind, commissionFee, name, uri, logoUri] = call.args
   const signer = extrinsic.extrinsic.signer.toString()
   if (commonExtrinsicData.isSuccess === 1){
     const eventIndex = events.findIndex(x => 
@@ -21,9 +21,11 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         try {
             const record = new MarketplaceEntity(id.toString())
             record.kind = kind.toString()
-            record.name = hexToString(name.toString())
+            record.name = name.toString()
             record.commissionFee = commissionFee.toString()
             record.owner = owner.toString()
+            record.uri = uri.toString()
+            record.logoUri = logoUri.toString()
             await record.save()
             logger.info("new marketplace details: " + JSON.stringify(record))
             // Record Treasury Event
@@ -43,7 +45,7 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
   }
 }
 
-export const updateMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+export const setMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, name] = call.args
@@ -51,7 +53,7 @@ export const updateMarketplaceNameHandler: ExtrinsicHandler = async (call, extri
     try {
         const record = await MarketplaceEntity.get(id.toString())
         const oldName = record.name
-        record.name = hexToString(name.toString())
+        record.name = name.toString();
         await record.save()
         logger.info("marketplace rename: " + JSON.stringify(oldName) + " --> " + JSON.stringify(record.name))
     } catch (e) {
@@ -64,7 +66,7 @@ export const updateMarketplaceNameHandler: ExtrinsicHandler = async (call, extri
   }
 }
 
-export const updateMarketplaceKindHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+export const setMarketplaceTypeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, kind] = call.args
@@ -85,7 +87,7 @@ export const updateMarketplaceKindHandler: ExtrinsicHandler = async (call, extri
   }
 }
 
-export const updateMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+export const setMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, accountId] = call.args
@@ -103,5 +105,68 @@ export const updateMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extr
   }else{
     logger.error('marketplace change owner error at block: ' + commonExtrinsicData.blockId);
     logger.error('marketplace change owner error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const setMarketplaceCommissionFeeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, commissionFee] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+        const record = await MarketplaceEntity.get(id.toString())
+        const oldCommissionFee = record.commissionFee
+        record.commissionFee = commissionFee.toString()
+        await record.save()
+        logger.info("marketplace change commissionFee: " + JSON.stringify(oldCommissionFee) + " --> " + JSON.stringify(record.commissionFee))
+    } catch (e) {
+        logger.error('marketplace change commissionFee error at block: ' + commonExtrinsicData.blockId);
+        logger.error('marketplace change commissionFee error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace change commissionFee error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace change commissionFee error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const setMarketplaceUriHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, uri] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+        const record = await MarketplaceEntity.get(id.toString())
+        const oldUri = record.uri
+        record.uri = uri.toString()
+        await record.save()
+        logger.info("marketplace change uri: " + JSON.stringify(oldUri) + " --> " + JSON.stringify(record.uri))
+    } catch (e) {
+        logger.error('marketplace change uri error at block: ' + commonExtrinsicData.blockId);
+        logger.error('marketplace change uri error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace change uri error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace change uri error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const setMarketplaceLogoUriHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, uri] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+        const record = await MarketplaceEntity.get(id.toString())
+        const oldLogoUri = record.logoUri
+        record.logoUri = uri.toString()
+        await record.save()
+        logger.info("marketplace change logo uri: " + JSON.stringify(oldLogoUri) + " --> " + JSON.stringify(record.logoUri))
+    } catch (e) {
+        logger.error('marketplace change logo uri error at block: ' + commonExtrinsicData.blockId);
+        logger.error('marketplace change logo uri error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace change logo uri error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace change logo uri error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
   }
 }

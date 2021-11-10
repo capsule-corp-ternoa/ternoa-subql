@@ -58,9 +58,9 @@ export class ExtrinsicDispatcher {
                 await handler(call, extrinsic)
             }
         }catch(err){
-            logger.info("Error in call " + call.section+"_"+call.method)
-            logger.info("Error detail " + err)
-            if (err.sql) logger.info("Error detail sql " + err.sql)
+            logger.error("Error in call " + call.section+"_"+call.method)
+            logger.error("Error detail " + err)
+            if (err.sql) logger.error("Error detail sql " + err.sql)
         }
     }
 

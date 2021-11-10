@@ -20,6 +20,10 @@ export class MarketplaceEntity implements Entity {
 
     public name: string;
 
+    public uri?: string;
+
+    public logoUri?: string;
+
 
     async save(): Promise<void>{
         let id = this.id;
