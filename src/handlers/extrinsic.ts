@@ -7,7 +7,7 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         const ext = extrinsic.extrinsic
         const block = extrinsic.block
         const methodData = ext.method
-        const documentation = JSON.parse(JSON.stringify(ext.meta)).documentation
+        const documentation = ext.meta.docs ? ext.meta.docs : JSON.parse(JSON.stringify(ext.meta)).documentation
         logger.info("documentation: " + JSON.stringify(documentation))
         logger.info("meta: " + JSON.stringify(ext.meta))
         logger.info("docs: " + JSON.stringify(ext.meta.docs))
