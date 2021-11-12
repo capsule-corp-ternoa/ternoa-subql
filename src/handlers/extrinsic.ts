@@ -8,9 +8,6 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
         const block = extrinsic.block
         const methodData = ext.method
         const documentation = ext.meta.docs ? ext.meta.docs : JSON.parse(JSON.stringify(ext.meta)).documentation
-        logger.info("documentation: " + JSON.stringify(documentation))
-        logger.info("meta: " + JSON.stringify(ext.meta))
-        logger.info("docs: " + JSON.stringify(ext.meta.docs))
         /* Record Extrinsic data */
         const extrinsicRecord = new ExtrinsicEntity(`${block.block.header.number.toString()}-${extrinsic.idx}`)
         extrinsicRecord.blockId = block.block.header.number.toString()
