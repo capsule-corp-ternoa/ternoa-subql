@@ -9,12 +9,6 @@ network:
   types: {
   "AccountDataOf": "AccountData",
   "Address": "MultiAddress",
-  "Enclave": {
-    "pubkey": "AccountId",
-    "mrenclave": "Hash",
-    "timestamp": "u64",
-    "url": "Text"
-  },
   "NFTId": "u32",
   "NFTIdOf": "NFTId",
   "NFTSeriesId": "u32",
@@ -40,15 +34,15 @@ network:
   },
   "NFTCurrency": {
     "_enum": {
-      "CAPS": "Balance",
-      "TIIME": "Balance",
-      "COMBINED": "NFTCurrencyCombined"
+      "Caps": "Balance",
+      "Tiime": "Balance",
+      "Combined": "NFTCurrencyCombined"
     }
   },
   "NFTCurrencyId": {
     "_enum": [
-      "CAPS",
-      "TIIME"
+      "Caps",
+      "Tiime"
     ]
   },
   "Request": {
@@ -67,6 +61,28 @@ network:
       "Free",
       "Reserved"
     ]
+  },
+  "MarketplaceType": {
+    "_enum": [
+      "Public",
+      "Private"
+    ]
+  },
+  "MarketplaceInformation": {
+    "kind": "MarketplaceType",
+    "commission_fee": "u8",
+    "owner": "AccountId",
+    "allow_list": "Vec<AccountId>",
+    "name": "Vec<u8>"
+  },
+  "ClusterId": "u32",
+  "EnclaveId": "u32",
+  "Cluster": {
+    "enclaves": "Vec<EnclaveId>"
+  },
+  "Url": "Vec<u8>",
+  "Enclave": {
+    "api_url": "Url"
   }
 }
 

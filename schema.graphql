@@ -26,6 +26,7 @@ type NftEntity @entity {
   owner: String!
   creator: String!
   serieId: String! #for series of nfts
+  marketplaceId: String
 }
 
 type AccountEntity @entity {
