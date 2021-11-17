@@ -33,7 +33,7 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
           await serieRecord.save()
         }else{
           if (serieRecord.locked === false){
-            serieRecord.locked = false
+            serieRecord.locked = true
             await serieRecord.save()
           }
         }

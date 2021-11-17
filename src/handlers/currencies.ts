@@ -9,23 +9,18 @@ export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promis
   const [to, amount] = call.args
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const transferRecord = new TransferEntity(commonExtrinsicData.hash)
-
   // apply common extrinsic data to record
   insertDataToEntity(transferRecord, commonExtrinsicData)
   transferRecord.from = signer.toString()
   transferRecord.to = to.toString()
   transferRecord.currency = 'CAPS'
   transferRecord.amount = (amount as Balance).toBigInt().toString();
-
   await transferRecord.save()
   logger.info('transfer');
   // update account
   await updateAccount(transferRecord.to, call, extrinsic);
   await updateAccount(signer, call, extrinsic);
-
 }
-
-
 
 export const transferTiimeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
@@ -33,18 +28,14 @@ export const transferTiimeHandler: ExtrinsicHandler = async (call, extrinsic): P
   const [to, amount] = call.args
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const transferRecord = new TransferEntity(commonExtrinsicData.hash)
-
   // apply common extrinsic data to record
   insertDataToEntity(transferRecord, commonExtrinsicData)
   transferRecord.from = signer.toString()
   transferRecord.to = to.toString()
   transferRecord.currency = 'TIIME'
   transferRecord.amount = (amount as Balance).toBigInt().toString();
-
   await transferRecord.save()
-
   // update account
   await updateAccount(transferRecord.to, call, extrinsic);
   await updateAccount(signer, call, extrinsic);
-
 }

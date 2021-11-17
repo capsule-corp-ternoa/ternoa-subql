@@ -43,8 +43,8 @@ export const blockHandler = async (block: SubstrateBlock): Promise<void> => {
                 undefined
             );
         }*/
-        await blockRecord.save()
         await updateBlockSessionId(blockRecord)
+        await blockRecord.save()
     }catch(err){
         logger.error('record block error:' + block.block.header.number.toNumber());
         logger.error('record block error detail:' + err);
@@ -62,7 +62,6 @@ export const blockHandler = async (block: SubstrateBlock): Promise<void> => {
             await sessionRecord.save()
         }
         blockRecord.sessionId = Number(sessionRecord.id)
-        await blockRecord.save()
       }catch(err){
         logger.error('update session error');
         logger.error('update session error detail:' + err);

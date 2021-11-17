@@ -30,8 +30,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
           if (!serieRecord){
             serieRecord = new SerieEntity(seriesId.toString())
             serieRecord.owner = signer
-            //TODO with env var RUNTIME_UPGRADE_1
-            serieRecord.locked = Number(commonExtrinsicData.blockId) < 1 //(RUNTIME_UPGRADE_1 at block 1)
+            serieRecord.locked = false
             await serieRecord.save()
           }
           record.currency = 'CAPS';
@@ -182,7 +181,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "transfer")
-      await updateAccount(data.id, call, extrinsic);
+      await updateAccount(oldOwner, call, extrinsic);
     }
   }else{
     logger.error('Transfer error, Nft id:' + nftId + '-- block' + commonExtrinsicData.blockHash);
