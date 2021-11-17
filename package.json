@@ -20,14 +20,14 @@
   "author": "ternoa",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@polkadot/api": "5.1.1",
-    "@subql/cli": "0.10.0",
-    "@subql/common": "0.9.1",
-    "@subql/types": "0.8.0",
-    "typescript": "4.3.5"
+    "@polkadot/api": "^6",
+    "@subql/cli": "latest",
+    "@subql/common": "latest",
+    "@subql/types": "latest",
+    "typescript": "4.4.4"
   },
   "dependencies": {
-    "pino": "6.13.0"
+    "pino": "7.2.0"
   },
   "engines": {
     "node": "16.13.0"

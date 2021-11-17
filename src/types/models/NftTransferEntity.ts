@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -50,6 +50,27 @@ export class NftTransferEntity implements Entity {
     }
 
 
+    static async getByBlockId(blockId: string): Promise<NftTransferEntity[] | undefined>{
+      
+      const records = await store.getByField('NftTransferEntity', 'blockId', blockId);
+      return records.map(record => NftTransferEntity.create(record));
+      
+    }
+
+    static async getByExtrinsicId(extrinsicId: string): Promise<NftTransferEntity[] | undefined>{
+      
+      const records = await store.getByField('NftTransferEntity', 'extrinsicId', extrinsicId);
+      return records.map(record => NftTransferEntity.create(record));
+      
+    }
+
+    static async getByNftId(nftId: string): Promise<NftTransferEntity[] | undefined>{
+      
+      const records = await store.getByField('NftTransferEntity', 'nftId', nftId);
+      return records.map(record => NftTransferEntity.create(record));
+      
+    }
+
     static async getByFrom(from: string): Promise<NftTransferEntity[] | undefined>{
       
       const records = await store.getByField('NftTransferEntity', 'from', from);
@@ -72,7 +93,8 @@ export class NftTransferEntity implements Entity {
     }
 
 
-    static create(record){
+    static create(record: Partial<Omit<NftTransferEntity, FunctionPropertyNames<NftTransferEntity>>> & Entity): NftTransferEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new NftTransferEntity(record.id);
         Object.assign(entity,record);
         return entity;

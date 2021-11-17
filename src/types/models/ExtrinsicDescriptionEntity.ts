@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -41,7 +41,8 @@ export class ExtrinsicDescriptionEntity implements Entity {
 
 
 
-    static create(record){
+    static create(record: Partial<Omit<ExtrinsicDescriptionEntity, FunctionPropertyNames<ExtrinsicDescriptionEntity>>> & Entity): ExtrinsicDescriptionEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new ExtrinsicDescriptionEntity(record.id);
         Object.assign(entity,record);
         return entity;

@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -47,7 +47,8 @@ export class MarketplaceEntity implements Entity {
 
 
 
-    static create(record){
+    static create(record: Partial<Omit<MarketplaceEntity, FunctionPropertyNames<MarketplaceEntity>>> & Entity): MarketplaceEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new MarketplaceEntity(record.id);
         Object.assign(entity,record);
         return entity;

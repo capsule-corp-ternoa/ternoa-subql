@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -64,6 +64,13 @@ export class NftEntity implements Entity {
     }
 
 
+    static async getBySerieId(serieId: string): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'serieId', serieId);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
     static async getByTimestampList(timestampList: Date): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'timestampList', timestampList);
@@ -93,7 +100,8 @@ export class NftEntity implements Entity {
     }
 
 
-    static create(record){
+    static create(record: Partial<Omit<NftEntity, FunctionPropertyNames<NftEntity>>> & Entity): NftEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new NftEntity(record.id);
         Object.assign(entity,record);
         return entity;

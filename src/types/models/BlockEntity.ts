@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -91,7 +91,8 @@ export class BlockEntity implements Entity {
     }
 
 
-    static create(record){
+    static create(record: Partial<Omit<BlockEntity, FunctionPropertyNames<BlockEntity>>> & Entity): BlockEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new BlockEntity(record.id);
         Object.assign(entity,record);
         return entity;

@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -66,6 +66,13 @@ export class ExtrinsicEntity implements Entity {
     }
 
 
+    static async getByBlockId(blockId: string): Promise<ExtrinsicEntity[] | undefined>{
+      
+      const records = await store.getByField('ExtrinsicEntity', 'blockId', blockId);
+      return records.map(record => ExtrinsicEntity.create(record));
+      
+    }
+
     static async getByHash(hash: string): Promise<ExtrinsicEntity | undefined>{
       
       const record = await store.getOneByField('ExtrinsicEntity', 'hash', hash);
@@ -84,6 +91,13 @@ export class ExtrinsicEntity implements Entity {
       
     }
 
+    static async getByDescriptionId(descriptionId: string): Promise<ExtrinsicEntity[] | undefined>{
+      
+      const records = await store.getByField('ExtrinsicEntity', 'descriptionId', descriptionId);
+      return records.map(record => ExtrinsicEntity.create(record));
+      
+    }
+
     static async getBySigner(signer: string): Promise<ExtrinsicEntity[] | undefined>{
       
       const records = await store.getByField('ExtrinsicEntity', 'signer', signer);
@@ -92,7 +106,8 @@ export class ExtrinsicEntity implements Entity {
     }
 
 
-    static create(record){
+    static create(record: Partial<Omit<ExtrinsicEntity, FunctionPropertyNames<ExtrinsicEntity>>> & Entity): ExtrinsicEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new ExtrinsicEntity(record.id);
         Object.assign(entity,record);
         return entity;

@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -50,8 +50,23 @@ export class EventEntity implements Entity {
     }
 
 
+    static async getByBlockId(blockId: string): Promise<EventEntity[] | undefined>{
+      
+      const records = await store.getByField('EventEntity', 'blockId', blockId);
+      return records.map(record => EventEntity.create(record));
+      
+    }
 
-    static create(record){
+    static async getByDescriptionId(descriptionId: string): Promise<EventEntity[] | undefined>{
+      
+      const records = await store.getByField('EventEntity', 'descriptionId', descriptionId);
+      return records.map(record => EventEntity.create(record));
+      
+    }
+
+
+    static create(record: Partial<Omit<EventEntity, FunctionPropertyNames<EventEntity>>> & Entity): EventEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new EventEntity(record.id);
         Object.assign(entity,record);
         return entity;
