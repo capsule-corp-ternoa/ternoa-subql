@@ -15,12 +15,15 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       // apply common extrinsic data to record
       insertDataToEntity(record, commonExtrinsicData)
       const signer = _extrinsic.signer.toString()
-      const [uri, _seriesId] = call.args
+      let [uri, _seriesId] = call.args
+      if (extrinsic.block.specVersion <= 40){
+        _seriesId = JSON.parse(call.args[0]).series_id;
+      }
       const eventIndex = extrinsic.events.findIndex(x => 
         x.event.section === "nfts" && 
         x.event.method === "Created" && 
         x.event.data &&
-        JSON.parse(JSON.stringify(x.event.data))[2] === _seriesId.toString()
+        JSON.parse(JSON.stringify(x.event.data))[2].toString() === _seriesId.toString()
       )
       if (eventIndex !== -1){
         const event = extrinsic.events[eventIndex]
@@ -60,6 +63,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       }
     }else{
       logger.error('Create Nft error' + commonExtrinsicData.blockHash);
+      logger.error('Create Nft is extrinsic success: ' + commonExtrinsicData.isSuccess);
     }
 }
 

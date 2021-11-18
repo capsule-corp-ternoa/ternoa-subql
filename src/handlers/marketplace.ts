@@ -2,6 +2,7 @@ import { getCommonExtrinsicData, updateAccount } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { MarketplaceEntity } from '../types';
 import { treasuryEventHandler } from '.';
+import { hexToString, isHex } from '../utils';
 
 export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
@@ -21,11 +22,11 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         try {
             const record = new MarketplaceEntity(id.toString())
             record.kind = kind.toString()
-            record.name = name.toString()
+            record.name = isHex(name) ? hexToString(name) : name.toString()
             record.commissionFee = commissionFee.toString()
             record.owner = owner.toString()
-            record.uri = uri.toString()
-            record.logoUri = logoUri.toString()
+            if (uri) record.uri = uri.toString()
+            if (logoUri) record.logoUri = logoUri.toString()
             await record.save()
             logger.info("new marketplace details: " + JSON.stringify(record))
             // Record Treasury Event
@@ -38,6 +39,8 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
             logger.error('create marketplace error at block: ' + commonExtrinsicData.blockId);
             logger.error('create marketplace error detail: ' + e);
         }
+    }else{
+      logger.error('create marketplace error: Created event not found')
     }
   }else{
     logger.error('create marketplace error at block: ' + commonExtrinsicData.blockId);
