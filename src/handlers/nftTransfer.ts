@@ -23,6 +23,7 @@ export const nftTransferEntityHandler = async (
         nftTransferRecord.blockId = commonExtrinsicData.blockId
         nftTransferRecord.extrinsicId = commonExtrinsicData.extrinsicId
         nftTransferRecord.nftId = record.id
+        nftTransferRecord.seriesId = record.serieId
         nftTransferRecord.from = oldOwner
         nftTransferRecord.to = typeOfTransaction !== "burn" ? record.owner : "null address"
         nftTransferRecord.timestamp = commonExtrinsicData.timestamp

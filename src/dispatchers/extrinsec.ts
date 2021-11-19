@@ -20,14 +20,13 @@ export class ExtrinsicDispatcher {
         const { extrinsic: _extrinsic } = extrinsic
         const { method, section, args } = _extrinsic.method;
         
-        //logger.info(`EMIT section_method: ${section}_${method} hash: ${extrinsic.block.block.hash.toString()}`);
         switch (`${section}_${method}`) {
             case 'utility_batch': {
                 return this.batchHandler(extrinsic)
             }
 
             case 'utility_batchAll': {
-                this.batchHandler(extrinsic)
+                this.batchAllHandler(extrinsic)
                 break
             }
 
@@ -53,7 +52,6 @@ export class ExtrinsicDispatcher {
             const { section, method } = call
             const key = `${section}_${method}`
             const handler = this.handlers.get(key)
-    
             if (handler) {
                 await handler(call, extrinsic)
             }
@@ -66,23 +64,24 @@ export class ExtrinsicDispatcher {
 
     private batchHandler (extrinsic: SubstrateExtrinsic) {
         const { extrinsic: _extrinsic } = extrinsic
-
         const calls = _extrinsic.args[0] as unknown as Call[]
         const batchInterruptedIndex = getBatchInterruptedIndex(extrinsic)
-
+        const batchMethodIndexes:any = {}
 
         return Promise.all(calls.map(async (call, index) => {
             const { section, method, args } = call
-
-            const callData = { section, method, args, batchIndex: index };
+            const key = `${section}_${method}`
+            if (!batchMethodIndexes[key]){
+                batchMethodIndexes[key] = 0
+            }else{
+                batchMethodIndexes[key] = batchMethodIndexes[key] + 1
+            }
+            const callData = { section, method, args, batchIndex: index, batchMethodIndex: batchMethodIndexes[key] };
             const extrinsicData = mapExtrinsic(extrinsic)
-
             let isExcuteSuccess = extrinsicData.isExcuteSuccess
-
             if (isExcuteSuccess && batchInterruptedIndex >= 0) {
                 isExcuteSuccess = index < batchInterruptedIndex
             }
-
             return this._emit(
                 callData,
                 {
@@ -90,6 +89,34 @@ export class ExtrinsicDispatcher {
                     isExcuteSuccess
                 }
             )
+        }))
+    }
+
+    private batchAllHandler (extrinsic: SubstrateExtrinsic) {
+        const { extrinsic: _extrinsic } = extrinsic
+        const calls = _extrinsic.args[0] as unknown as Call[]
+        const batchMethodIndexes:any = {}
+
+        return Promise.all(calls.map(async (call, index) => {
+            const { section, method, args } = call
+            const key = `${section}_${method}`
+            if (!batchMethodIndexes[key]){
+                batchMethodIndexes[key] = 0
+            }else{
+                batchMethodIndexes[key] = batchMethodIndexes[key] + 1
+            }
+            const callData = { section, method, args, batchIndex: index, batchMethodIndex: batchMethodIndexes[key] };
+            const extrinsicData = mapExtrinsic(extrinsic)
+            let isExcuteSuccess = extrinsicData.isExcuteSuccess
+            if (isExcuteSuccess){
+                return this._emit(
+                    callData,
+                    {
+                        ...extrinsicData,
+                        isExcuteSuccess
+                    }
+                )
+            }
         }))
     }
 

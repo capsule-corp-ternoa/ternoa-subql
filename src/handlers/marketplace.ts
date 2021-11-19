@@ -7,39 +7,41 @@ import { hexToString, isHex } from '../utils';
 export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [kind, commissionFee, name, uri, logoUri] = call.args
-  const signer = extrinsic.extrinsic.signer.toString()
   if (commonExtrinsicData.isSuccess === 1){
-    const eventIndex = events.findIndex(x => 
-        x.event.section === "marketplace" && 
-        x.event.method === "MarketplaceCreated" && 
-        x.event.data &&
-        JSON.parse(JSON.stringify(x.event.data))[1] === signer
+    const methodEvents = extrinsic.events.filter(x => x.event.section === "marketplace" && x.event.method === "MarketplaceCreated")
+    const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
+      (i < extrinsic.events.length - 1 ) && 
+      extrinsic.events[i+1].event.section === "marketplace" &&
+      extrinsic.events[i+1].event.method === "MarketplaceCreated"
     )
-    if (eventIndex !== -1){
-        const event = extrinsic.events[eventIndex]
-        const [id, owner] = event.event.data
-        try {
-            const record = new MarketplaceEntity(id.toString())
-            record.kind = kind.toString()
-            record.name = isHex(name) ? hexToString(name) : name.toString()
-            record.commissionFee = commissionFee.toString()
-            record.owner = owner.toString()
-            if (uri) record.uri = uri.toString()
-            if (logoUri) record.logoUri = logoUri.toString()
-            await record.save()
-            logger.info("new marketplace details: " + JSON.stringify(record))
-            // Record Treasury Event
-            const treasuryEvent = eventIndex > 0 ? extrinsic.events[eventIndex-1] : null
-            if (treasuryEvent){
-              await treasuryEventHandler(treasuryEvent, signer, commonExtrinsicData)
-              await updateAccount(signer, call, extrinsic);
-            }
-        } catch (e) {
-            logger.error('create marketplace error at block: ' + commonExtrinsicData.blockId);
-            logger.error('create marketplace error detail: ' + e);
+    const event = methodEvents[call.batchMethodIndex || 0]
+    if (event){
+      const [kind, commissionFee, name, uri, logoUri] = call.args
+      const [id, owner] = event.event.data
+      const signer = extrinsic.extrinsic.signer.toString()
+      try {
+        const record = new MarketplaceEntity(id.toString())
+        record.kind = kind.toString()
+        record.name = isHex(name) ? hexToString(name) : name.toString()
+        record.commissionFee = commissionFee.toString()
+        record.owner = owner.toString()
+        if (uri) record.uri = isHex(uri) ? hexToString(uri) : uri.toString()
+        if (logoUri) record.logoUri = isHex(logoUri) ? hexToString(logoUri) : logoUri.toString()
+        await record.save()
+        logger.info("new marketplace details: " + JSON.stringify(record))
+        // Record Treasury Event
+        const treasuryEvent = treasuryEventsForMethodEvents[call.batchMethodIndex || 0]
+        if (treasuryEvent){
+          await treasuryEventHandler(treasuryEvent, signer, commonExtrinsicData)
         }
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
+      }catch(e){
+        logger.error('create marketplace error at block: ' + commonExtrinsicData.blockId);
+        logger.error('create marketplace error detail: ' + e);
+      }
     }else{
+      logger.error('create marketplace error at block: ' + commonExtrinsicData.blockId);
       logger.error('create marketplace error: Created event not found')
     }
   }else{

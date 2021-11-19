@@ -18,6 +18,8 @@ export class NftTransferEntity implements Entity {
 
     public nftId: string;
 
+    public seriesId: string;
+
     public from: string;
 
     public to: string;
