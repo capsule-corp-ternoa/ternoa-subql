@@ -6,10 +6,10 @@ repository: ''
 schema:
   file: ./schema.graphql
 network:
-  #genesisHash: '0x01af853fce75eab6fd8b0cde774fa639974911e4fb5a7d8bbddc19473264261d' #staging
-  #endpoint: wss://staging.chaos.ternoa.com
-  genesisHash: '0xd9adfc7ea82be63ba28088d62b96e9270ad2af25c962afc393361909670835b2' #testnet
-  endpoint: wss://testnet.ternoa.com
+  genesisHash: '0x01af853fce75eab6fd8b0cde774fa639974911e4fb5a7d8bbddc19473264261d' #staging
+  endpoint: wss://staging.chaos.ternoa.com
+  #genesisHash: '0xd9adfc7ea82be63ba28088d62b96e9270ad2af25c962afc393361909670835b2' #testnet
+  #endpoint: wss://testnet.ternoa.com
   chaintypes:
     file: ./types.json
 dataSources:

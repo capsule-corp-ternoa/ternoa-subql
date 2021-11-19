@@ -108,6 +108,7 @@ type NftTransferEntity @entity {
   block: BlockEntity!
   extrinsic: ExtrinsicEntity!
   nft: NftEntity!
+  seriesId: String!
   from: String! @index
   to: String! @index
   timestamp: Date! @index
