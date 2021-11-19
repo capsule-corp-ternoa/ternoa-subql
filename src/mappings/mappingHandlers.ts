@@ -66,9 +66,5 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
 }
 
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
-    //record treasury here ?
-    //if (event.event.section === 'treasury' && event.event.method === 'Deposit'){
-        // treasuryEventHandler2(event)
-    //}
     await genericEventHandler(event)
 }
