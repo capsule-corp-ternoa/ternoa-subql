@@ -133,3 +133,9 @@ type MarketplaceEntity @entity {
   uri: String
   logoUri: String
 }
+
+type AssociatedAccountEntity @entity {
+  id: ID!
+  accountName: [String]!
+  accountValue: [String]!
+}
