@@ -26,3 +26,5 @@ export {AccountEntity} from "./AccountEntity"
 
 export {MarketplaceEntity} from "./MarketplaceEntity"
 
+export {AssociatedAccountEntity} from "./AssociatedAccountEntity"
+

@@ -27,6 +27,7 @@ import {
     removeCapsuleHandler,
     addFundsHandler,
     setCapsuleIpfsHandler,
+    addAssociatedAccountHandler,
 } from '../handlers'
 
 // init and populate extrinsicDispatcher for specific extrinsic to record
@@ -55,6 +56,7 @@ extrinsicDispatcher.add('marketplace', 'setMarketType', setMarketplaceTypeHandle
 extrinsicDispatcher.add('marketplace', 'setName', setMarketplaceNameHandler)
 extrinsicDispatcher.add('marketplace', 'setOwner', setMarketplaceOwnerHandler)
 extrinsicDispatcher.add('marketplace', 'setUri', setMarketplaceUriHandler)
+extrinsicDispatcher.add('associatedAccounts', 'setAltvrUsername', addAssociatedAccountHandler)
 
 export async function handleBlock(block: SubstrateBlock): Promise<void> {
     await blockHandler(block)
