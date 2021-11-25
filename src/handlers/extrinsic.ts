@@ -45,14 +45,18 @@ export const genericExtrinsicHandler = async (extrinsic: SubstrateExtrinsic): Pr
 
 export const getFees = async (extObjectHash: string, blockHash: string) => {
     try{
-        const fees = await api.rpc.payment.queryFeeDetails(extObjectHash, blockHash)
+        let fees = await api.rpc.payment.queryFeeDetails(extObjectHash, blockHash)
         if (fees){
             const feesFormatted = JSON.parse(JSON.stringify(fees))
-            if (feesFormatted.inclusionFee){
+            const inclusionFee = feesFormatted.inclusionFee
+            const baseFee = inclusionFee.baseFee
+            const lenFee = inclusionFee.lenFee
+            const adjustedWeightFee = inclusionFee.adjustedWeightFee
+            if (inclusionFee){
                 let totalFees = BigInt(0)
-                if(feesFormatted.inclusionFee.basefee) totalFees += BigInt(feesFormatted.inclusionFee.basefee)
-                if(feesFormatted.inclusionFee.lenfee) totalFees += BigInt(feesFormatted.inclusionFee.lenfee)
-                if(feesFormatted.inclusionFee.adjustedWeightFee) totalFees += BigInt(feesFormatted.inclusionFee.adjustedWeightFee)
+                if(baseFee) totalFees = totalFees + BigInt(baseFee)
+                if(lenFee) totalFees = totalFees + BigInt(lenFee)
+                if(adjustedWeightFee) totalFees = totalFees + BigInt(adjustedWeightFee)
                 return totalFees.toString()
             }
         }
