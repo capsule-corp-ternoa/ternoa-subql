@@ -54,9 +54,10 @@ export const getFees = async (extObjectHash: string, blockHash: string) => {
             const adjustedWeightFee = inclusionFee.adjustedWeightFee
             if (inclusionFee){
                 let totalFees = BigInt(0)
-                if(baseFee) totalFees = totalFees + BigInt(baseFee)
-                if(lenFee) totalFees = totalFees + BigInt(lenFee)
-                if(adjustedWeightFee) totalFees = totalFees + BigInt(adjustedWeightFee)
+                if(baseFee) totalFees = totalFees + BigInt(baseFee); else logger.info("undefined 1")
+                if(lenFee) totalFees = totalFees + BigInt(lenFee); else logger.info("undefined 2")
+                if(adjustedWeightFee) totalFees = totalFees + BigInt(adjustedWeightFee); else logger.info("undefined 3")
+                logger.info(totalFees.toString())
                 return totalFees.toString()
             }
         }
