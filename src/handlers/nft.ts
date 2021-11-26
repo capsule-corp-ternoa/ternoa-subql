@@ -150,6 +150,8 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         const oldOwner = record.owner
         record.owner = signer.toString();
         record.listed = 0;
+        record.price = '';
+        record.priceTiime = '';
         await record.save()
         // Record NFT Transfer
         const eventTransfer = transferEventsForMethodEvents[call.batchMethodIndex || 0]
