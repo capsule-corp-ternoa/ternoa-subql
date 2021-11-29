@@ -14,8 +14,8 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
     const methodEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "CapsuleCreated")
     const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
       (i < extrinsic.events.length - 1 ) && 
-      extrinsic.events[i+1].event.section === "capsules" &&
-      extrinsic.events[i+1].event.method === "CapsuleCreated"
+      extrinsic.events[i+1].event.section === "nfts" &&
+      extrinsic.events[i+1].event.method === "Created"
     )
     const event = methodEvents[call.batchMethodIndex || 0]
     if (event){
