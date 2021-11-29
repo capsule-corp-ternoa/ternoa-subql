@@ -44,7 +44,6 @@ export const blockHandler = async (block: SubstrateBlock): Promise<void> => {
             );
         }*/
         await updateBlockSessionId(blockRecord)
-        logger.info("block info : " + JSON.stringify(blockRecord))
         await blockRecord.save()
     }catch(err){
         logger.error('record block error:' + block.block.header.number.toNumber());
