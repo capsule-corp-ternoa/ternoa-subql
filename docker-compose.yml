@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
   subquery-node:
-    image: onfinality/subql-node:latest
+    image: onfinality/subql-node:v0.25.0
     depends_on:
       - "postgres"
     restart: always
@@ -30,6 +30,7 @@ services:
       - '--local'
       - '--timeout'
       - '270'
+     #- '–-timestamp-field=true' #TODO when updating
 
   graphql-engine:
     image: query-ternoa #onfinality/subql-query:latest
