@@ -1,6 +1,6 @@
 {
   "name": "subql-ternoa",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "description": "ternoa indexer : Indexes main events triggered by ternoa blockchain",
   "main": "dist/index.js",
   "scripts": {
