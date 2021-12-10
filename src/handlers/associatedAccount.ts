@@ -1,6 +1,7 @@
 import { getCommonExtrinsicData } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { AssociatedAccountEntity } from '../types';
+import { hexToString, isHex } from '../utils';
 
 export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
@@ -18,9 +19,10 @@ export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrin
             record.accountValue = []
         }
         record.accountName.push(accountName)
-        record.accountValue.push(value.toString())
+        let accountValue = isHex(value.toString()) ? hexToString(value.toString()) : value.toString()
+        record.accountValue.push(accountValue.toString())
         await record.save()
-        logger.info("add associated account: " + accountName + " --> " + value.toString())
+        logger.info("add associated account: " + accountName + " --> " + accountValue.toString())
     } catch (e) {
         logger.error('add associated account error at block: ' + commonExtrinsicData.blockId);
         logger.error('add associated account error detail: ' + e);
