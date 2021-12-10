@@ -1,86 +1,84 @@
 {
-  "types": {
-    "AccountDataOf": "AccountData",
-    "Address": "MultiAddress",
-    "LookupSource": "MultiAddress",
-    "ShardIdentifier": "Hash",
-    "Url": "Text",
-    "URI": "Text",
-    "ClusterId": "u32",
-    "EnclaveId": "u32",
-    "MarketplaceId": "u32",
-    "BalanceCaps": "Balance",
-    "NFTId": "u32",
-    "String": "Text",
-    "NFTSeriesId": "Text",
-    "NFTData": {
+  "AccountDataOf": "AccountData",
+  "Address": "MultiAddress",
+  "LookupSource": "MultiAddress",
+  "ShardIdentifier": "Hash",
+  "Url": "Text",
+  "URI": "Text",
+  "ClusterId": "u32",
+  "EnclaveId": "u32",
+  "MarketplaceId": "u32",
+  "BalanceCaps": "Balance",
+  "NFTId": "u32",
+  "TernoaString": "Vec<u8>",
+  "NFTSeriesId": "Text",
+  "NFTData": {
       "owner": "AccountId",
-      "ipfs_reference": "String",
+      "ipfs_reference": "Text",
       "series_id": "NFTSeriesId",
       "locked": "bool"
-    },
-    "NFTSeriesDetails": {
+  },
+  "NFTSeriesDetails": {
       "owner": "AccountId",
       "draft": "bool"
-    },
-    "NFTCurrencyCombined": {
+  },
+  "NFTCurrencyCombined": {
       "caps": "Balance",
       "tiime": "Balance"
-    },
-    "NFTCurrency": {
+  },
+  "NFTCurrency": {
       "_enum": {
-        "Caps": "Balance",
-        "Tiime": "Balance",
-        "Combined": "NFTCurrencyCombined"
+          "Caps": "Balance",
+          "Tiime": "Balance",
+          "Combined": "NFTCurrencyCombined"
       }
-    },
-    "NFTCurrencyId": {
+  },
+  "NFTCurrencyId": {
       "_enum": [
-        "Caps",
-        "Tiime"
+          "Caps",
+          "Tiime"
       ]
-    },
-    "SaleInformation": {
+  },
+  "SaleInformation": {
       "account_id": "AccountId",
       "price": "NFTCurrency",
       "marketplace_id": "MarketplaceId"
-    },
-    "MarketplaceType": {
+  },
+  "MarketplaceType": {
       "_enum": [
-        "Public",
-        "Private"
+          "Public",
+          "Private"
       ]
-    },
-    "MarketplaceInformation": {
+  },
+  "MarketplaceInformation": {
       "kind": "MarketplaceType",
       "commission_fee": "u8",
       "owner": "AccountId",
       "allow_list": "Vec<AccountId>",
       "disallow_list": "Vec<AccountId>",
-      "name": "String",
+      "name": "Text",
       "uri": "Option<URI>",
       "logo_uri": "Option<URI>"
-    },
-    "Cluster": {
+  },
+  "Cluster": {
       "enclaves": "Vec<EnclaveId>"
-    },
-    "Enclave": {
+  },
+  "Enclave": {
       "api_url": "Url"
-    },
-    "CapsuleData": {
+  },
+  "CapsuleData": {
       "owner": "AccountId",
-      "ipfs_reference": "String"
-    },
-    "CapsuleLedger": "Vec<(NFTId, Balance)>",
-    "Status": {
+      "ipfs_reference": "Text"
+  },
+  "CapsuleLedger": "Vec<(NFTId, Balance)>",
+  "Status": {
       "_enum": [
-        "Free",
-        "Reserved"
+          "Free",
+          "Reserved"
       ]
-    },
-    "Request": {
+  },
+  "Request": {
       "shard": "ShardIdentifier",
       "cyphertext": "Vec<u8>"
-    }
   }
 }
