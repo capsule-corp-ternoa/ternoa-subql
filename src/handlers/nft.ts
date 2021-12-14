@@ -26,10 +26,11 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         const [nftId, owner, seriesId, offchain_uri] = event.event.data;
         const record = new NftEntity(nftId.toString())
         insertDataToEntity(record, commonExtrinsicData)
-        let seriesString = JSON.stringify(seriesId).indexOf('u0000') === -1 ? 
-          seriesId.toString()
-        : 
-          JSON.stringify(seriesId).split("u0000").join('')
+        let convertedSeries = isHex(seriesId.toString()) ? hexToString(seriesId.toString()) : seriesId
+        let seriesString = JSON.stringify(convertedSeries).indexOf('u0000') === -1 ? 
+          convertedSeries.toString()
+        :
+          JSON.stringify(convertedSeries).split("u0000").join('')
             .split("\\").join('')
             .split("\"").join('')
         let serieRecord = await SerieEntity.get(seriesString)
