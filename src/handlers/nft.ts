@@ -26,9 +26,15 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         const [nftId, owner, seriesId, offchain_uri] = event.event.data;
         const record = new NftEntity(nftId.toString())
         insertDataToEntity(record, commonExtrinsicData)
-        let serieRecord = await SerieEntity.get(seriesId.toString())
+        let seriesString = JSON.stringify(seriesId).indexOf('u0000') === -1 ? 
+          seriesId.toString()
+        : 
+          JSON.stringify(seriesId).split("u0000").join('')
+            .split("\\").join('')
+            .split("\"").join('')
+        let serieRecord = await SerieEntity.get(seriesString)
         if (!serieRecord){
-          serieRecord = new SerieEntity(seriesId.toString())
+          serieRecord = new SerieEntity(seriesString)
           serieRecord.owner = signer
           serieRecord.locked = false
           await serieRecord.save()
@@ -221,22 +227,22 @@ export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
 export const lockSerieHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [serieId] = call.args
+  const [seriesId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
-    logger.info('locking serie :' + serieId);
+    logger.info('locking serie :' + seriesId.toString());
     // retieve the nft
-    const record = await SerieEntity.get(serieId.toString());
+    const record = await SerieEntity.get(seriesId.toString());
     if (record !== undefined) {
       try {
         record.locked = true
          await record.save()
       } catch (e) {
-        logger.error('locking serie error:' + serieId);
+        logger.error('locking serie error:' + seriesId);
         logger.error('locking serie error detail: ' + e);
       }
     }
   }else{
-    logger.error('locking serie error:' + serieId);
+    logger.error('locking serie error:' + seriesId);
     logger.error('locking serie error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
   }
 }

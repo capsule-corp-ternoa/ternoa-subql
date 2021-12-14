@@ -22,9 +22,15 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       const signer = _extrinsic.signer.toString()
       const [owner, nftId, balance] = event.event.data;
       logger.info('capsule creation :' + nftId);
-      let serieRecord = await SerieEntity.get(seriesId.toString())
+      let seriesString = JSON.stringify(seriesId).indexOf('u0000') === -1 ? 
+          seriesId.toString()
+        : 
+          JSON.stringify(seriesId).split("u0000").join('')
+            .split("\\").join('')
+            .split("\"").join('')
+      let serieRecord = await SerieEntity.get(seriesString)
       if (!serieRecord){
-        serieRecord = new SerieEntity(seriesId.toString())
+        serieRecord = new SerieEntity(seriesString)
         serieRecord.owner = signer
         serieRecord.locked = true
         await serieRecord.save()
