@@ -182,8 +182,7 @@ export const setCapsuleIpfsHandler: ExtrinsicHandler = async (call, extrinsic): 
       try {
         const signer = _extrinsic.signer.toString()
         const oldCapsuleIpfs = record.capsuleIpfs
-        const formattedCapsuleIpfs = capsuleIpfs.toString()
-        record.capsuleIpfs = formattedCapsuleIpfs
+        record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
         await record.save()
         logger.info("capsule ipfs change: " + JSON.stringify(oldCapsuleIpfs) + " --> " + JSON.stringify(record.capsuleIpfs))
         // Update concerned accounts
