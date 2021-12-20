@@ -56,11 +56,14 @@ export const setMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsi
   const [id, name] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     try {
+        const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldName = record.name
-        record.name = name.toString();
+        record.name = isHex(name) ? hexToString(name) : name.toString()
         await record.save()
         logger.info("marketplace rename: " + JSON.stringify(oldName) + " --> " + JSON.stringify(record.name))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
     } catch (e) {
         logger.error('marketplace rename error at block: ' + commonExtrinsicData.blockId);
         logger.error('marketplace rename error detail: ' + e);
@@ -77,11 +80,14 @@ export const setMarketplaceTypeHandler: ExtrinsicHandler = async (call, extrinsi
   const [id, kind] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     try {
+        const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldKind = record.kind
         record.kind = kind.toString()
         await record.save()
         logger.info("marketplace change kind: " + JSON.stringify(oldKind) + " --> " + JSON.stringify(record.kind))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
     } catch (e) {
         logger.error('marketplace change kind error at block: ' + commonExtrinsicData.blockId);
         logger.error('marketplace change kind error detail: ' + e);
@@ -98,11 +104,14 @@ export const setMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extrins
   const [id, accountId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     try {
+        const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldOwner = record.owner
         record.owner = accountId.toString()
         await record.save()
         logger.info("marketplace change owner: " + JSON.stringify(oldOwner) + " --> " + JSON.stringify(record.owner))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
     } catch (e) {
         logger.error('marketplace change owner error at block: ' + commonExtrinsicData.blockId);
         logger.error('marketplace change owner error detail: ' + e);
@@ -119,11 +128,14 @@ export const setMarketplaceCommissionFeeHandler: ExtrinsicHandler = async (call,
   const [id, commissionFee] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     try {
+        const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldCommissionFee = record.commissionFee
         record.commissionFee = commissionFee.toString()
         await record.save()
         logger.info("marketplace change commissionFee: " + JSON.stringify(oldCommissionFee) + " --> " + JSON.stringify(record.commissionFee))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
     } catch (e) {
         logger.error('marketplace change commissionFee error at block: ' + commonExtrinsicData.blockId);
         logger.error('marketplace change commissionFee error detail: ' + e);
@@ -140,11 +152,14 @@ export const setMarketplaceUriHandler: ExtrinsicHandler = async (call, extrinsic
   const [id, uri] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     try {
+        const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldUri = record.uri
-        record.uri = uri.toString()
+        record.uri = isHex(uri) ? hexToString(uri) : uri.toString()
         await record.save()
         logger.info("marketplace change uri: " + JSON.stringify(oldUri) + " --> " + JSON.stringify(record.uri))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
     } catch (e) {
         logger.error('marketplace change uri error at block: ' + commonExtrinsicData.blockId);
         logger.error('marketplace change uri error detail: ' + e);
@@ -161,11 +176,14 @@ export const setMarketplaceLogoUriHandler: ExtrinsicHandler = async (call, extri
   const [id, uri] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     try {
+        const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldLogoUri = record.logoUri
-        record.logoUri = uri.toString()
+        record.logoUri = isHex(uri.toString()) ? hexToString(uri.toString()) : uri.toString()
         await record.save()
         logger.info("marketplace change logo uri: " + JSON.stringify(oldLogoUri) + " --> " + JSON.stringify(record.logoUri))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
     } catch (e) {
         logger.error('marketplace change logo uri error at block: ' + commonExtrinsicData.blockId);
         logger.error('marketplace change logo uri error detail: ' + e);

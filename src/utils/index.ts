@@ -1,10 +1,6 @@
 export const isHex = (str: string) => {
-    for (const c of str.toString()) {
-        if ("0123456789ABCDEFabcdefx".indexOf(c) === -1) {
-            return false;
-        }
-    }
-    return true;
+    const regex = /[0-9A-Fa-f]{6}/g;
+    return regex.test(str)
 }
 
 export const hexToString = (hexToConvert: string) => {
