@@ -2,26 +2,24 @@
   "types": {
     "AccountDataOf": "AccountData",
     "Address": "MultiAddress",
-    "LookupSource": "MultiAddress",
-    "ShardIdentifier": "Hash",
-    "Url": "Text",
-    "URI": "Text",
-    "ClusterId": "u32",
-    "EnclaveId": "u32",
-    "MarketplaceId": "u32",
-    "BalanceCaps": "Balance",
     "NFTId": "u32",
-    "String": "Text",
-    "NFTSeriesId": "Text",
+    "NFTIdOf": "NFTId",
+    "NFTSeriesId": "u32",
     "NFTData": {
       "owner": "AccountId",
-      "ipfs_reference": "String",
-      "series_id": "NFTSeriesId",
+      "details": "NFTDetails",
+      "sealed": "bool",
       "locked": "bool"
     },
+    "NFTDetails": {
+      "offchain_uri": "Vec<u8>",
+      "series_id": "NFTSeriesId",
+      "is_capsule": "bool"
+    },
+    "LookupSource": "MultiAddress",
     "NFTSeriesDetails": {
       "owner": "AccountId",
-      "draft": "bool"
+      "nfts": "Vec<NFTId>"
     },
     "NFTCurrencyCombined": {
       "caps": "Balance",
@@ -35,52 +33,40 @@
       }
     },
     "NFTCurrencyId": {
-      "_enum": [
-        "Caps",
-        "Tiime"
-      ]
+      "_enum": ["Caps", "Tiime"]
     },
+    "Request": {
+      "shard": "ShardIdentifier",
+      "cyphertext": "Vec<u8>"
+    },
+    "ShardIdentifier": "Hash",
+    "MarketplaceId": "u32",
     "SaleInformation": {
       "account_id": "AccountId",
       "price": "NFTCurrency",
       "marketplace_id": "MarketplaceId"
     },
+    "Status": {
+      "_enum": ["Free", "Reserved"]
+    },
     "MarketplaceType": {
-      "_enum": [
-        "Public",
-        "Private"
-      ]
+      "_enum": ["Public", "Private"]
     },
     "MarketplaceInformation": {
       "kind": "MarketplaceType",
       "commission_fee": "u8",
       "owner": "AccountId",
       "allow_list": "Vec<AccountId>",
-      "disallow_list": "Vec<AccountId>",
-      "name": "String",
-      "uri": "Option<URI>",
-      "logo_uri": "Option<URI>"
+      "name": "Vec<u8>"
     },
+    "ClusterId": "u32",
+    "EnclaveId": "u32",
     "Cluster": {
       "enclaves": "Vec<EnclaveId>"
     },
+    "Url": "Vec<u8>",
     "Enclave": {
       "api_url": "Url"
-    },
-    "CapsuleData": {
-      "owner": "AccountId",
-      "ipfs_reference": "String"
-    },
-    "CapsuleLedger": "Vec<(NFTId, Balance)>",
-    "Status": {
-      "_enum": [
-        "Free",
-        "Reserved"
-      ]
-    },
-    "Request": {
-      "shard": "ShardIdentifier",
-      "cyphertext": "Vec<u8>"
     }
   }
 }
