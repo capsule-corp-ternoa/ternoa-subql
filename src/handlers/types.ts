@@ -2,7 +2,7 @@ import { SubstrateExtrinsic } from '@subql/types'
 
 export interface CallData {
     batchIndex?: number // for batch call
-
+    batchMethodIndex?: number // for batch call
     section: string
     method: string
     args: any[]

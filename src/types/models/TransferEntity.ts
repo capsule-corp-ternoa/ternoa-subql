@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -12,13 +12,17 @@ export class TransferEntity implements Entity {
 
     public id: string;
 
+    public blockId: string;
+
+    public blockHash: string;
+
+    public extrinsicId: string;
+
     public isBatch: number;
 
     public isSudo: number;
 
     public isSuccess: number;
-
-    public block: string;
 
     public timestamp: Date;
 
@@ -52,8 +56,30 @@ export class TransferEntity implements Entity {
     }
 
 
+    static async getByBlockId(blockId: string): Promise<TransferEntity[] | undefined>{
+      
+      const records = await store.getByField('TransferEntity', 'blockId', blockId);
+      return records.map(record => TransferEntity.create(record));
+      
+    }
 
-    static create(record){
+    static async getByExtrinsicId(extrinsicId: string): Promise<TransferEntity[] | undefined>{
+      
+      const records = await store.getByField('TransferEntity', 'extrinsicId', extrinsicId);
+      return records.map(record => TransferEntity.create(record));
+      
+    }
+
+    static async getByTimestamp(timestamp: Date): Promise<TransferEntity[] | undefined>{
+      
+      const records = await store.getByField('TransferEntity', 'timestamp', timestamp);
+      return records.map(record => TransferEntity.create(record));
+      
+    }
+
+
+    static create(record: Partial<Omit<TransferEntity, FunctionPropertyNames<TransferEntity>>> & Entity): TransferEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new TransferEntity(record.id);
         Object.assign(entity,record);
         return entity;

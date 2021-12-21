@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity} from "@subql/types";
+import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
@@ -13,6 +13,10 @@ export class AccountEntity implements Entity {
     public id: string;
 
     public capsAmount?: string;
+
+    public capsAmountFrozen?: string;
+
+    public capsAmountTotal?: string;
 
     public tiimeAmount?: string;
 
@@ -39,7 +43,8 @@ export class AccountEntity implements Entity {
 
 
 
-    static create(record){
+    static create(record: Partial<Omit<AccountEntity, FunctionPropertyNames<AccountEntity>>> & Entity): AccountEntity {
+        assert(typeof record.id === 'string', "id must be provided");
         let entity = new AccountEntity(record.id);
         Object.assign(entity,record);
         return entity;

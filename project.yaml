@@ -1,96 +1,22 @@
-specVersion: 0.0.1
-description: "Ternoa data indexer"
+specVersion: 0.2.0
+name: subql-ternoa
+version: 1.0.0
+description: Ternoa data indexer
 repository: ''
-schema: ./schema.graphql
+schema:
+  file: ./schema.graphql
 network:
-  endpoint: "ws://127.0.0.1:9944"
-  #endpoint: "wss://dev.chaos.ternoa.com"
- # endpoint: "wss://chaos.ternoa.com"
-  types: {
-  "AccountDataOf": "AccountData",
-  "Address": "MultiAddress",
-  "NFTId": "u32",
-  "NFTIdOf": "NFTId",
-  "NFTSeriesId": "u32",
-  "NFTData": {
-    "owner": "AccountId",
-    "details": "NFTDetails",
-    "sealed": "bool",
-    "locked": "bool"
-  },
-  "NFTDetails": {
-    "offchain_uri": "Vec<u8>",
-    "series_id": "NFTSeriesId",
-    "is_capsule": "bool"
-  },
-  "LookupSource": "MultiAddress",
-  "NFTSeriesDetails": {
-    "owner": "AccountId",
-    "nfts": "Vec<NFTId>"
-  },
-  "NFTCurrencyCombined": {
-    "caps": "Balance",
-    "tiime": "Balance"
-  },
-  "NFTCurrency": {
-    "_enum": {
-      "Caps": "Balance",
-      "Tiime": "Balance",
-      "Combined": "NFTCurrencyCombined"
-    }
-  },
-  "NFTCurrencyId": {
-    "_enum": [
-      "Caps",
-      "Tiime"
-    ]
-  },
-  "Request": {
-    "shard": "ShardIdentifier",
-    "cyphertext": "Vec<u8>"
-  },
-  "ShardIdentifier": "Hash",
-  "MarketplaceId": "u32",
-  "SaleInformation": {
-    "account_id": "AccountId",
-    "price": "NFTCurrency",
-    "marketplace_id": "MarketplaceId"
-  },
-  "Status": {
-    "_enum": [
-      "Free",
-      "Reserved"
-    ]
-  },
-  "MarketplaceType": {
-    "_enum": [
-      "Public",
-      "Private"
-    ]
-  },
-  "MarketplaceInformation": {
-    "kind": "MarketplaceType",
-    "commission_fee": "u8",
-    "owner": "AccountId",
-    "allow_list": "Vec<AccountId>",
-    "name": "Vec<u8>"
-  },
-  "ClusterId": "u32",
-  "EnclaveId": "u32",
-  "Cluster": {
-    "enclaves": "Vec<EnclaveId>"
-  },
-  "Url": "Vec<u8>",
-  "Enclave": {
-    "api_url": "Url"
-  }
-}
-
+  #genesisHash: '0xd44bcfb0e98da45ace37e4df8469e5dbba8c4fc5449acda24c50cea6f5f2ca99' #staging
+  #endpoint: wss://staging.chaos.ternoa.com
+  genesisHash: '0xd9adfc7ea82be63ba28088d62b96e9270ad2af25c962afc393361909670835b2' #testnet
+  endpoint: wss://testnet.ternoa.com
+  chaintypes:
+    file: ./types.json
 dataSources:
-  - name: main
-    kind: substrate/Runtime
+  - kind: substrate/Runtime
     startBlock: 1
     mapping:
+      file: "./dist/index.js"
       handlers:
         - handler: handleBlock
           kind: substrate/BlockHandler
