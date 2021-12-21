@@ -86,6 +86,7 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
       const record = await NftEntity.get(nftId.toString());
       if (record !== undefined) {
         try {
+          const signer = _extrinsic.signer.toString()
           let serieRecord = await SerieEntity.get(record.serieId.toString())
           if (serieRecord && serieRecord.locked){
             serieRecord.locked = true
@@ -95,6 +96,8 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
           record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
           record.frozenCaps = (balance as Balance).toBigInt().toString()
           await record.save()
+          // Update concerned accounts
+          await updateAccount(signer, call, extrinsic);
         } catch (e) {
           logger.error('convert nft to capsule error:' + nftId);
           logger.error('convert nft to capsule error detail: ' + e);
@@ -123,10 +126,13 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       try {
+        const signer = _extrinsic.signer.toString()
         record.isCapsule = false
         record.capsuleIpfs = null
         record.frozenCaps = "0"
         await record.save()
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
       } catch (e) {
         logger.error('revert capsule to nft error:' + nftId);
         logger.error('revert capsule to nft error detail: ' + e);
@@ -148,8 +154,11 @@ export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promis
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       try {
+        const signer = _extrinsic.signer.toString()
         record.frozenCaps = (BigInt(record.frozenCaps) + (amount as Balance).toBigInt()).toString()
         await record.save()
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
       } catch (e) {
         logger.error('add funds to capsule error:' + nftId);
         logger.error('add funds to capsule error detail: ' + e);
@@ -171,11 +180,13 @@ export const setCapsuleIpfsHandler: ExtrinsicHandler = async (call, extrinsic): 
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       try {
+        const signer = _extrinsic.signer.toString()
         const oldCapsuleIpfs = record.capsuleIpfs
-        const formattedCapsuleIpfs = capsuleIpfs.toString()
-        record.capsuleIpfs = formattedCapsuleIpfs
+        record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
         await record.save()
         logger.info("capsule ipfs change: " + JSON.stringify(oldCapsuleIpfs) + " --> " + JSON.stringify(record.capsuleIpfs))
+        // Update concerned accounts
+        await updateAccount(signer, call, extrinsic);
       } catch (e) {
         logger.error('set capsule ipfs error:' + nftId);
         logger.error('set capsule ipfs error detail: ' + e);
