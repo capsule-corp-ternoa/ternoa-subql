@@ -14,7 +14,13 @@ export const genericEventHandler = async (event: SubstrateEvent): Promise<void> 
         eventRecord.module = eventData.section
         eventRecord.call = eventData.method
         eventRecord.argsName = eventData.meta.args.map(a => a.toString())
-        eventRecord.argsValue = eventData.data.map(a => a.toString())
+        eventRecord.argsValue = eventData.data.map(a => JSON.stringify(a).indexOf('u0000') === -1 ? 
+            a.toString()
+        : 
+            JSON.stringify(a).split("u0000").join('')
+                .split("\\").join('')
+                .split("\"").join('')
+        )
         let descriptionRecord = await EventDescriptionEntity.get(`${eventData.section}_${eventData.method}`)
         if (!descriptionRecord){
             descriptionRecord = new EventDescriptionEntity(`${eventData.section}_${eventData.method}`)

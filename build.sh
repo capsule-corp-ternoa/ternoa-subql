@@ -25,7 +25,7 @@ env | grep DB_
 ./scripts/build-submodule.sh
 
 # ----Installing Subql-Node----
-npm install -g @subql/node
+npm install -g @subql/node@0.25.0
 
 # ----Installing dependencies----
 npm install
