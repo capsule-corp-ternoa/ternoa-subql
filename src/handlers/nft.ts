@@ -18,7 +18,8 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       extrinsic.events[i+1].event.section === "nfts" &&
       extrinsic.events[i+1].event.method === "Created"
     )
-    if (!commonExtrinsicData.isBatch || call.batchMethodIndex === 0){
+    if (commonExtrinsicData.isBatch !== 1 || call.batchMethodIndex === 0){
+      if (commonExtrinsicData.isBatch === 1) logger.info("NFT Create Batch handled")
       const signer = _extrinsic.signer.toString()
       if (methodEvents.length === 0) logger.info("no nfts created events found in this extrinsic: " + extrinsic.extrinsic.hash.toString())
       for (let i = 0; i < methodEvents.length; i++){
@@ -56,12 +57,9 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         if (treasuryEventsForMethodEvents[i]){
           await treasuryEventHandler(treasuryEventsForMethodEvents[i], signer, commonExtrinsicData)
         }
-        // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
       }
-    }else{
-      logger.error("Create Nft, can't find if is batch or batch method index");
-      logger.error('Create Nft error' + commonExtrinsicData.blockHash);
+      // Update concerned accounts
+      await updateAccount(signer, call, extrinsic);
     }
   }else{
     logger.error('Create Nft error' + commonExtrinsicData.blockHash);

@@ -71,7 +71,7 @@ export class ExtrinsicDispatcher {
         return Promise.all(calls.map(async (call, index) => {
             const { section, method, args } = call
             const key = `${section}_${method}`
-            if (!batchMethodIndexes[key]){
+            if (batchMethodIndexes[key] === undefined){
                 batchMethodIndexes[key] = 0
             }else{
                 batchMethodIndexes[key] = batchMethodIndexes[key] + 1
@@ -100,7 +100,7 @@ export class ExtrinsicDispatcher {
         return Promise.all(calls.map(async (call, index) => {
             const { section, method, args } = call
             const key = `${section}_${method}`
-            if (!batchMethodIndexes[key]){
+            if (batchMethodIndexes[key] === undefined){
                 batchMethodIndexes[key] = 0
             }else{
                 batchMethodIndexes[key] = batchMethodIndexes[key] + 1
