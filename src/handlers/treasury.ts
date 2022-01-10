@@ -1,5 +1,4 @@
-import { SubstrateEvent } from "@subql/types"
-import { getCommonExtrinsicData, insertDataToEntity, mapExtrinsic } from "../helpers"
+import { insertDataToEntity } from "../helpers"
 import { TransferEntity } from "../types"
 import { Balance } from '@polkadot/types/interfaces';
 import { EventRecord } from '@polkadot/types/interfaces'
@@ -17,10 +16,11 @@ export const treasuryEventHandler = async (
         isBatch: number;
         isSudo: number;
         batchIndex: number;
-    }
+    },
+    i?: number,
 ): Promise<void> => {
     try{
-        const transferRecord = new TransferEntity(commonExtrinsicData.hash)
+        const transferRecord = new TransferEntity(`${commonExtrinsicData.hash}${i >- 1 ? `-${i}` : ""}`)
         const [amount] = event.event.data
         insertDataToEntity(transferRecord, commonExtrinsicData)
         transferRecord.from = signer

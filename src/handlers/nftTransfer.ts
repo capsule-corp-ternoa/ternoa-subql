@@ -19,7 +19,7 @@ export const nftTransferEntityHandler = async (
 ): Promise<void> => {
     try{
         /* Record nft transfer data */
-        const nftTransferRecord = new NftTransferEntity(commonExtrinsicData.hash)
+        const nftTransferRecord = new NftTransferEntity(commonExtrinsicData.hash + "-" + record.nftId)
         nftTransferRecord.blockId = commonExtrinsicData.blockId
         nftTransferRecord.extrinsicId = commonExtrinsicData.extrinsicId
         nftTransferRecord.nftId = record.id
