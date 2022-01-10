@@ -55,7 +55,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
         // Record Treasury Event
         if (treasuryEventsForMethodEvents[i]){
-          await treasuryEventHandler(treasuryEventsForMethodEvents[i], signer, commonExtrinsicData)
+          await treasuryEventHandler(treasuryEventsForMethodEvents[i], signer, commonExtrinsicData, i)
         }
       }
       // Update concerned accounts
