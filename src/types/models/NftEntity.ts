@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class NftEntity implements Entity {
 
     constructor(id: string) {
@@ -41,6 +43,10 @@ export class NftEntity implements Entity {
     public creator: string;
 
     public marketplaceId?: string;
+
+    public createdAt: Date;
+
+    public updatedAt: Date;
 
 
     async save(): Promise<void>{

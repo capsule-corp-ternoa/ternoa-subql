@@ -5,6 +5,7 @@ import { treasuryEventHandler } from '.';
 import { hexToString, isHex } from '../utils';
 
 export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   if (commonExtrinsicData.isSuccess === 1){
@@ -27,6 +28,8 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         record.owner = owner.toString()
         if (uri) record.uri = isHex(uri) ? hexToString(uri) : uri.toString()
         if (logoUri) record.logoUri = isHex(logoUri) ? hexToString(logoUri) : logoUri.toString()
+        record.createdAt = date
+        record.updatedAt = date
         await record.save()
         logger.info("new marketplace details: " + JSON.stringify(record))
         // Record Treasury Event
@@ -51,6 +54,7 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
 }
 
 export const setMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, name] = call.args
@@ -60,6 +64,7 @@ export const setMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsi
         const record = await MarketplaceEntity.get(id.toString())
         const oldName = record.name
         record.name = isHex(name) ? hexToString(name) : name.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("marketplace rename: " + JSON.stringify(oldName) + " --> " + JSON.stringify(record.name))
         // Update concerned accounts
@@ -75,6 +80,7 @@ export const setMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsi
 }
 
 export const setMarketplaceTypeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, kind] = call.args
@@ -84,6 +90,7 @@ export const setMarketplaceTypeHandler: ExtrinsicHandler = async (call, extrinsi
         const record = await MarketplaceEntity.get(id.toString())
         const oldKind = record.kind
         record.kind = kind.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("marketplace change kind: " + JSON.stringify(oldKind) + " --> " + JSON.stringify(record.kind))
         // Update concerned accounts
@@ -99,6 +106,7 @@ export const setMarketplaceTypeHandler: ExtrinsicHandler = async (call, extrinsi
 }
 
 export const setMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, accountId] = call.args
@@ -108,6 +116,7 @@ export const setMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extrins
         const record = await MarketplaceEntity.get(id.toString())
         const oldOwner = record.owner
         record.owner = accountId.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("marketplace change owner: " + JSON.stringify(oldOwner) + " --> " + JSON.stringify(record.owner))
         // Update concerned accounts
@@ -123,6 +132,7 @@ export const setMarketplaceOwnerHandler: ExtrinsicHandler = async (call, extrins
 }
 
 export const setMarketplaceCommissionFeeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, commissionFee] = call.args
@@ -132,6 +142,7 @@ export const setMarketplaceCommissionFeeHandler: ExtrinsicHandler = async (call,
         const record = await MarketplaceEntity.get(id.toString())
         const oldCommissionFee = record.commissionFee
         record.commissionFee = commissionFee.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("marketplace change commissionFee: " + JSON.stringify(oldCommissionFee) + " --> " + JSON.stringify(record.commissionFee))
         // Update concerned accounts
@@ -147,6 +158,7 @@ export const setMarketplaceCommissionFeeHandler: ExtrinsicHandler = async (call,
 }
 
 export const setMarketplaceUriHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, uri] = call.args
@@ -156,6 +168,7 @@ export const setMarketplaceUriHandler: ExtrinsicHandler = async (call, extrinsic
         const record = await MarketplaceEntity.get(id.toString())
         const oldUri = record.uri
         record.uri = isHex(uri) ? hexToString(uri) : uri.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("marketplace change uri: " + JSON.stringify(oldUri) + " --> " + JSON.stringify(record.uri))
         // Update concerned accounts
@@ -171,6 +184,7 @@ export const setMarketplaceUriHandler: ExtrinsicHandler = async (call, extrinsic
 }
 
 export const setMarketplaceLogoUriHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, uri] = call.args
@@ -180,6 +194,7 @@ export const setMarketplaceLogoUriHandler: ExtrinsicHandler = async (call, extri
         const record = await MarketplaceEntity.get(id.toString())
         const oldLogoUri = record.logoUri
         record.logoUri = isHex(uri.toString()) ? hexToString(uri.toString()) : uri.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("marketplace change logo uri: " + JSON.stringify(oldLogoUri) + " --> " + JSON.stringify(record.logoUri))
         // Update concerned accounts

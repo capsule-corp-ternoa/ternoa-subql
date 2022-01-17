@@ -7,6 +7,7 @@ import { Balance } from '@polkadot/types/interfaces';
 import { hexToString, isHex } from '../utils';
 
 export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftIpfs, capsuleIpfs, seriesId] = call.args
@@ -34,10 +35,13 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
         serieRecord = new SerieEntity(seriesString)
         serieRecord.owner = signer
         serieRecord.locked = true
+        serieRecord.createdAt = date
+        serieRecord.updatedAt = date
         await serieRecord.save()
       }else{
         if (serieRecord.locked === false){
           serieRecord.locked = true
+          serieRecord.updatedAt = date
           await serieRecord.save()
         }
       }
@@ -53,6 +57,8 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
       record.isCapsule = true;
       record.frozenCaps = (balance as Balance).toBigInt().toString();
+      record.createdAt = date
+      record.updatedAt = date
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
@@ -73,6 +79,7 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
 }
 
 export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, capsuleIpfs] = call.args
@@ -90,11 +97,13 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
           let serieRecord = await SerieEntity.get(record.serieId.toString())
           if (serieRecord && serieRecord.locked){
             serieRecord.locked = true
+            serieRecord.updatedAt = date
             await serieRecord.save()
           }
           record.isCapsule = true
           record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
           record.frozenCaps = (balance as Balance).toBigInt().toString()
+          record.updatedAt = date
           await record.save()
           // Update concerned accounts
           await updateAccount(signer, call, extrinsic);
@@ -117,6 +126,7 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
 }
 
 export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId] = call.args
@@ -130,6 +140,7 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
         record.isCapsule = false
         record.capsuleIpfs = null
         record.frozenCaps = "0"
+        record.updatedAt = date
         await record.save()
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
@@ -145,6 +156,7 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
 }
 
 export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, amount] = call.args
@@ -156,6 +168,7 @@ export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promis
       try {
         const signer = _extrinsic.signer.toString()
         record.frozenCaps = (BigInt(record.frozenCaps) + (amount as Balance).toBigInt()).toString()
+        record.updatedAt = date
         await record.save()
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
@@ -171,6 +184,7 @@ export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promis
 }
 
 export const setCapsuleIpfsHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, capsuleIpfs] = call.args
@@ -183,6 +197,7 @@ export const setCapsuleIpfsHandler: ExtrinsicHandler = async (call, extrinsic): 
         const signer = _extrinsic.signer.toString()
         const oldCapsuleIpfs = record.capsuleIpfs
         record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
+        record.updatedAt = date
         await record.save()
         logger.info("capsule ipfs change: " + JSON.stringify(oldCapsuleIpfs) + " --> " + JSON.stringify(record.capsuleIpfs))
         // Update concerned accounts

@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class MarketplaceEntity implements Entity {
 
     constructor(id: string) {
@@ -23,6 +25,10 @@ export class MarketplaceEntity implements Entity {
     public uri?: string;
 
     public logoUri?: string;
+
+    public createdAt: Date;
+
+    public updatedAt: Date;
 
 
     async save(): Promise<void>{

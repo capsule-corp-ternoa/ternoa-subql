@@ -1,5 +1,5 @@
 specVersion: 0.2.0
-name: subql-ternoa
+name: subql_ternoa
 version: 1.0.0
 description: Ternoa data indexer
 repository: ''
@@ -7,9 +7,11 @@ schema:
   file: ./schema.graphql
 network:
   genesisHash: '0xd44bcfb0e98da45ace37e4df8469e5dbba8c4fc5449acda24c50cea6f5f2ca99' #staging
-  endpoint: wss://staging.chaos.ternoa.com
+  endpoint: 'wss://staging.chaos.ternoa.com'
+  #dictionary: 'https://dictionary-staging.ternoa.dev/'
   #genesisHash: '0xd9adfc7ea82be63ba28088d62b96e9270ad2af25c962afc393361909670835b2' #testnet
-  #endpoint: wss://testnet.ternoa.com
+  #endpoint: 'wss://testnet.ternoa.com'
+  #dictionary: 'https://dictionary-testnet.ternoa.dev/'
   chaintypes:
     file: ./types.json
 dataSources:
@@ -18,9 +20,199 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
-        - handler: handleBlock
-          kind: substrate/BlockHandler
-        - handler: handleEvent
-          kind: substrate/EventHandler
         - handler: handleCall
           kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: utility
+            method: batch
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: utility
+            method: batchAll
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: sudo
+            method: sudo
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: balances
+            method: transfer
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: balances
+            method: transferKeepAlive
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: tiimeBalances
+            method: transfer
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: tiimeBalances
+            method: transferKeepAlive
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: nfts
+            method: create
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: nfts
+            method: burn
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: nfts
+            method: transfer
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: nfts
+            method: finishSeries
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: nfts
+            method: setIpfsReference
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: capsules
+            method: create
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: capsules
+            method: createFromNft
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: capsules
+            method: remove
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: capsules
+            method: addFunds
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: capsules
+            method: setIpfsReference
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: buy
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: create
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: list
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: unlist
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: setCommissionFee
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: setLogoUri
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: setMarketType
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: setName
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: setOwner
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: setUri
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: associatedAccounts
+            method: setAltvrUsername
+

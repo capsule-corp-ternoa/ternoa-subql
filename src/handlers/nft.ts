@@ -11,6 +11,7 @@ import { hexToString, isHex } from '../utils';
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const date = new Date()
   if (commonExtrinsicData.isSuccess === 1){
     const methodEvents = extrinsic.events.filter(x => x.event.section === "nfts" && x.event.method === "Created")
     const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
@@ -39,6 +40,8 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
           serieRecord = new SerieEntity(seriesString)
           serieRecord.owner = signer
           serieRecord.locked = false
+          serieRecord.createdAt = date
+          serieRecord.updatedAt = date
           await serieRecord.save()
         }
         record.currency = 'CAPS';
@@ -50,6 +53,8 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         record.nftIpfs = isHex(offchain_uri.toString()) ? hexToString(offchain_uri.toString()) : offchain_uri.toString()
         record.isCapsule = false;
         record.frozenCaps = "0";
+        record.createdAt = date
+        record.updatedAt = date
         await record.save()
         // Record NFT Transfer
         await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
@@ -68,6 +73,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
 }
 
 export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, _priceObject, marketplaceId] = call.args
@@ -88,12 +94,13 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       record.listed = 1;
-      record.timestampList = new Date();
+      record.timestampList = date;
       try {
         const signer = _extrinsic.signer.toString()
         record.price = price
         record.priceTiime = priceTiime
         record.marketplaceId = marketplaceId
+        record.updatedAt = date
         await record.save()
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
@@ -109,6 +116,7 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
 }
 
 export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId] = call.args
@@ -120,12 +128,13 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       record.listed = 0;
-      record.timestampList = new Date();
+      record.timestampList = date;
       try {
         const signer = _extrinsic.signer.toString()
         record.price = price
         record.priceTiime = priceTiime
         record.marketplaceId = null;
+        record.updatedAt = date
         await record.save()
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
@@ -141,6 +150,7 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
 }
 
 export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic } = extrinsic;
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   if (commonExtrinsicData.isSuccess === 1){
@@ -163,6 +173,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         record.listed = 0;
         record.price = '';
         record.priceTiime = '';
+        record.updatedAt = date
         await record.save()
         // Record NFT Transfer
         const eventTransfer = transferEventsForMethodEvents[call.batchMethodIndex || 0]
@@ -173,7 +184,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
           logger.error('nft transaction error:' + commonExtrinsicData.blockHash);
         }
       }else{
-        logger.error('buy nft error:' + commonExtrinsicData.blockHash);
+        logger.error('buy nft error: for NFT id - ' + nftId.toString() + " at hash " + commonExtrinsicData.blockHash);
         logger.error('buy nft error detail: nft not found in db');
       }
     }else{
@@ -187,6 +198,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
 }
 
 export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, newOwner] = call.args
@@ -198,6 +210,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
       const oldOwner = record.owner
       record.listed = 0;
       record.owner = data.id
+      record.updatedAt = date
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "transfer")
@@ -209,6 +222,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
 }
 
 export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId] = call.args
@@ -220,7 +234,8 @@ export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
       const signer = _extrinsic.signer.toString()
       record.listed = 0;
       record.marketplaceId = null
-      record.timestampBurn = new Date();
+      record.timestampBurn = date;
+      record.updatedAt = date
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, record.owner, commonExtrinsicData, "burn")
@@ -232,6 +247,7 @@ export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
 }
 
 export const lockSerieHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [seriesId] = call.args
@@ -250,6 +266,7 @@ export const lockSerieHandler: ExtrinsicHandler = async (call, extrinsic): Promi
       try {
         const signer = _extrinsic.signer.toString()
         record.locked = true
+        record.updatedAt = date
         await record.save()
         await updateAccount(signer, call, extrinsic);
       } catch (e) {
@@ -264,6 +281,7 @@ export const lockSerieHandler: ExtrinsicHandler = async (call, extrinsic): Promi
 }
 
 export const setNFTIpfsHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [id, ipfsReference] = call.args
@@ -274,6 +292,7 @@ export const setNFTIpfsHandler: ExtrinsicHandler = async (call, extrinsic): Prom
           const signer = _extrinsic.signer.toString()
           const oldIpfs = record.nftIpfs
           record.nftIpfs = isHex(ipfsReference.toString()) ? hexToString(ipfsReference.toString()) : ipfsReference.toString()
+          record.updatedAt = date
           await record.save()
           logger.info("NFT change Ipfs: " + JSON.stringify(oldIpfs) + " --> " + JSON.stringify(record.nftIpfs))
           await updateAccount(signer, call, extrinsic);

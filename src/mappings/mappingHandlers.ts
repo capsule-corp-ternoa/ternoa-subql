@@ -1,5 +1,4 @@
-import {SubstrateExtrinsic,SubstrateEvent} from "@subql/types";
-import {SubstrateBlock} from "@subql/types";
+import {SubstrateExtrinsic} from "@subql/types";
 import { ExtrinsicDispatcher } from '../dispatchers'
 import {
     transferHandler,
@@ -10,9 +9,6 @@ import {
     burnHandler,
     buyHandler,
     NFTtransferHandler,
-    blockHandler,
-    genericExtrinsicHandler,
-    genericEventHandler,
     createMarketplaceHandler,
     setMarketplaceOwnerHandler,
     setMarketplaceNameHandler,
@@ -58,15 +54,7 @@ extrinsicDispatcher.add('marketplace', 'setOwner', setMarketplaceOwnerHandler)
 extrinsicDispatcher.add('marketplace', 'setUri', setMarketplaceUriHandler)
 extrinsicDispatcher.add('associatedAccounts', 'setAltvrUsername', addAssociatedAccountHandler)
 
-export async function handleBlock(block: SubstrateBlock): Promise<void> {
-    await blockHandler(block)
-}
-
 export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
-    await genericExtrinsicHandler(extrinsic)
+    logger.info(`${extrinsic.extrinsic.method.section}_${extrinsic.extrinsic.method.method}`)
     await extrinsicDispatcher.emit(extrinsic)
-}
-
-export async function handleEvent(event: SubstrateEvent): Promise<void> {
-    await genericEventHandler(event)
 }

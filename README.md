@@ -15,11 +15,10 @@ A SubQuery package defines which data The SubQuery will index from the Substrate
 
 #### Install the SubQuery CLI
 
-Install SubQuery CLI globally on your terminal by using Yarn or NPM:
+Install SubQuery CLI globally on your terminal by using NPM:
 
 ```
 npm install -g @subql/cli
-yarn global add @subql/cli
 ```
 
 Run help to see available commands and usage provide by CLI
@@ -92,7 +91,7 @@ Then,
 npm install -g @subql/node
 yarn
 yarn build
-subql-node -f . --subquery-name=subql-ternoa --network-endpoint wss://dev.chaos.ternoa.com
+subql-node -f . --db-schema=subql_ternoa --network-endpoint wss://dev.chaos.ternoa.com
 ```
 
 On the last line, you can Obviously switch from dev.chaos, to any other network endpoint.
@@ -115,7 +114,7 @@ Then,
 npm install -g @subql/query
 yarn
 yarn build
-subql-query --name subql-ternoa --playground
+subql-query --name subql_ternoa --playground
 ```
 
 #### Run required systems in docker

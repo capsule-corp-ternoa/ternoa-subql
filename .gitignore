@@ -7,6 +7,10 @@
 node_modules/
 dist/
 
+# lock files
+yarn.lock
+package-lock.json
+
 # Compiled Java class files
 *.class
 
@@ -52,3 +56,6 @@ Thumbs.db
 .data
 # Docker-compose environment file
 .env
+
+.github
+
