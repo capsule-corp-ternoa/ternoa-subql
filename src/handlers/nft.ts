@@ -46,6 +46,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         }
         record.currency = 'CAPS';
         record.listed = 0;
+        record.isLocked = false;
         record.owner = signer;
         record.serieId = serieRecord.id;
         record.creator = signer;
@@ -94,6 +95,7 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       record.listed = 1;
+      record.isLocked = true;
       record.timestampList = date;
       try {
         const signer = _extrinsic.signer.toString()
@@ -128,6 +130,7 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       record.listed = 0;
+      record.isLocked = false;
       record.timestampList = date;
       try {
         const signer = _extrinsic.signer.toString()
@@ -171,6 +174,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         const oldOwner = record.owner
         record.owner = signer.toString();
         record.listed = 0;
+        record.isLocked = false;
         record.price = '';
         record.priceTiime = '';
         record.updatedAt = date

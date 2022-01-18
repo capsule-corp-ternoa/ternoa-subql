@@ -34,6 +34,7 @@ type NftEntity @entity {
   price: String #the price of the nft
   priceTiime: String #the price of the nft
   listed: Int!
+  isLocked: Boolean!
   timestampBurn: Date @index #when nft is burned
   owner: String! @index
   creator: String! @index

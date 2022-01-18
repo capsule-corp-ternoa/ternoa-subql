@@ -36,6 +36,8 @@ export class NftEntity implements Entity {
 
     public listed: number;
 
+    public isLocked: boolean;
+
     public timestampBurn?: Date;
 
     public owner: string;

@@ -49,6 +49,7 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       insertDataToEntity(record, commonExtrinsicData)
       record.currency = 'CAPS';
       record.listed = 0;
+      record.isLocked = true;
       record.owner = signer;
       record.serieId = serieRecord.id;
       record.creator = signer;
@@ -101,6 +102,7 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
             await serieRecord.save()
           }
           record.isCapsule = true
+          record.isLocked = true
           record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
           record.frozenCaps = (balance as Balance).toBigInt().toString()
           record.updatedAt = date
@@ -138,6 +140,7 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       try {
         const signer = _extrinsic.signer.toString()
         record.isCapsule = false
+        record.isLocked = false
         record.capsuleIpfs = null
         record.frozenCaps = "0"
         record.updatedAt = date
