@@ -3,12 +3,29 @@ export const isHex = (str: string) => {
     return regex.test(str)
 }
 
+export const isNumeric = (str: string) => {
+	if (typeof str != "string") return false
+	return !isNaN(str as unknown as number) && isNaN(parseFloat(str))
+}
+  
+
 export const hexToString = (hexToConvert: string) => {
     var hex  = hexToConvert.toString();
 	var str = '';
 	for (var n = 0; n < hex.length; n += 2) {
-		str += String.fromCharCode(parseInt(hex.substr(n, 2), 16));
+		str += String.fromCharCode(parseInt(hex.substring(n, n+2), 16));
 	}
-	return str.substring(1, str.length);
+	return str;
 }
-  
+
+export const formatString = (str: string) => {
+	let result = str
+	if (isNumeric(result)) return result
+	if (isHex(result)) result = hexToString(result)
+	if (JSON.stringify(result).indexOf('u0000') !== -1){
+		result = JSON.stringify(result).split("u0000").join('')
+			.split("\\").join('')
+			.split("\"").join('')
+	}
+	return result
+}

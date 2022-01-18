@@ -6,7 +6,7 @@ import { nftTransferEntityHandler } from './nftTransfer';
 import { SerieEntity } from '../types';
 import { Balance } from '@polkadot/types/interfaces';
 import { treasuryEventHandler } from '.';
-import { hexToString, isHex } from '../utils';
+import { formatString } from '../utils';
 
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
@@ -28,13 +28,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         const [nftId, owner, seriesId, offchain_uri] = event.event.data;
         const record = new NftEntity(nftId.toString())
         insertDataToEntity(record, commonExtrinsicData)
-        let convertedSeries = isHex(seriesId.toString()) ? hexToString(seriesId.toString()) : seriesId
-        let seriesString = JSON.stringify(convertedSeries).indexOf('u0000') === -1 ? 
-          convertedSeries.toString()
-        :
-          JSON.stringify(convertedSeries).split("u0000").join('')
-            .split("\\").join('')
-            .split("\"").join('')
+        let seriesString = formatString(seriesId.toString())
         let serieRecord = await SerieEntity.get(seriesString)
         if (!serieRecord){
           serieRecord = new SerieEntity(seriesString)
@@ -51,7 +45,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         record.serieId = serieRecord.id;
         record.creator = signer;
         record.nftId = nftId.toString();
-        record.nftIpfs = isHex(offchain_uri.toString()) ? hexToString(offchain_uri.toString()) : offchain_uri.toString()
+        record.nftIpfs = formatString(offchain_uri.toString())
         record.isCapsule = false;
         record.frozenCaps = "0";
         record.createdAt = date
@@ -256,13 +250,7 @@ export const lockSerieHandler: ExtrinsicHandler = async (call, extrinsic): Promi
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [seriesId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
-    const convertedSeries = isHex(seriesId.toString()) ? hexToString(seriesId.toString()) : seriesId
-    let seriesString = JSON.stringify(convertedSeries).indexOf('u0000') === -1 ? 
-          convertedSeries.toString()
-        :
-          JSON.stringify(convertedSeries).split("u0000").join('')
-            .split("\\").join('')
-            .split("\"").join('')
+    const seriesString = formatString(seriesId.toString())
     logger.info('locking serie :' + seriesString.toString());
     // retieve the nft
     const record = await SerieEntity.get(seriesString.toString());
@@ -295,7 +283,7 @@ export const setNFTIpfsHandler: ExtrinsicHandler = async (call, extrinsic): Prom
         if (record){
           const signer = _extrinsic.signer.toString()
           const oldIpfs = record.nftIpfs
-          record.nftIpfs = isHex(ipfsReference.toString()) ? hexToString(ipfsReference.toString()) : ipfsReference.toString()
+          record.nftIpfs = formatString(ipfsReference.toString())
           record.updatedAt = date
           await record.save()
           logger.info("NFT change Ipfs: " + JSON.stringify(oldIpfs) + " --> " + JSON.stringify(record.nftIpfs))

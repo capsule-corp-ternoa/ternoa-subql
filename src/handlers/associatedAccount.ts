@@ -1,7 +1,7 @@
 import { getCommonExtrinsicData, updateAccount } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { AssociatedAccountEntity } from '../types';
-import { hexToString, isHex } from '../utils';
+import { formatString } from '../utils';
 
 export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const date = new Date()
@@ -26,7 +26,7 @@ export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrin
         }, []);
         record.accountName = record.accountName.filter((_x,i) => !indexesToDelete.includes(i))
         record.accountValue = record.accountValue.filter((_x,i) => !indexesToDelete.includes(i))
-        let accountValue = isHex(value.toString()) ? hexToString(value.toString()) : value.toString()
+        let accountValue = formatString(value.toString())
         record.accountName.push(accountName)
         record.accountValue.push(accountValue)
         record.updatedAt = date

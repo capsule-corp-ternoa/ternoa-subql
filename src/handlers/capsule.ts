@@ -4,32 +4,29 @@ import { NftEntity } from "../types/models/NftEntity";
 import { SerieEntity } from '../types';
 import { nftTransferEntityHandler, treasuryEventHandler } from '.';
 import { Balance } from '@polkadot/types/interfaces';
-import { hexToString, isHex } from '../utils';
+import { formatString } from '../utils';
 
 export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  const [nftIpfs, capsuleIpfs, seriesId] = call.args
+  const [nftIpfs, capsuleIpfs, _seriesId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     const methodEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "CapsuleCreated")
+    const nftCreatedEvents = extrinsic.events.filter(x => x.event.section === "nfts" && x.event.method === "Created")
     const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
       (i < extrinsic.events.length - 1 ) && 
       extrinsic.events[i+1].event.section === "nfts" &&
       extrinsic.events[i+1].event.method === "Created"
     )
     const event = methodEvents[call.batchMethodIndex || 0]
-    if (event){
+    const nftEvent = nftCreatedEvents[call.batchMethodIndex || 0]
+    if (event && nftEvent){
       const signer = _extrinsic.signer.toString()
-      const [owner, nftId, balance] = event.event.data;
+      const [_owner, nftId, balance] = event.event.data;
+      const [_nftId, __owner, seriesId, _offchain_uri] = nftEvent.event.data;
       logger.info('capsule creation :' + nftId);
-      let convertedSeries = isHex(seriesId) ? hexToString(seriesId) : seriesId
-      let seriesString = JSON.stringify(convertedSeries).indexOf('u0000') === -1 ? 
-        convertedSeries.toString()
-      :
-        JSON.stringify(convertedSeries).split("u0000").join('')
-          .split("\\").join('')
-          .split("\"").join('')
+      let seriesString = formatString(seriesId.toString())
       let serieRecord = await SerieEntity.get(seriesString)
       if (!serieRecord){
         serieRecord = new SerieEntity(seriesString)
@@ -54,8 +51,8 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       record.serieId = serieRecord.id;
       record.creator = signer;
       record.nftId = nftId.toString();
-      record.nftIpfs = isHex(nftIpfs.toString()) ? hexToString(nftIpfs.toString()) : nftIpfs.toString()
-      record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
+      record.nftIpfs = formatString(nftIpfs.toString())
+      record.capsuleIpfs = formatString(capsuleIpfs.toString())
       record.isCapsule = true;
       record.frozenCaps = (balance as Balance).toBigInt().toString();
       record.createdAt = date
@@ -103,7 +100,7 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
           }
           record.isCapsule = true
           record.isLocked = true
-          record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
+          record.capsuleIpfs = formatString(capsuleIpfs.toString())
           record.frozenCaps = (balance as Balance).toBigInt().toString()
           record.updatedAt = date
           await record.save()
@@ -199,7 +196,7 @@ export const setCapsuleIpfsHandler: ExtrinsicHandler = async (call, extrinsic): 
       try {
         const signer = _extrinsic.signer.toString()
         const oldCapsuleIpfs = record.capsuleIpfs
-        record.capsuleIpfs = isHex(capsuleIpfs.toString()) ? hexToString(capsuleIpfs.toString()) : capsuleIpfs.toString()
+        record.capsuleIpfs = formatString(capsuleIpfs.toString())
         record.updatedAt = date
         await record.save()
         logger.info("capsule ipfs change: " + JSON.stringify(oldCapsuleIpfs) + " --> " + JSON.stringify(record.capsuleIpfs))
