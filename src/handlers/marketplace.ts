@@ -2,7 +2,7 @@ import { getCommonExtrinsicData, updateAccount } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { MarketplaceEntity } from '../types';
 import { treasuryEventHandler } from '.';
-import { hexToString, isHex } from '../utils';
+import { formatString } from '../utils';
 
 export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const date = new Date()
@@ -23,11 +23,11 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
       try {
         const record = new MarketplaceEntity(id.toString())
         record.kind = kind.toString()
-        record.name = isHex(name) ? hexToString(name) : name.toString()
+        record.name = formatString(name.toString())
         record.commissionFee = commissionFee.toString()
         record.owner = owner.toString()
-        if (uri) record.uri = isHex(uri) ? hexToString(uri) : uri.toString()
-        if (logoUri) record.logoUri = isHex(logoUri) ? hexToString(logoUri) : logoUri.toString()
+        if (uri) record.uri = formatString(uri.toString())
+        if (logoUri) record.logoUri = formatString(logoUri.toString())
         record.createdAt = date
         record.updatedAt = date
         await record.save()
@@ -63,7 +63,7 @@ export const setMarketplaceNameHandler: ExtrinsicHandler = async (call, extrinsi
         const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldName = record.name
-        record.name = isHex(name) ? hexToString(name) : name.toString()
+        record.name = formatString(name.toString())
         record.updatedAt = date
         await record.save()
         logger.info("marketplace rename: " + JSON.stringify(oldName) + " --> " + JSON.stringify(record.name))
@@ -167,7 +167,7 @@ export const setMarketplaceUriHandler: ExtrinsicHandler = async (call, extrinsic
         const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldUri = record.uri
-        record.uri = isHex(uri) ? hexToString(uri) : uri.toString()
+        record.uri = formatString(uri.toString())
         record.updatedAt = date
         await record.save()
         logger.info("marketplace change uri: " + JSON.stringify(oldUri) + " --> " + JSON.stringify(record.uri))
@@ -193,7 +193,7 @@ export const setMarketplaceLogoUriHandler: ExtrinsicHandler = async (call, extri
         const signer = extrinsic.extrinsic.signer.toString()
         const record = await MarketplaceEntity.get(id.toString())
         const oldLogoUri = record.logoUri
-        record.logoUri = isHex(uri.toString()) ? hexToString(uri.toString()) : uri.toString()
+        record.logoUri = formatString(uri.toString())
         record.updatedAt = date
         await record.save()
         logger.info("marketplace change logo uri: " + JSON.stringify(oldLogoUri) + " --> " + JSON.stringify(record.logoUri))
