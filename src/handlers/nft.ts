@@ -6,7 +6,7 @@ import { nftTransferEntityHandler } from './nftTransfer';
 import { SerieEntity } from '../types';
 import { Balance } from '@polkadot/types/interfaces';
 import { treasuryEventHandler } from '.';
-import { formatString } from '../utils';
+import { formatString, roundPrice} from '../utils';
 
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
@@ -94,7 +94,9 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
       try {
         const signer = _extrinsic.signer.toString()
         record.price = price
+        record.priceRounded = roundPrice(record.price);
         record.priceTiime = priceTiime
+        record.priceTiimeRounded = roundPrice(record.priceTiime);
         record.marketplaceId = marketplaceId
         record.updatedAt = date
         await record.save()
@@ -118,27 +120,22 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
   const [nftId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     logger.info('nftId:' + nftId + ':new Unlist Nft ' + commonExtrinsicData.blockHash);
-    let price = '';
-    let priceTiime = '';
     // retieve the nft
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       record.listed = 0;
       record.isLocked = false;
       record.timestampList = date;
-      try {
-        const signer = _extrinsic.signer.toString()
-        record.price = price
-        record.priceTiime = priceTiime
-        record.marketplaceId = null;
-        record.updatedAt = date
-        await record.save()
-        // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
-      } catch (e) {
-        logger.error('unlist nft error:' + nftId);
-        logger.error('unlist nft error detail: ' + e);
-      }
+      const signer = _extrinsic.signer.toString()
+      record.price = ""
+      record.priceRounded = null
+      record.priceTiime = ""
+      record.priceTiimeRounded = null
+      record.marketplaceId = null;
+      record.updatedAt = date
+      await record.save()
+      // Update concerned accounts
+      await updateAccount(signer, call, extrinsic);
     }
   }else{
     logger.error('unlist nft error:' + nftId);
@@ -170,7 +167,9 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         record.listed = 0;
         record.isLocked = false;
         record.price = '';
+        record.priceRounded = null;
         record.priceTiime = '';
+        record.priceTiimeRounded = null;
         record.updatedAt = date
         await record.save()
         // Record NFT Transfer
