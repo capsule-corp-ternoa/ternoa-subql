@@ -32,7 +32,9 @@ type NftEntity @entity {
   timestampList: Date @index
   currency: String! #the currency of the transfer
   price: String #the price of the nft
+  roundedPrice:Float #the rounded price of the nft
   priceTiime: String #the price of the nft
+  roundedPriceTiime:Float #the rounded price of the nft in tiime
   listed: Int!
   isLocked: Boolean!
   timestampBurn: Date @index #when nft is burned

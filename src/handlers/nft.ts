@@ -6,7 +6,7 @@ import { nftTransferEntityHandler } from './nftTransfer';
 import { SerieEntity } from '../types';
 import { Balance } from '@polkadot/types/interfaces';
 import { treasuryEventHandler } from '.';
-import { hexToString, isHex } from '../utils';
+import { hexToString, isHex, roundedPrices } from '../utils';
 
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
   const { extrinsic: _extrinsic } = extrinsic
@@ -81,15 +81,21 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
   if (commonExtrinsicData.isSuccess === 1){
     logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.blockHash + ' (marketplaceId: ' + marketplaceId+")");
     let price = '';
+    let roundedPrice = null;
     let priceTiime = '';
+    let roundedPriceTiime = null;
     const priceObject = JSON.parse(_priceObject)
     if (priceObject.caps) {
       price = bnToBn(priceObject.caps).toString();
+      roundedPrice = roundedPrices(priceObject.caps)
     } else if (priceObject.tiime) {
       priceTiime = bnToBn(priceObject.tiime).toString();
+      roundedPriceTiime = roundedPrices(priceObject.tiime)
     } else if (priceObject.combined !== undefined) {
       price = bnToBn(priceObject.combined.caps).toString();
+      roundedPrice = roundedPrices(priceObject.caps)
       priceTiime = bnToBn(priceObject.combined.tiime).toString();
+      roundedPriceTiime = roundedPrices(priceObject.tiime)
     }
     // retieve the nft
     const record = await NftEntity.get(nftId.toString());
@@ -100,7 +106,9 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
       try {
         const signer = _extrinsic.signer.toString()
         record.price = price
+        record.roundedPrice = roundedPrice
         record.priceTiime = priceTiime
+        record.roundedPriceTiime = roundedPriceTiime
         record.marketplaceId = marketplaceId
         record.updatedAt = date
         await record.save()
@@ -125,7 +133,9 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
   if (commonExtrinsicData.isSuccess === 1){
     logger.info('nftId:' + nftId + ':new Unlist Nft ' + commonExtrinsicData.blockHash);
     let price = '';
+    let roundedPrice = null;
     let priceTiime = '';
+    let roundedPriceTiime = null;
     // retieve the nft
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
@@ -135,7 +145,9 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       try {
         const signer = _extrinsic.signer.toString()
         record.price = price
+        record.roundedPrice = roundedPrice
         record.priceTiime = priceTiime
+        record.roundedPriceTiime = roundedPriceTiime
         record.marketplaceId = null;
         record.updatedAt = date
         await record.save()
@@ -176,7 +188,9 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         record.listed = 0;
         record.isLocked = false;
         record.price = '';
+        record.roundedPrice = null;
         record.priceTiime = '';
+        record.roundedPriceTiime = null;
         record.updatedAt = date
         await record.save()
         // Record NFT Transfer

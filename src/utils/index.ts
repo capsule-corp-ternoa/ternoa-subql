@@ -11,4 +11,10 @@ export const hexToString = (hexToConvert: string) => {
 	}
 	return str.substring(1, str.length);
 }
-  
+
+export const roundedPrices = (amount : string) => {
+	const divider = 1000000000000000000
+	const parsedPrice = (parseInt(amount)/divider).toFixed(3)
+    const roundedPrice = (parseFloat(parsedPrice)*100)/100;
+	return roundedPrice
+}
