@@ -32,11 +32,11 @@ export class NftEntity implements Entity {
 
     public price?: string;
 
-    public roundedPrice?: number;
+    public priceRounded?: number;
 
     public priceTiime?: string;
 
-    public roundedPriceTiime?: number;
+    public priceTiimeRounded?: number;
 
     public listed: number;
 
