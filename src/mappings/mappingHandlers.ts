@@ -16,6 +16,10 @@ import {
     setMarketplaceCommissionFeeHandler,
     setMarketplaceUriHandler,
     setMarketplaceLogoUriHandler,
+    addAccountToAllowListHandler,
+    addAccountToDisallowListHandler,
+    removeAccountFromAllowListHandler,
+    removeAccountFromDisallowListHandler,
     lockSerieHandler,
     setNFTIpfsHandler,
     createFromNftHandler,
@@ -43,6 +47,10 @@ extrinsicDispatcher.add('capsules', 'remove', removeCapsuleHandler)
 extrinsicDispatcher.add('capsules', 'addFunds', addFundsHandler)
 extrinsicDispatcher.add('capsules', 'setIpfsReference', setCapsuleIpfsHandler)
 extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
+extrinsicDispatcher.add('marketplace', 'addAccountToAllowList', addAccountToAllowListHandler)
+extrinsicDispatcher.add('marketplace', 'addAccountToDisallowList', addAccountToDisallowListHandler)
+extrinsicDispatcher.add('marketplace', 'removeAccountFromAllowList', removeAccountFromAllowListHandler)
+extrinsicDispatcher.add('marketplace', 'removeAccountFromDisallowList', removeAccountFromDisallowListHandler)
 extrinsicDispatcher.add('marketplace', 'create', createMarketplaceHandler)
 extrinsicDispatcher.add('marketplace', 'list', listHandler)
 extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)

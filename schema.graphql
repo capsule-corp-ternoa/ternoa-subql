@@ -75,6 +75,8 @@ type MarketplaceEntity @entity {
   commissionFee: String!
   name: String!
   uri: String
+  allowList: [String]!
+  disallowList: [String]!
   logoUri: String
   createdAt: Date!
   updatedAt: Date!
