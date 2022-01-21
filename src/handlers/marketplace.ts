@@ -23,6 +23,8 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         record.owner = owner.toString()
         if (uri) record.uri = formatString(uri.toString())
         if (logoUri) record.logoUri = formatString(logoUri.toString())
+        record.allowList = []
+        record.disallowList = []
         record.createdAt = date
         record.updatedAt = date
         await record.save()
@@ -200,5 +202,119 @@ export const setMarketplaceLogoUriHandler: ExtrinsicHandler = async (call, extri
   }else{
     logger.error('marketplace change logo uri error at block: ' + commonExtrinsicData.blockId);
     logger.error('marketplace change logo uri error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const addAccountToAllowListHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, accountId] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+      logger.info('Adding account to allow list for Marketplace id - ' + id.toString());
+      const record = await MarketplaceEntity.get(id.toString())
+      if (record !== undefined){
+          record.allowList.push(accountId.toString())
+          record.updatedAt = date
+          await record.save()
+      }else{
+        logger.error('Add account to allow list error: for Marketplace id - ' + id.toString() + " at block " + commonExtrinsicData.blockId);
+        logger.error('Add account to allow list error detail: Marketplace not found in db');
+      }
+    }catch(e){
+      logger.error('marketplace add account to allow list error at block: ' + commonExtrinsicData.blockId);
+      logger.error('marketplace add account to allow list error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace add account to allow list error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace add account to allow list error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const addAccountToDisallowListHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, accountId] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+      logger.info('Adding account to disallow list for Marketplace id - ' + id.toString());
+      const record = await MarketplaceEntity.get(id.toString())
+      if (record !== undefined){
+          record.disallowList.push(accountId.toString())
+          record.updatedAt = date
+          await record.save()
+      }else{
+        logger.error('Add account to disallow list error: for Marketplace id - ' + id.toString() + " at block " + commonExtrinsicData.blockId);
+        logger.error('Add account to disallow list error detail: Marketplace not found in db');
+      }
+    }catch(e){
+      logger.error('marketplace add account to disallow list error at block: ' + commonExtrinsicData.blockId);
+      logger.error('marketplace add account to disallow list error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace add account to disallow list error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace add account to disallow list error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const removeAccountFromAllowListHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, accountId] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+      logger.info('Removing account from allow list for Marketplace id - ' + id.toString());
+      const record = await MarketplaceEntity.get(id.toString())
+      if (record !== undefined){
+        const firstIndex = record.allowList.indexOf(accountId.toString())
+        if (firstIndex !== -1){
+          record.allowList.filter((_x: string,i: number) => i !== firstIndex)
+          record.updatedAt = date
+          await record.save()
+        }
+      }else{
+        logger.error('Remove account from allow list error: for Marketplace id - ' + id.toString() + " at block " + commonExtrinsicData.blockId);
+        logger.error('Remove account from allow list error detail: Marketplace not found in db');
+      }
+    }catch(e){
+      logger.error('marketplace remove account from allow list error at block: ' + commonExtrinsicData.blockId);
+      logger.error('marketplace remove account from allow list error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace remove account from allow list error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace remove account from allow list error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const removeAccountFromDisallowListHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
+  const { extrinsic: _extrinsic, events } = extrinsic
+  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
+  const [id, accountId] = call.args
+  if (commonExtrinsicData.isSuccess === 1){
+    try {
+      logger.info('Removing account from disallow list for Marketplace id - ' + id.toString());
+      const record = await MarketplaceEntity.get(id.toString())
+      if (record !== undefined){
+        const firstIndex = record.disallowList.indexOf(accountId.toString())
+        if (firstIndex !== -1){
+          record.disallowList.filter((_x: string,i: number) => i !== firstIndex)
+          record.updatedAt = date
+          await record.save()
+        }
+      }else{
+        logger.error('Remove account from disallow list error: for Marketplace id - ' + id.toString() + " at block " + commonExtrinsicData.blockId);
+        logger.error('Remove account from disallow list error detail: Marketplace not found in db');
+      }
+    }catch(e){
+      logger.error('marketplace remove account from disallow list error at block: ' + commonExtrinsicData.blockId);
+      logger.error('marketplace remove account from disallow list error detail: ' + e);
+    }
+  }else{
+    logger.error('marketplace remove account from disallow list error at block: ' + commonExtrinsicData.blockId);
+    logger.error('marketplace remove account from disallow list error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
   }
 }

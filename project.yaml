@@ -144,6 +144,34 @@ dataSources:
           filter:
             specVersion: [42, 42]
             module: marketplace
+            method: addAccountToAllowList
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: addAccountToDisallowList
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: removeAccountFromAllowList
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
+            method: removeAccountFromDisallowList
+
+        - handler: handleCall
+          kind: substrate/CallHandler
+          filter:
+            specVersion: [42]
+            module: marketplace
             method: buy
 
         - handler: handleCall
