@@ -2,7 +2,7 @@ import { getCommonExtrinsicData, insertDataToEntity, updateAccount } from '../he
 import { ExtrinsicHandler } from './types'
 import { NftEntity } from "../types/models/NftEntity";
 import { SerieEntity } from '../types';
-import { nftTransferEntityHandler, treasuryEventHandler } from '.';
+import { genericTransferHandler, nftTransferEntityHandler } from '.';
 import { Balance } from '@polkadot/types/interfaces';
 import { formatString } from '../utils';
 
@@ -13,12 +13,8 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
   const [nftIpfs, capsuleIpfs, _seriesId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     const methodEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "CapsuleCreated")
+    const capsuleDepositEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "Deposit")
     const nftCreatedEvents = extrinsic.events.filter(x => x.event.section === "nfts" && x.event.method === "Created")
-    const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
-      (i < extrinsic.events.length - 1 ) && 
-      extrinsic.events[i+1].event.section === "nfts" &&
-      extrinsic.events[i+1].event.method === "Created"
-    )
     const event = methodEvents[call.batchMethodIndex || 0]
     const nftEvent = nftCreatedEvents[call.batchMethodIndex || 0]
     if (event && nftEvent){
@@ -60,9 +56,10 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
-      // Record Treasury Event
-      if (treasuryEventsForMethodEvents[call.batchMethodIndex || 0]){
-        await treasuryEventHandler(treasuryEventsForMethodEvents[call.batchMethodIndex || 0], signer, commonExtrinsicData)
+      // Record Deposit Event
+      if (capsuleDepositEvents[call.batchMethodIndex || 0]){
+        const [amount] = capsuleDepositEvents[call.batchMethodIndex || 0].event.data
+        await genericTransferHandler(signer.toString(), "Capsule deposit", amount, commonExtrinsicData)
       }
       // Update concerned accounts
       await updateAccount(signer, call, extrinsic);
@@ -84,6 +81,7 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
   if (commonExtrinsicData.isSuccess === 1){
     logger.info('conversion to capsule :' + nftId);
     const methodEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "CapsuleCreated")
+    const capsuleDepositEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "Deposit")
     const event = methodEvents[call.batchMethodIndex || 0]
     if (event){
       const [owner, _nftId, balance] = event.event.data;
@@ -104,6 +102,11 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
           record.frozenCaps = (balance as Balance).toBigInt().toString()
           record.updatedAt = date
           await record.save()
+          // Record Deposit Event
+          if (capsuleDepositEvents[call.batchMethodIndex || 0]){
+            const [amount] = capsuleDepositEvents[call.batchMethodIndex || 0].event.data
+            await genericTransferHandler(signer.toString(), "Capsule deposit", amount, commonExtrinsicData)
+          }
           // Update concerned accounts
           await updateAccount(signer, call, extrinsic);
         } catch (e) {
@@ -131,6 +134,9 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
   const [nftId] = call.args
   if (commonExtrinsicData.isSuccess === 1){
     logger.info('revert capsule to nft :' + nftId);
+    const methodEvents = extrinsic.events.filter(x => x.event.section === "capsules" && x.event.method === "CapsuleRemoved")
+    const event = methodEvents[call.batchMethodIndex || 0]
+    const [amount] = event.event.data
     // retieve the nft
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
@@ -142,6 +148,8 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
         record.frozenCaps = "0"
         record.updatedAt = date
         await record.save()
+        // Record Deposit returned Event
+        await genericTransferHandler("Capsule deposit returned", signer.toString(), amount, commonExtrinsicData)
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
       } catch (e) {
@@ -170,6 +178,8 @@ export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promis
         record.frozenCaps = (BigInt(record.frozenCaps) + (amount as Balance).toBigInt()).toString()
         record.updatedAt = date
         await record.save()
+        // Record Deposit added Event
+        await genericTransferHandler(signer.toString(), "Capsule deposit add funds", amount, commonExtrinsicData)
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
       } catch (e) {

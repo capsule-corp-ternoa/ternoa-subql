@@ -1,7 +1,7 @@
 import { getCommonExtrinsicData, updateAccount } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { MarketplaceEntity } from '../types';
-import { treasuryEventHandler } from '.';
+import { genericTransferHandler } from '.';
 import { formatString } from '../utils';
 
 export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
@@ -10,11 +10,6 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   if (commonExtrinsicData.isSuccess === 1){
     const methodEvents = extrinsic.events.filter(x => x.event.section === "marketplace" && x.event.method === "MarketplaceCreated")
-    const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
-      (i < extrinsic.events.length - 1 ) && 
-      extrinsic.events[i+1].event.section === "marketplace" &&
-      extrinsic.events[i+1].event.method === "MarketplaceCreated"
-    )
     const event = methodEvents[call.batchMethodIndex || 0]
     if (event){
       const [kind, commissionFee, name, uri, logoUri] = call.args
@@ -33,10 +28,9 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         await record.save()
         logger.info("new marketplace details: " + JSON.stringify(record))
         // Record Treasury Event
-        const treasuryEvent = treasuryEventsForMethodEvents[call.batchMethodIndex || 0]
-        if (treasuryEvent){
-          await treasuryEventHandler(treasuryEvent, signer, commonExtrinsicData)
-        }
+        api.query.marketplace.marketplaceMintFee(async (balance: any) => {
+          await genericTransferHandler(signer.toString(), 'Treasury', balance, commonExtrinsicData)          
+        })
         // Update concerned accounts
         await updateAccount(signer, call, extrinsic);
       }catch(e){

@@ -5,7 +5,7 @@ import { NftEntity } from "../types/models/NftEntity";
 import { nftTransferEntityHandler } from './nftTransfer';
 import { SerieEntity } from '../types';
 import { Balance } from '@polkadot/types/interfaces';
-import { treasuryEventHandler } from '.';
+import { genericTransferHandler } from '.';
 import { formatString, roundPrice} from '../utils';
 
 export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
@@ -55,7 +55,8 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
         // Record Treasury Event
         if (treasuryEventsForMethodEvents[i]){
-          await treasuryEventHandler(treasuryEventsForMethodEvents[i], signer, commonExtrinsicData, i)
+          const [amount] = treasuryEventsForMethodEvents[i].event.data
+          await genericTransferHandler(signer.toString(), 'Treasury', amount, commonExtrinsicData)
         }
       }
       // Update concerned accounts
