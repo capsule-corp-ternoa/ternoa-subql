@@ -1,6 +1,9 @@
 export const isHex = (str: string) => {
-    const regex = /[0-9A-Fa-f]{6}/g;
-    return regex.test(str)
+	if (str.length > 1 && str.substring(0,2) === "0x"){
+		return /^[A-F0-9]+$/i.test(str.substring(2))
+	}else{
+		return /^[A-F0-9]+$/i.test(str)
+	}
 }
 
 export const isNumeric = (str: string) => {
@@ -18,6 +21,19 @@ export const hexToString = (hexToConvert: string) => {
 	return str;
 }
 
+export const formatString = (str: string) => {
+	let result = str
+	result = (str.length > 1 && str.substring(0,2) === "0x") ? str.substring(2) : str
+	if (isNumeric(result)) return result
+	if (isHex(result)) result = hexToString(result)
+	// if (JSON.stringify(result).indexOf('u0000') !== -1){
+	// 	result = JSON.stringify(result).split("u0000").join('')
+	// 		.split("\\").join('')
+	// 		.split("\"").join('')
+	// }
+	return result
+}
+
 export const roundPrice = (amount : string) => {
 	try{
 		if (!amount || amount.length === 0 || !isNumeric(amount)) throw new Error()
@@ -28,16 +44,4 @@ export const roundPrice = (amount : string) => {
 	}catch{
 		return null
 	}
-}
-
-export const formatString = (str: string) => {
-	let result = str
-	if (isNumeric(result)) return result
-	if (isHex(result)) result = hexToString(result)
-	if (JSON.stringify(result).indexOf('u0000') !== -1){
-		result = JSON.stringify(result).split("u0000").join('')
-			.split("\\").join('')
-			.split("\"").join('')
-	}
-	return result
 }
