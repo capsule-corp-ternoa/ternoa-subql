@@ -24,6 +24,10 @@ export class MarketplaceEntity implements Entity {
 
     public uri?: string;
 
+    public allowList: string[];
+
+    public disallowList: string[];
+
     public logoUri?: string;
 
     public createdAt: Date;
