@@ -275,8 +275,9 @@ export const removeAccountFromAllowListHandler: ExtrinsicHandler = async (call, 
       logger.info('Removing account from allow list for Marketplace id - ' + id.toString());
       const record = await MarketplaceEntity.get(id.toString())
       if (record !== undefined){
-        if (record.allowList.includes(accountId.toString())){
-          record.allowList = record.allowList.filter((x: string) => x !== accountId.toString())
+        const firstIndex = record.allowList.indexOf(accountId.toString())
+        if (firstIndex !== -1){
+          record.allowList.filter((_x: string,i: number) => i !== firstIndex)
           record.updatedAt = date
           await record.save()
         }
@@ -304,8 +305,9 @@ export const removeAccountFromDisallowListHandler: ExtrinsicHandler = async (cal
       logger.info('Removing account from disallow list for Marketplace id - ' + id.toString());
       const record = await MarketplaceEntity.get(id.toString())
       if (record !== undefined){
-        if (record.disallowList.includes(accountId.toString())){
-          record.disallowList = record.disallowList.filter((x: string) => x !== accountId.toString())
+        const firstIndex = record.disallowList.indexOf(accountId.toString())
+        if (firstIndex !== -1){
+          record.disallowList.filter((_x: string,i: number) => i !== firstIndex)
           record.updatedAt = date
           await record.save()
         }
