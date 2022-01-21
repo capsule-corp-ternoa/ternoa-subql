@@ -62,7 +62,7 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
         await genericTransferHandler(signer.toString(), "Capsule deposit", amount, commonExtrinsicData)
       }
       // Update concerned accounts
-      await updateAccount(signer, call, extrinsic);
+      await updateAccount(signer);
     }else{
       logger.error('create capsule error at block:' + commonExtrinsicData.blockId);
       logger.error('create capsule error detail: event not found');
@@ -108,7 +108,7 @@ export const createFromNftHandler: ExtrinsicHandler = async (call, extrinsic): P
             await genericTransferHandler(signer.toString(), "Capsule deposit", amount, commonExtrinsicData)
           }
           // Update concerned accounts
-          await updateAccount(signer, call, extrinsic);
+          await updateAccount(signer);
         } catch (e) {
           logger.error('convert nft to capsule error:' + nftId);
           logger.error('convert nft to capsule error detail: ' + e);
@@ -151,7 +151,7 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
         // Record Deposit returned Event
         await genericTransferHandler("Capsule deposit returned", signer.toString(), amount, commonExtrinsicData)
         // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
       } catch (e) {
         logger.error('revert capsule to nft error:' + nftId);
         logger.error('revert capsule to nft error detail: ' + e);
@@ -181,7 +181,7 @@ export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promis
         // Record Deposit added Event
         await genericTransferHandler(signer.toString(), "Capsule deposit add funds", amount, commonExtrinsicData)
         // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
       } catch (e) {
         logger.error('add funds to capsule error:' + nftId);
         logger.error('add funds to capsule error detail: ' + e);
@@ -211,7 +211,7 @@ export const setCapsuleIpfsHandler: ExtrinsicHandler = async (call, extrinsic): 
         await record.save()
         logger.info("capsule ipfs change: " + JSON.stringify(oldCapsuleIpfs) + " --> " + JSON.stringify(record.capsuleIpfs))
         // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
       } catch (e) {
         logger.error('set capsule ipfs error:' + nftId);
         logger.error('set capsule ipfs error detail: ' + e);

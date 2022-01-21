@@ -33,7 +33,7 @@ export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrin
         await record.save()
         logger.info("add associated account: " + accountName + " --> " + accountValue)
         // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
     } catch (e) {
         logger.error('add associated account error at block: ' + commonExtrinsicData.blockId);
         logger.error('add associated account error detail: ' + e);

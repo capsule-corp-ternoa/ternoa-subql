@@ -1,7 +1,7 @@
 import { AccountEntity } from "../types/models/AccountEntity";
 import { Balance } from "@polkadot/types/interfaces";
 
-export const updateAccount = async (user: string, call, extrinsic) => {
+export const updateAccount = async (user: string) => {
   try {
     const date = new Date()
     // retrieve the user

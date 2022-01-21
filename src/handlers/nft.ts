@@ -60,7 +60,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         }
       }
       // Update concerned accounts
-      await updateAccount(signer, call, extrinsic);
+      await updateAccount(signer);
     }
   }else{
     logger.error('Create Nft error' + commonExtrinsicData.blockHash);
@@ -102,7 +102,7 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
         record.updatedAt = date
         await record.save()
         // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
       } catch (e) {
         logger.error('list nft error:' + nftId);
         logger.error('list nft error detail: ' + e);
@@ -136,7 +136,7 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       record.updatedAt = date
       await record.save()
       // Update concerned accounts
-      await updateAccount(signer, call, extrinsic);
+      await updateAccount(signer);
     }
   }else{
     logger.error('unlist nft error:' + nftId);
@@ -212,7 +212,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "transfer")
-      await updateAccount(oldOwner, call, extrinsic);
+      await updateAccount(oldOwner);
     }
   }else{
     logger.error('Transfer error, Nft id:' + nftId + '-- block' + commonExtrinsicData.blockHash);
@@ -237,7 +237,7 @@ export const burnHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
       await record.save()
       // Record NFT Transfer
       await nftTransferEntityHandler(record, record.owner, commonExtrinsicData, "burn")
-      await updateAccount(signer, call, extrinsic);
+      await updateAccount(signer);
     }
   }else{
     logger.error('burn failed, Nft id' + nftId + ' block' + commonExtrinsicData.blockHash);
@@ -260,7 +260,7 @@ export const lockSerieHandler: ExtrinsicHandler = async (call, extrinsic): Promi
         record.locked = true
         record.updatedAt = date
         await record.save()
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
       } catch (e) {
         logger.error('locking serie error:' + seriesId);
         logger.error('locking serie error detail: ' + e);
@@ -287,7 +287,7 @@ export const setNFTIpfsHandler: ExtrinsicHandler = async (call, extrinsic): Prom
           record.updatedAt = date
           await record.save()
           logger.info("NFT change Ipfs: " + JSON.stringify(oldIpfs) + " --> " + JSON.stringify(record.nftIpfs))
-          await updateAccount(signer, call, extrinsic);
+          await updateAccount(signer);
         }else{
           logger.error('NFT change Ipfs error, NFT id not found at block : ' + commonExtrinsicData.blockId);
         }
