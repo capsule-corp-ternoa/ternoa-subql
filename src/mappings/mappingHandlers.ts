@@ -2,7 +2,6 @@ import {SubstrateExtrinsic} from "@subql/types";
 import { ExtrinsicDispatcher } from '../dispatchers'
 import {
     transferHandler,
-    transferTiimeHandler,
     listHandler,
     unlistHandler,
     createHandler,
@@ -34,8 +33,6 @@ import {
 const extrinsicDispatcher = new ExtrinsicDispatcher()
 extrinsicDispatcher.add('balances', 'transfer', transferHandler)
 extrinsicDispatcher.add('balances', 'transferKeepAlive', transferHandler)
-extrinsicDispatcher.add('tiimeBalances', 'transfer', transferTiimeHandler)
-extrinsicDispatcher.add('tiimeBalances', 'transferKeepAlive', transferTiimeHandler)
 extrinsicDispatcher.add('nfts', 'create', createHandler)
 extrinsicDispatcher.add('nfts', 'burn', burnHandler)
 extrinsicDispatcher.add('nfts', 'transfer', NFTtransferHandler)

@@ -33,8 +33,6 @@ type NftEntity @entity {
   currency: String! #the currency of the transfer
   price: String #the price of the nft
   priceRounded:Float #the rounded price of the nft
-  priceTiime: String #the price of the nft
-  priceTiimeRounded:Float #the rounded price of the nft in tiime
   listed: Int!
   isLocked: Boolean!
   timestampBurn: Date @index #when nft is burned
@@ -63,7 +61,6 @@ type AccountEntity @entity {
   capsAmount: String #transferable
   capsAmountFrozen: String
   capsAmountTotal: String
-  tiimeAmount: String
   createdAt: Date!
   updatedAt: Date!
 }

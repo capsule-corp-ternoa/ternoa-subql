@@ -10,7 +10,7 @@ export const updateAccount = async (user: string) => {
       record = new AccountEntity(user)
       record.createdAt = date
     }
-    await api.query.system.account(user, ({ data: balance })  =>  {
+    await api.query.system.account(user, async ({ data: balance })  =>  {
       try{
         const balanceFrozenFee = balance.feeFrozen.toBigInt()
         const balanceFrozenMisc = balance.miscFrozen.toBigInt()
@@ -22,15 +22,12 @@ export const updateAccount = async (user: string) => {
         record.capsAmount = transferable.toString();
         record.capsAmountFrozen = frozen.toString();
         record.capsAmountTotal = total.toString();
+        record.updatedAt = date
+        await record.save();
       }catch(err){
         throw err
       }
     });
-    await api.query.tiimeAccountStore.account(user, async (balance: any) => {
-      record.tiimeAmount = (balance.free as Balance).toBigInt().toString();
-    });
-    record.updatedAt = date
-    await record.save();
   } catch (e) {
     logger.error(e.toString());
   }

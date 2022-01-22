@@ -20,8 +20,6 @@ export class AccountEntity implements Entity {
 
     public capsAmountTotal?: string;
 
-    public tiimeAmount?: string;
-
     public createdAt: Date;
 
     public updatedAt: Date;

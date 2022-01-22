@@ -59,20 +59,6 @@ dataSources:
           kind: substrate/CallHandler
           filter:
             specVersion: [42, 42]
-            module: tiimeBalances
-            method: transfer
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            specVersion: [42, 42]
-            module: tiimeBalances
-            method: transferKeepAlive
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            specVersion: [42, 42]
             module: nfts
             method: create
 

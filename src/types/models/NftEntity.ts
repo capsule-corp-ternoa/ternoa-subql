@@ -34,10 +34,6 @@ export class NftEntity implements Entity {
 
     public priceRounded?: number;
 
-    public priceTiime?: string;
-
-    public priceTiimeRounded?: number;
-
     public listed: number;
 
     public isLocked: boolean;
