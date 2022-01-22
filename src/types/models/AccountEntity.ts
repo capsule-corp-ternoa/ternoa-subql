@@ -20,6 +20,12 @@ export class AccountEntity implements Entity {
 
     public capsAmountTotal?: string;
 
+    public capsAmountRounded?: number;
+
+    public capsAmountFrozenRounded?: number;
+
+    public capsAmountTotalRounded?: number;
+
     public createdAt: Date;
 
     public updatedAt: Date;

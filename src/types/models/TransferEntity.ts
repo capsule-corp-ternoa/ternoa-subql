@@ -36,6 +36,8 @@ export class TransferEntity implements Entity {
 
     public amount: string;
 
+    public amountRounded: number;
+
 
     async save(): Promise<void>{
         let id = this.id;

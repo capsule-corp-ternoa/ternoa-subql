@@ -1,5 +1,5 @@
 import { AccountEntity } from "../types/models/AccountEntity";
-import { Balance } from "@polkadot/types/interfaces";
+import { roundPrice } from "../utils";
 
 export const updateAccount = async (user: string) => {
   try {
@@ -22,6 +22,9 @@ export const updateAccount = async (user: string) => {
         record.capsAmount = transferable.toString();
         record.capsAmountFrozen = frozen.toString();
         record.capsAmountTotal = total.toString();
+        record.capsAmountRounded = roundPrice(record.capsAmount)
+        record.capsAmountFrozenRounded = roundPrice(record.capsAmountFrozen)
+        record.capsAmountTotalRounded = roundPrice(record.capsAmountTotal)
         record.updatedAt = date
         await record.save();
       }catch(err){

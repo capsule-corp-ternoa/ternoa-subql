@@ -1,4 +1,5 @@
 import { NftEntity, NftTransferEntity } from "../types";
+import { roundPrice } from "../utils";
 
 export const nftTransferEntityHandler = async (
     record: NftEntity, 
@@ -29,6 +30,7 @@ export const nftTransferEntityHandler = async (
         nftTransferRecord.timestamp = commonExtrinsicData.timestamp
         nftTransferRecord.typeOfTransaction = typeOfTransaction
         nftTransferRecord.amount = amount
+        nftTransferRecord.amountRounded = roundPrice(nftTransferRecord.amount)
         await nftTransferRecord.save()
     }catch(err){
         logger.error('record nft transfer error:' + commonExtrinsicData.hash);
