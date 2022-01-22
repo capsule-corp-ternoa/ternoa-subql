@@ -76,16 +76,8 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
   if (commonExtrinsicData.isSuccess === 1){
     logger.info('nftId:' + nftId + ':new List Nft ' + commonExtrinsicData.blockHash + ' (marketplaceId: ' + marketplaceId+")");
     let price = '';
-    let priceTiime = '';
     const priceObject = JSON.parse(_priceObject)
-    if (priceObject.caps) {
-      price = bnToBn(priceObject.caps).toString();
-    } else if (priceObject.tiime) {
-      priceTiime = bnToBn(priceObject.tiime).toString();
-    } else if (priceObject.combined !== undefined) {
-      price = bnToBn(priceObject.combined.caps).toString();
-      priceTiime = bnToBn(priceObject.combined.tiime).toString();
-    }
+    if (priceObject.caps) price = bnToBn(priceObject.caps).toString()
     // retieve the nft
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
@@ -96,8 +88,6 @@ export const listHandler: ExtrinsicHandler = async (call, extrinsic): Promise<vo
         const signer = _extrinsic.signer.toString()
         record.price = price
         record.priceRounded = roundPrice(record.price);
-        record.priceTiime = priceTiime
-        record.priceTiimeRounded = roundPrice(record.priceTiime);
         record.marketplaceId = marketplaceId
         record.updatedAt = date
         await record.save()
@@ -130,8 +120,6 @@ export const unlistHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
       const signer = _extrinsic.signer.toString()
       record.price = ""
       record.priceRounded = null
-      record.priceTiime = ""
-      record.priceTiimeRounded = null
       record.marketplaceId = null;
       record.updatedAt = date
       await record.save()
@@ -169,8 +157,6 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         record.isLocked = false;
         record.price = '';
         record.priceRounded = null;
-        record.priceTiime = '';
-        record.priceTiimeRounded = null;
         record.updatedAt = date
         await record.save()
         // Record NFT Transfer

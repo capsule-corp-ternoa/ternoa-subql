@@ -22,9 +22,6 @@ export const updateAccount = async (user: string) => {
       record.capsAmountFrozen = frozen.toString();
       record.capsAmountTotal = total.toString();
     });
-    await api.query.tiimeAccountStore.account(user, async (balance: any) => {
-      record.tiimeAmount = (balance.free as Balance).toBigInt().toString();
-    });
     record.updatedAt = date
     await record.save();
   } catch (e) {

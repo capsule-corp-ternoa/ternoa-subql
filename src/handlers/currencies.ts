@@ -13,14 +13,3 @@ export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promis
   await updateAccount(to.toString());
   await updateAccount(signer.toString());
 }
-
-export const transferTiimeHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
-  const { extrinsic: _extrinsic } = extrinsic
-  const signer = _extrinsic.signer.toString()
-  const [to, amount] = call.args
-  const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  await genericTransferHandler(signer.toString(), to.toString(), amount, commonExtrinsicData, 'TIIME')
-  // update account
-  await updateAccount(to.toString());
-  await updateAccount(signer);
-}
