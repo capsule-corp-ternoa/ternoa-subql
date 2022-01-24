@@ -32,6 +32,10 @@ export class NftTransferEntity implements Entity {
 
     public amount: string;
 
+    public amountRounded: number;
+
+    public marketplaceId?: string;
+
 
     async save(): Promise<void>{
         let id = this.id;

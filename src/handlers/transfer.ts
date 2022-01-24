@@ -2,6 +2,7 @@ import { insertDataToEntity } from "../helpers"
 import { TransferEntity } from "../types"
 import { Balance } from '@polkadot/types/interfaces';
 import { Codec } from "@polkadot/types/types";
+import { roundPrice } from "../utils";
 
 export const genericTransferHandler = async (
     from: string, 
@@ -28,6 +29,7 @@ export const genericTransferHandler = async (
         transferRecord.to = to
         transferRecord.currency = currency
         transferRecord.amount = (amount as Balance).toBigInt().toString();
+        transferRecord.amountRounded = roundPrice(transferRecord.amount)
         await transferRecord.save()
     }catch(err){
         logger.error('record transfer error at block number:' + commonExtrinsicData.blockId);

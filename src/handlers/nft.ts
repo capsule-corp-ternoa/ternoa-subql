@@ -48,6 +48,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         record.nftIpfs = formatString(offchain_uri.toString())
         record.isCapsule = false;
         record.frozenCaps = "0";
+        record.timestampCreate = commonExtrinsicData.timestamp
         record.createdAt = date
         record.updatedAt = date
         await record.save()
@@ -152,6 +153,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
       const record = await NftEntity.get(nftId.toString());
       if (record !== undefined) {
         const oldOwner = record.owner
+        const marketplaceId = record.marketplaceId
         record.owner = signer.toString();
         record.listed = 0;
         record.isLocked = false;
@@ -163,7 +165,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         const eventTransfer = transferEventsForMethodEvents[call.batchMethodIndex || 0]
         if (eventTransfer && eventTransfer.event && eventTransfer.event.data){
           const amount = (eventTransfer.event.data[2] as Balance).toBigInt().toString();
-          await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "sale", amount)
+          await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "sale", amount, marketplaceId)
         }else{
           logger.error('nft transaction error:' + commonExtrinsicData.blockHash);
         }
@@ -187,7 +189,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const [nftId, newOwner] = call.args
   if (commonExtrinsicData.isSuccess === 1){
-    logger.info('Transfer Nft id:' + nftId + '-- block' + commonExtrinsicData.blockHash);
+    logger.info('Transfer Nft id:' + nftId + ' -- block: ' + commonExtrinsicData.blockHash);
     let data = JSON.parse(JSON.stringify(newOwner))
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
@@ -201,7 +203,7 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
       await updateAccount(oldOwner);
     }
   }else{
-    logger.error('Transfer error, Nft id:' + nftId + '-- block' + commonExtrinsicData.blockHash);
+    logger.error('Transfer error, Nft id:' + nftId + ' -- block: ' + commonExtrinsicData.blockHash);
   }
 }
 

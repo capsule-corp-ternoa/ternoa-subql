@@ -17,6 +17,7 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
       const signer = extrinsic.extrinsic.signer.toString()
       try {
         const record = new MarketplaceEntity(id.toString())
+        if (record.id === "1") await createGenesisMarketplace()
         record.kind = kind.toString()
         record.name = formatString(name.toString())
         record.commissionFee = commissionFee.toString()
@@ -29,9 +30,13 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         record.updatedAt = date
         await record.save()
         logger.info("new marketplace details: " + JSON.stringify(record))
-        // Record Treasury Event
-        api.query.marketplace.marketplaceMintFee(async (balance: any) => {
-          await genericTransferHandler(signer.toString(), 'Treasury', balance, commonExtrinsicData)          
+        // Record Treasury Event // change get fees, with event data when possible
+        await api.query.marketplace.marketplaceMintFee(async (fee: any) => {
+          try{
+            await genericTransferHandler(signer.toString(), 'Treasury', fee, commonExtrinsicData)          
+          }catch(err){
+            logger.error('create marketplace get fee error, detail: ' + err);
+          }
         })
         // Update concerned accounts
         await updateAccount(signer);
@@ -213,6 +218,7 @@ export const addAccountToAllowListHandler: ExtrinsicHandler = async (call, extri
   if (commonExtrinsicData.isSuccess === 1){
     try {
       logger.info('Adding account to allow list for Marketplace id - ' + id.toString());
+      if (id.toString() === "0") await createGenesisMarketplace()
       const record = await MarketplaceEntity.get(id.toString())
       if (record !== undefined){
           record.allowList.push(accountId.toString())
@@ -240,6 +246,7 @@ export const addAccountToDisallowListHandler: ExtrinsicHandler = async (call, ex
   if (commonExtrinsicData.isSuccess === 1){
     try {
       logger.info('Adding account to disallow list for Marketplace id - ' + id.toString());
+      if (id.toString() === "0") await createGenesisMarketplace()
       const record = await MarketplaceEntity.get(id.toString())
       if (record !== undefined){
           record.disallowList.push(accountId.toString())
@@ -316,5 +323,36 @@ export const removeAccountFromDisallowListHandler: ExtrinsicHandler = async (cal
   }else{
     logger.error('marketplace remove account from disallow list error at block: ' + commonExtrinsicData.blockId);
     logger.error('marketplace remove account from disallow list error detail: isExtrinsicSuccess ' + commonExtrinsicData.isSuccess);
+  }
+}
+
+export const createGenesisMarketplace = async () => {
+  try{
+    let date = new Date()
+    let record = await MarketplaceEntity.get("0")
+    if (!record){
+      record = new MarketplaceEntity("0")
+      await api.query.marketplace.marketplaces(0, async (marketplaceInformation: any) => {
+        try{
+          const {kind, commission_fee, owner, name, uri, logo_uri} = JSON.parse(JSON.stringify(marketplaceInformation))
+          record.kind = kind.toString()
+          record.name = formatString(name.toString())
+          record.commissionFee = commission_fee.toString()
+          record.owner = owner.toString()
+          if (uri) record.uri = formatString(uri.toString())
+          if (logo_uri) record.logoUri = formatString(logo_uri.toString())
+          record.allowList = []
+          record.disallowList = []
+          record.createdAt = date
+          record.updatedAt = date
+          await record.save()
+          logger.info("genesis marketplace (id: 0) successfully created")
+        }catch(err){
+          throw err
+        }
+      })
+    }
+  }catch(err){
+    logger.error('Error when creating genesis marketplace 0, details : ' + err);
   }
 }

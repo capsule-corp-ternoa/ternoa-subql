@@ -51,6 +51,7 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       record.capsuleIpfs = formatString(capsuleIpfs.toString())
       record.isCapsule = true;
       record.frozenCaps = (balance as Balance).toBigInt().toString();
+      record.timestampCreate = commonExtrinsicData.timestamp
       record.createdAt = date
       record.updatedAt = date
       await record.save()
