@@ -40,6 +40,8 @@ export class NftEntity implements Entity {
 
     public timestampBurn?: Date;
 
+    public timestampCreate: Date;
+
     public owner: string;
 
     public creator: string;
@@ -89,6 +91,13 @@ export class NftEntity implements Entity {
     static async getByTimestampBurn(timestampBurn: Date): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'timestampBurn', timestampBurn);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
+    static async getByTimestampCreate(timestampCreate: Date): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'timestampCreate', timestampCreate);
       return records.map(record => NftEntity.create(record));
       
     }

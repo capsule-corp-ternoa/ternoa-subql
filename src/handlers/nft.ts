@@ -48,6 +48,7 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         record.nftIpfs = formatString(offchain_uri.toString())
         record.isCapsule = false;
         record.frozenCaps = "0";
+        record.timestampCreate = commonExtrinsicData.timestamp
         record.createdAt = date
         record.updatedAt = date
         await record.save()

@@ -37,6 +37,7 @@ type NftEntity @entity {
   listed: Int!
   isLocked: Boolean!
   timestampBurn: Date @index
+  timestampCreate: Date! @index
   owner: String! @index
   creator: String! @index
   marketplaceId: String
