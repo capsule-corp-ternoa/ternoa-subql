@@ -7,7 +7,10 @@ export const transferHandler: ExtrinsicHandler = async (call, extrinsic): Promis
   const signer = _extrinsic.signer.toString()
   const [to, amount] = call.args
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
-  await genericTransferHandler(signer.toString(), to.toString(), amount, commonExtrinsicData)
+  const methodEvents = extrinsic.events.filter(x => x.event.section === "balances" && x.event.method === "Transfer")
+  const event = methodEvents[call.batchMethodIndex || 0]
+  const extrinsicIndex = event.phase.isApplyExtrinsic ? event.phase.asApplyExtrinsic.toNumber() : 0
+  await genericTransferHandler(signer.toString(), to.toString(), amount, commonExtrinsicData, call.batchMethodIndex || 0, extrinsicIndex)
   logger.info('transfer');
   // update account
   await updateAccount(to.toString());

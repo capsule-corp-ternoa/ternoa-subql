@@ -57,7 +57,8 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
         // Record Treasury Event
         if (treasuryEventsForMethodEvents[i]){
           const [amount] = treasuryEventsForMethodEvents[i].event.data
-          await genericTransferHandler(signer.toString(), 'Treasury', amount, commonExtrinsicData)
+          const extrinsicIndex = treasuryEventsForMethodEvents[i].phase.isApplyExtrinsic ? treasuryEventsForMethodEvents[i].phase.asApplyExtrinsic.toNumber() : 0
+          await genericTransferHandler(signer.toString(), 'Treasury', amount, commonExtrinsicData, i, extrinsicIndex)
         }
       }
       // Update concerned accounts

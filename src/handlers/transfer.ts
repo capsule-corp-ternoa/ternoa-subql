@@ -19,15 +19,15 @@ export const genericTransferHandler = async (
         isSudo: number;
         batchIndex: number;
     },
-    currency: string = "CAPS",
-    i?: number,
+    eventIndex: number,
+    extrinsicIndex: number,
 ): Promise<void> => {
     try{
-        const transferRecord = new TransferEntity(`${commonExtrinsicData.hash}${i >- 1 ? `-${i}` : ""}`)
+        const transferRecord = new TransferEntity(commonExtrinsicData.blockId + "-" + extrinsicIndex + "-" + eventIndex)
         insertDataToEntity(transferRecord, commonExtrinsicData)
         transferRecord.from = from
         transferRecord.to = to
-        transferRecord.currency = currency
+        transferRecord.currency = "CAPS"
         transferRecord.amount = (amount as Balance).toBigInt().toString();
         transferRecord.amountRounded = roundPrice(transferRecord.amount)
         await transferRecord.save()

@@ -33,7 +33,8 @@ export const createMarketplaceHandler: ExtrinsicHandler = async (call, extrinsic
         // Record Treasury Event // change get fees, with event data when possible
         await api.query.marketplace.marketplaceMintFee(async (fee: any) => {
           try{
-            await genericTransferHandler(signer.toString(), 'Treasury', fee, commonExtrinsicData)          
+            const extrinsicIndex = event.phase.isApplyExtrinsic ? event.phase.asApplyExtrinsic.toNumber() : 0
+            await genericTransferHandler(signer.toString(), 'Treasury', fee, commonExtrinsicData, call.batchMethodIndex || 0, extrinsicIndex)          
           }catch(err){
             logger.error('create marketplace get fee error, detail: ' + err);
           }
