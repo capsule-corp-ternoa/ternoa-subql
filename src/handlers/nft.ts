@@ -13,57 +13,57 @@ export const createHandler: ExtrinsicHandler = async (call, extrinsic): Promise<
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const date = new Date()
   if (commonExtrinsicData.isSuccess === 1){
+    if (commonExtrinsicData.isBatch === 1) logger.info("NFT Create Batch handled")
     const methodEvents = extrinsic.events.filter(x => x.event.section === "nfts" && x.event.method === "Created")
-    const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => 
-      (i < extrinsic.events.length - 1 ) && 
-      extrinsic.events[i+1].event.section === "nfts" &&
-      extrinsic.events[i+1].event.method === "Created"
-    )
-    if (commonExtrinsicData.isBatch !== 1 || call.batchMethodIndex === 0){
-      if (commonExtrinsicData.isBatch === 1) logger.info("NFT Create Batch handled")
-      const signer = _extrinsic.signer.toString()
-      if (methodEvents.length === 0) logger.info("no nfts created events found in this extrinsic: " + extrinsic.extrinsic.hash.toString())
-      for (let i = 0; i < methodEvents.length; i++){
-        const event = methodEvents[i]
-        const [nftId, owner, seriesId, offchain_uri] = event.event.data;
-        const record = new NftEntity(nftId.toString())
-        insertDataToEntity(record, commonExtrinsicData)
-        let seriesString = formatString(seriesId.toString())
-        let serieRecord = await SerieEntity.get(seriesString)
-        if (!serieRecord){
-          serieRecord = new SerieEntity(seriesString)
-          serieRecord.owner = signer
-          serieRecord.locked = false
-          serieRecord.createdAt = date
-          serieRecord.updatedAt = date
-          await serieRecord.save()
-        }
-        record.currency = 'CAPS';
-        record.listed = 0;
-        record.isLocked = false;
-        record.owner = signer;
-        record.serieId = serieRecord.id;
-        record.creator = signer;
-        record.nftId = nftId.toString();
-        record.nftIpfs = formatString(offchain_uri.toString())
-        record.isCapsule = false;
-        record.frozenCaps = "0";
-        record.timestampCreate = commonExtrinsicData.timestamp
-        record.createdAt = date
-        record.updatedAt = date
-        await record.save()
-        // Record NFT Transfer
-        await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
-        // Record Treasury Event
-        if (treasuryEventsForMethodEvents[i]){
-          const [amount] = treasuryEventsForMethodEvents[i].event.data
-          const extrinsicIndex = treasuryEventsForMethodEvents[i].phase.isApplyExtrinsic ? treasuryEventsForMethodEvents[i].phase.asApplyExtrinsic.toNumber() : 0
-          await genericTransferHandler(signer.toString(), 'Treasury', amount, commonExtrinsicData, i, extrinsicIndex)
-        }
+    const treasuryEventsOriginalIndexes:number[] = []
+    const treasuryEventsForMethodEvents = extrinsic.events.filter((_,i) => {
+      if (i < extrinsic.events.length - 1 && extrinsic.events[i+1].event.section === "nfts" && extrinsic.events[i+1].event.method === "Created"){
+        treasuryEventsOriginalIndexes.push(i)
+        return true
       }
-      // Update concerned accounts
-      await updateAccount(signer);
+      return false
+    })
+    const signer = _extrinsic.signer.toString()
+    if (methodEvents.length === 0) logger.info("no nfts created events found in this extrinsic: " + extrinsic.extrinsic.hash.toString())
+    const event = methodEvents[call.batchMethodIndex || 0]
+    const treasuryEvent = treasuryEventsForMethodEvents[call.batchMethodIndex || 0]
+    const [nftId, owner, seriesId, offchain_uri] = event.event.data;
+    const record = new NftEntity(nftId.toString())
+    insertDataToEntity(record, commonExtrinsicData)
+    let seriesString = formatString(seriesId.toString())
+    let serieRecord = await SerieEntity.get(seriesString)
+    if (!serieRecord){
+      serieRecord = new SerieEntity(seriesString)
+      serieRecord.owner = signer
+      serieRecord.locked = false
+      serieRecord.createdAt = date
+      serieRecord.updatedAt = date
+      await serieRecord.save()
     }
+    record.currency = 'CAPS';
+    record.listed = 0;
+    record.isLocked = false;
+    record.owner = signer;
+    record.serieId = serieRecord.id;
+    record.creator = signer;
+    record.nftId = nftId.toString();
+    record.nftIpfs = formatString(offchain_uri.toString())
+    record.isCapsule = false;
+    record.frozenCaps = "0";
+    record.timestampCreate = commonExtrinsicData.timestamp
+    record.createdAt = date
+    record.updatedAt = date
+    await record.save()
+    // Record NFT Transfer
+    await nftTransferEntityHandler(record, "null address", commonExtrinsicData, "creation")
+    // Record Treasury Event
+    if (treasuryEvent){
+      const [amount] = treasuryEvent.event.data
+      const extrinsicIndex = treasuryEvent.phase.isApplyExtrinsic ? treasuryEvent.phase.asApplyExtrinsic.toNumber() : 0
+      await genericTransferHandler(signer.toString(), 'Treasury', amount, commonExtrinsicData, treasuryEventsOriginalIndexes[call.batchMethodIndex || 0], extrinsicIndex)
+    }
+    // Update concerned accounts
+    await updateAccount(signer);
   }else{
     logger.error('Create Nft error' + commonExtrinsicData.blockHash);
     logger.error('Create Nft is extrinsic success: ' + commonExtrinsicData.isSuccess);

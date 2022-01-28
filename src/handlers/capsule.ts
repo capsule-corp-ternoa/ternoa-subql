@@ -29,12 +29,9 @@ export const createCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
       }
       return false
     })
-
     const event = methodEvents[call.batchMethodIndex || 0]
     const nftEvent = nftCreatedEvents[call.batchMethodIndex || 0]
     const treasuryEvent = treasuryEventsForNFTsEvents[call.batchMethodIndex || 0]
-
-
     if (event && nftEvent){
       const signer = _extrinsic.signer.toString()
       const [_owner, nftId, balance] = event.event.data;
