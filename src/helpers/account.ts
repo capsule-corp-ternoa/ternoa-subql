@@ -1,5 +1,5 @@
 import { AccountEntity } from "../types/models/AccountEntity";
-import { roundPrice } from "../utils";
+import { roundPrice } from "../helpers";
 
 export const updateAccount = async (user: string) => {
   try {

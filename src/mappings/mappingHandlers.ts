@@ -1,65 +1,89 @@
-import {SubstrateExtrinsic} from "@subql/types";
-import { ExtrinsicDispatcher } from '../dispatchers'
-import {
-    transferHandler,
-    listHandler,
-    unlistHandler,
-    createHandler,
-    burnHandler,
-    buyHandler,
-    NFTtransferHandler,
-    createMarketplaceHandler,
-    setMarketplaceOwnerHandler,
-    setMarketplaceNameHandler,
-    setMarketplaceTypeHandler,
-    setMarketplaceCommissionFeeHandler,
-    setMarketplaceUriHandler,
-    setMarketplaceLogoUriHandler,
-    addAccountToAllowListHandler,
-    addAccountToDisallowListHandler,
-    removeAccountFromAllowListHandler,
-    removeAccountFromDisallowListHandler,
-    lockSerieHandler,
-    setNFTIpfsHandler,
-    createFromNftHandler,
-    createCapsuleHandler,
-    removeCapsuleHandler,
-    addFundsHandler,
-    setCapsuleIpfsHandler,
-    addAssociatedAccountHandler,
-} from '../handlers'
+import { SubstrateEvent } from "@subql/types";
+import * as eventHandlers from '../eventHandlers'
 
-// init and populate extrinsicDispatcher for specific extrinsic to record
-const extrinsicDispatcher = new ExtrinsicDispatcher()
-extrinsicDispatcher.add('balances', 'transfer', transferHandler)
-extrinsicDispatcher.add('balances', 'transferKeepAlive', transferHandler)
-extrinsicDispatcher.add('nfts', 'create', createHandler)
-extrinsicDispatcher.add('nfts', 'burn', burnHandler)
-extrinsicDispatcher.add('nfts', 'transfer', NFTtransferHandler)
-extrinsicDispatcher.add('nfts', 'finishSeries', lockSerieHandler)
-extrinsicDispatcher.add('nfts', 'setIpfsReference', setNFTIpfsHandler)
-extrinsicDispatcher.add('capsules', 'create', createCapsuleHandler)
-extrinsicDispatcher.add('capsules', 'createFromNft', createFromNftHandler)
-extrinsicDispatcher.add('capsules', 'remove', removeCapsuleHandler)
-extrinsicDispatcher.add('capsules', 'addFunds', addFundsHandler)
-extrinsicDispatcher.add('capsules', 'setIpfsReference', setCapsuleIpfsHandler)
-extrinsicDispatcher.add('marketplace', 'buy', buyHandler)
-extrinsicDispatcher.add('marketplace', 'addAccountToAllowList', addAccountToAllowListHandler)
-extrinsicDispatcher.add('marketplace', 'addAccountToDisallowList', addAccountToDisallowListHandler)
-extrinsicDispatcher.add('marketplace', 'removeAccountFromAllowList', removeAccountFromAllowListHandler)
-extrinsicDispatcher.add('marketplace', 'removeAccountFromDisallowList', removeAccountFromDisallowListHandler)
-extrinsicDispatcher.add('marketplace', 'create', createMarketplaceHandler)
-extrinsicDispatcher.add('marketplace', 'list', listHandler)
-extrinsicDispatcher.add('marketplace', 'unlist', unlistHandler)
-extrinsicDispatcher.add('marketplace', 'setCommissionFee', setMarketplaceCommissionFeeHandler)
-extrinsicDispatcher.add('marketplace', 'setLogoUri', setMarketplaceLogoUriHandler)
-extrinsicDispatcher.add('marketplace', 'setMarketType', setMarketplaceTypeHandler)
-extrinsicDispatcher.add('marketplace', 'setName', setMarketplaceNameHandler)
-extrinsicDispatcher.add('marketplace', 'setOwner', setMarketplaceOwnerHandler)
-extrinsicDispatcher.add('marketplace', 'setUri', setMarketplaceUriHandler)
-extrinsicDispatcher.add('associatedAccounts', 'setAltvrUsername', addAssociatedAccountHandler)
-
-export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
-    logger.info(`${extrinsic.extrinsic.method.section}_${extrinsic.extrinsic.method.method}`)
-    await extrinsicDispatcher.emit(extrinsic)
+export async function handleEvent(event: SubstrateEvent): Promise<void> {
+    const key = `${event.event.section}.${event.event.method}`
+    logger.info(key)
+    try{
+        switch(key){
+            case 'associatedAccounts.AltVRUsernameChanged':
+                await eventHandlers.altVRUsernameChangedHandler(event)
+                break;
+            case 'balances.Transfer':
+                await eventHandlers.transferHandler(event)
+                break;
+            case 'capsules.CapsuleFundsAdded':
+                await eventHandlers.capsulesFundsAddedHandler(event)
+                break;
+            case 'capsules.CapsuleIpfsReferenceChanged':
+                await eventHandlers.capsulesIpfsReferenceChangedHandler(event)
+                break;
+            case 'capsules.CapsuleRemoved':
+                await eventHandlers.capsulesRemovedHandler(event)
+                break;
+            case 'capsules.Created':
+                await eventHandlers.capsulesCreatedHandler(event)
+                break;
+            case 'marketplace.AccountAddedToAllowList':
+                await eventHandlers.accountAddedToAllowListHandler(event)
+                break;
+            case 'marketplace.AccountAddedToDisallowList':
+                await eventHandlers.accountAddedToDisallowListHandler(event)
+                break;
+            case 'marketplace.AccountRemovedFromAllowList':
+                await eventHandlers.accountRemovedFromAllowListHandler(event)
+                break;
+            case 'marketplace.AccountRemovedFromDisallowList':
+                await eventHandlers.accountRemovedFromDisallowListHandler(event)
+                break;
+            case 'marketplace.MarketplaceCreated':
+                await eventHandlers.marketplaceCreatedHandler(event)
+                break;
+            case 'marketplace.MarketplaceCommissionFeeChanged':
+                await eventHandlers.marketplaceCommissionFeeChangedHandler(event)
+                break;
+            case 'marketplace.MarketplaceDescriptionUpdated':
+                await eventHandlers.marketplaceDescriptionChangedHandler(event)
+                break;
+            case 'marketplace.MarketplaceLogoUriUpdated':
+                await eventHandlers.marketplaceLogoUriChangedHandler(event)
+                break;
+            case 'marketplace.MarketplaceTypeChanged':
+                await eventHandlers.marketplaceTypeChangedHandler(event)
+                break;
+            case 'marketplace.MarketplaceNameChanged':
+                await eventHandlers.marketplaceNameChangedHandler(event)
+                break;
+            case 'marketplace.MarketplaceChangedOwner':
+                await eventHandlers.marketplaceOwnerChangedHandler(event)
+                break;
+            case 'marketplace.MarketplaceUriUpdated':
+                await eventHandlers.marketplaceUriChangedHandler(event)
+                break;
+            case 'marketplace.NftListed':
+                await eventHandlers.marketplaceNftListedHandler(event)
+                break;
+            case 'marketplace.NftSold':
+                await eventHandlers.marketplaceNftSoldHandler(event)
+                break;
+            case 'nfts.Burned':
+                await eventHandlers.nftsBurnedHandler(event)
+                break;
+            case 'nfts.Created':
+                await eventHandlers.nftsCreatedHandler(event)
+                break;
+            case 'nfts.SeriesFinished':
+                await eventHandlers.nftsSeriesFinishedHandler(event)
+                break;
+            case 'nfts.Transfer':
+                await eventHandlers.nftsTransferHandler(event)
+                break;
+            default:
+                break;
+        }
+    }catch(err){
+        logger.error("Error in event " + key + " at block " + event.block.block.header.number.toString())
+        logger.error("Error detail " + err)
+        if (err.sql) logger.error("Error detail sql " + err.sql)
+    }
 }

@@ -20,11 +20,7 @@ export class TransferEntity implements Entity {
 
     public extrinsicId: string;
 
-    public isBatch: number;
-
-    public isSudo: number;
-
-    public isSuccess: number;
+    public isSuccess: boolean;
 
     public timestamp: Date;
 

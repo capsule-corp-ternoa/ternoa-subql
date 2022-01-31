@@ -30,6 +30,8 @@ export class MarketplaceEntity implements Entity {
 
     public logoUri?: string;
 
+    public description?: string;
+
     public createdAt: Date;
 
     public updatedAt: Date;
