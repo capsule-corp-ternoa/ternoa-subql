@@ -22,182 +22,123 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: utility
-            method: batch
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: utility
-            method: batchAll
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: sudo
-            method: sudo
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: balances
-            method: transfer
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: balances
-            method: transferKeepAlive
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: nfts
-            method: create
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: nfts
-            method: burn
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: nfts
-            method: transfer
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: nfts
-            method: finishSeries
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: nfts
-            method: setIpfsReference
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: capsules
-            method: create
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: capsules
-            method: createFromNft
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: capsules
-            method: remove
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: capsules
-            method: addFunds
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: capsules
-            method: setIpfsReference
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: addAccountToAllowList
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: addAccountToDisallowList
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: removeAccountFromAllowList
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: removeAccountFromDisallowList
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: buy
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: create
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: list
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: unlist
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: setCommissionFee
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: setLogoUri
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: setMarketType
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: setName
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: setOwner
-
-        - handler: handleCall
-          kind: substrate/CallHandler
-          filter:
-            module: marketplace
-            method: setUri
-
-        - handler: handleCall
-          kind: substrate/CallHandler
+        - handler: handleEvent
+          kind: substrate/EventHandler
           filter:
             module: associatedAccounts
-            method: setAltvrUsername
+            method: AltVRUsernameChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Transfer
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: capsules
+            method: CapsuleFundsAdded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: capsules
+            method: CapsuleIpfsReferenceChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: capsules
+            method: CapsuleRemoved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: capsules
+            method: Created
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: AccountAddedToAllowList
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: AccountAddedToDisallowList
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: AccountRemovedFromAllowList
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: AccountRemovedFromDisallowList
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceCommissionFeeChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceDescriptionUpdated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceLogoUriUpdated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceTypeChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceNameChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceChangedOwner
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceUriUpdated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NftListed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NftSold
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nfts
+            method: Burned
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nfts
+            method: Created
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nfts
+            method: SeriesFinished
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nfts
+            method: Transfer

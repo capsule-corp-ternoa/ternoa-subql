@@ -10,6 +10,11 @@ export type CommonEventData = {
     timestamp: Date;
 }
 
+export const getSigner = (event: SubstrateEvent):string => {
+    if (!event.extrinsic) throw new Error("Extrinsic (for signer) was not found")
+    return event.extrinsic.extrinsic.signer.toString()
+}
+
 export const getCommonEventData = (event: SubstrateEvent):CommonEventData => {
     const isSuccess = isEventSuccess(event)
     const blockId = event.block.block.header.number.toString()

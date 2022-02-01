@@ -6,7 +6,7 @@ export const updateAccount = async (user: string) => {
     const date = new Date()
     // retrieve the user
     let record = await AccountEntity.get(user);
-    if( record === undefined ){
+    if(record === undefined){
       record = new AccountEntity(user)
       record.createdAt = date
     }

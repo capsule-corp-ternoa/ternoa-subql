@@ -1,13 +1,13 @@
 import { SubstrateEvent } from "@subql/types";
 import { Balance } from '@polkadot/types/interfaces';
 import { genericTransferHandler, nftTransferEntityHandler } from ".";
-import { formatString, getCommonEventData, roundPrice, updateAccount } from "../helpers";
+import { formatString, getCommonEventData, roundPrice } from "../helpers";
 import { MarketplaceEntity, NftEntity } from "../types";
 
 export const DEFAULT_MARKETPLACE_CREATION_FEE = "10000000000000000000000"
 
 export const createGenesisMarketplace = async () => {
-  let date = new Date();
+  const date = new Date();
   let record = await MarketplaceEntity.get("0");
   if (!record) {
     record = new MarketplaceEntity("0");
@@ -40,6 +40,7 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     if (!commonEventData.isSuccess) throw new Error("Marketplace created error, extrinsic isSuccess : false")
     const [mpId, owner] = event.event.data;
     const date = new Date()
+    //TODO
     if (!event.extrinsic) throw new Error("Marketplace created error, extrinsic (for kind, commissionFee, name, uri, logoUri, description) was not found")
     const [kind, commissionFee, name, uri, logoUri, description, fee] = event.extrinsic.extrinsic.args
     const eventId = event.idx.toString()
@@ -58,7 +59,6 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     record.updatedAt = date
     await record.save()
     await genericTransferHandler(eventId, owner, 'Treasury', fee ? fee : DEFAULT_MARKETPLACE_CREATION_FEE, commonEventData)
-    await updateAccount(owner.toString());
 }
 
 export const marketplaceCommissionFeeChangedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -168,12 +168,10 @@ export const marketplaceNftSoldHandler = async (event: SubstrateEvent): Promise<
 export const marketplaceNftListedHandler = async (event: SubstrateEvent): Promise<void> => {
     const commonEventData = getCommonEventData(event)
     if (!commonEventData.isSuccess) throw new Error("NFT listed error, extrinsic isSuccess : false")
-    if (!event.extrinsic) throw new Error("NFT listed error, extrinsic (for signer) was not found")
     const [nftId, amount, mpId] = event.event.data;
     const date = new Date()
     const record = await NftEntity.get(nftId.toString());
     if (record === undefined) throw new Error("NFT not found in db")
-    const signer = event.extrinsic.extrinsic.signer.toString()
     record.listed = 1;
     record.isLocked = true;
     record.timestampList = commonEventData.timestamp;
@@ -182,18 +180,15 @@ export const marketplaceNftListedHandler = async (event: SubstrateEvent): Promis
     record.marketplaceId = mpId.toString()
     record.updatedAt = date
     await record.save()
-    await updateAccount(signer)
 }
 
 export const marketplaceNftUnlistedHandler = async (event: SubstrateEvent): Promise<void> => {
     const commonEventData = getCommonEventData(event)
     if (!commonEventData.isSuccess) throw new Error("NFT unlisted error, extrinsic isSuccess : false")
-    if (!event.extrinsic) throw new Error("NFT unlisted error, extrinsic (for signer) was not found")
     const [nftId] = event.event.data;
     const date = new Date()
     const record = await NftEntity.get(nftId.toString());
     if (record === undefined) throw new Error("NFT not found in db")
-    const signer = event.extrinsic.extrinsic.signer.toString()
     record.listed = 0;
     record.isLocked = false;
     record.timestampList = null;
@@ -202,7 +197,6 @@ export const marketplaceNftUnlistedHandler = async (event: SubstrateEvent): Prom
     record.marketplaceId = null;
     record.updatedAt = date
     await record.save()
-    await updateAccount(signer)
 }
 
 export const accountAddedToAllowListHandler = async (event: SubstrateEvent): Promise<void> => {

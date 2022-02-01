@@ -1,5 +1,6 @@
 import { SubstrateEvent } from "@subql/types";
 import * as eventHandlers from '../eventHandlers'
+import { getSigner, updateAccount } from "../helpers";
 
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
     const key = `${event.event.section}.${event.event.method}`
@@ -42,10 +43,10 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'marketplace.MarketplaceCommissionFeeChanged':
                 await eventHandlers.marketplaceCommissionFeeChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceDescriptionUpdated':
+            case 'marketplace.MarketplaceDescriptionUpdated'://TODO Weird name
                 await eventHandlers.marketplaceDescriptionChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceLogoUriUpdated':
+            case 'marketplace.MarketplaceLogoUriUpdated'://TODO Weird name
                 await eventHandlers.marketplaceLogoUriChangedHandler(event)
                 break;
             case 'marketplace.MarketplaceTypeChanged':
@@ -54,10 +55,10 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'marketplace.MarketplaceNameChanged':
                 await eventHandlers.marketplaceNameChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceChangedOwner':
+            case 'marketplace.MarketplaceChangedOwner'://TODO Weird name
                 await eventHandlers.marketplaceOwnerChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceUriUpdated':
+            case 'marketplace.MarketplaceUriUpdated'://TODO Weird name
                 await eventHandlers.marketplaceUriChangedHandler(event)
                 break;
             case 'marketplace.NftListed':
@@ -80,6 +81,12 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
                 break;
             default:
                 break;
+        }
+        try{
+            const signer = getSigner(event)
+            updateAccount(signer)
+        }catch{
+            // No account to update
         }
     }catch(err){
         logger.error("Error in event " + key + " at block " + event.block.block.header.number.toString())
