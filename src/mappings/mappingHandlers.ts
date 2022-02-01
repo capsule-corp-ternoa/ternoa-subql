@@ -22,7 +22,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'capsules.CapsuleRemoved':
                 await eventHandlers.capsulesRemovedHandler(event)
                 break;
-            case 'capsules.Created':
+            case 'capsules.CapsuleCreated':
                 await eventHandlers.capsulesCreatedHandler(event)
                 break;
             case 'marketplace.AccountAddedToAllowList':
@@ -67,16 +67,16 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'marketplace.NftSold':
                 await eventHandlers.marketplaceNftSoldHandler(event)
                 break;
-            case 'nfts.Burned':
+            case 'nfts.Burned'://OK
                 await eventHandlers.nftsBurnedHandler(event)
                 break;
-            case 'nfts.Created':
+            case 'nfts.Created'://OK
                 await eventHandlers.nftsCreatedHandler(event)
                 break;
-            case 'nfts.SeriesFinished':
+            case 'nfts.SeriesFinished'://OK
                 await eventHandlers.nftsSeriesFinishedHandler(event)
                 break;
-            case 'nfts.Transfer':
+            case 'nfts.Transfer'://OK
                 await eventHandlers.nftsTransferHandler(event)
                 break;
             default:
@@ -84,7 +84,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         }
         try{
             const signer = getSigner(event)
-            updateAccount(signer)
+            await updateAccount(signer)
         }catch{
             // No account to update
         }

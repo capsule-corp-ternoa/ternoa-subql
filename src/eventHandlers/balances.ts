@@ -7,20 +7,18 @@ import { TransferEntity } from '../types';
 export const transferHandler = async (event: SubstrateEvent): Promise<void> => {
     const commonEventData = getCommonEventData(event)
     const [from, to, amount] = event.event.data
-    const eventId = event.idx.toString()
-    await genericTransferHandler(eventId, from, to, amount, commonEventData)
+    await genericTransferHandler(from, to, amount, commonEventData)
     await updateAccount(from.toString());
     await updateAccount(to.toString());
 }
 
 export const genericTransferHandler = async (
-    eventId: string,
     from: Codec | string, 
     to: Codec | string,
     amount: Codec | string,
     commonEventData: CommonEventData
 ): Promise<void> => {
-    const record = new TransferEntity(commonEventData.blockId + "-" + eventId)
+    const record = new TransferEntity(commonEventData.blockId + "-" + commonEventData.eventId)
     record.blockId = commonEventData.blockId
     record.blockHash = commonEventData.blockHash
     record.extrinsicId = commonEventData.extrinsicId

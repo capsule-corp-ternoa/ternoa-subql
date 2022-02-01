@@ -51,7 +51,7 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: capsules
-            method: Created
+            method: CapsuleCreated
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

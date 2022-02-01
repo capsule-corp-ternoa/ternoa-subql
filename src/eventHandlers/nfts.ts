@@ -9,37 +9,39 @@ export const nftsCreatedHandler = async (event: SubstrateEvent): Promise<void> =
     const commonEventData = getCommonEventData(event)
     if (!commonEventData.isSuccess) throw new Error("NFT created error, extrinsic isSuccess : false")
     const [nftId, owner, seriesId, nftIpfs, mintFee] = event.event.data;
-    const record = new NftEntity(nftId.toString())
-    const eventId = event.idx.toString()
-    const date = new Date()
-    //TODO
-    const correctMintFee = mintFee ? mintFee : DEFAULT_NFT_CREATION_FEE
-    const seriesString = formatString(seriesId.toString())
-    let serieRecord = await SerieEntity.get(seriesString)
-    if (!serieRecord){
-      serieRecord = new SerieEntity(seriesString)
-      serieRecord.owner = owner.toString()
-      serieRecord.locked = false
-      serieRecord.createdAt = date
-      serieRecord.updatedAt = date
-      await serieRecord.save()
+    let record = await NftEntity.get(nftId.toString())
+    if (record === undefined){
+        record = new NftEntity(nftId.toString())
+        const date = new Date()
+        //TODO
+        const correctMintFee = mintFee ? mintFee : DEFAULT_NFT_CREATION_FEE
+        const seriesString = formatString(seriesId.toString())
+        let serieRecord = await SerieEntity.get(seriesString)
+        if (!serieRecord){
+          serieRecord = new SerieEntity(seriesString)
+          serieRecord.owner = owner.toString()
+          serieRecord.locked = false
+          serieRecord.createdAt = date
+          serieRecord.updatedAt = date
+          await serieRecord.save()
+        }
+        record.currency = 'CAPS';
+        record.listed = 0;
+        record.isLocked = false;
+        record.owner = owner.toString();
+        record.serieId = serieRecord.id;
+        record.creator = owner.toString();
+        record.nftId = nftId.toString();
+        record.nftIpfs = formatString(nftIpfs.toString())
+        record.isCapsule = false;
+        record.frozenCaps = "0";
+        record.timestampCreate = commonEventData.timestamp
+        record.createdAt = date
+        record.updatedAt = date
+        await record.save()
+        await nftTransferEntityHandler(record, "null address", commonEventData, "creation")
+        await genericTransferHandler(owner, 'Treasury', correctMintFee, commonEventData)
     }
-    record.currency = 'CAPS';
-    record.listed = 0;
-    record.isLocked = false;
-    record.owner = owner.toString();
-    record.serieId = serieRecord.id;
-    record.creator = owner.toString();
-    record.nftId = nftId.toString();
-    record.nftIpfs = formatString(nftIpfs.toString())
-    record.isCapsule = false;
-    record.frozenCaps = "0";
-    record.timestampCreate = commonEventData.timestamp
-    record.createdAt = date
-    record.updatedAt = date
-    await record.save()
-    await nftTransferEntityHandler(record, "null address", commonEventData, "creation")
-    await genericTransferHandler(eventId, owner, 'Treasury', correctMintFee, commonEventData)
 }
 
 export const nftsBurnedHandler = async (event: SubstrateEvent): Promise<void> => {

@@ -4,6 +4,7 @@ export type CommonEventData = {
     blockId: string;
     blockHash: string;
     extrinsicId: string;
+    eventId: string;
     isSuccess: boolean;
     isBatch: boolean;
     isBatchAll: boolean;
@@ -20,6 +21,7 @@ export const getCommonEventData = (event: SubstrateEvent):CommonEventData => {
     const blockId = event.block.block.header.number.toString()
     const blockHash = event.block.block.hash.toString()
     const extrinsicId = event.phase.isApplyExtrinsic ? `${blockId}-${event.phase.asApplyExtrinsic.toString()}` : ""
+    const eventId = event.idx.toString()
     const isBatch = event.extrinsic ? checkIfBatch(event.extrinsic) : false
     const isBatchAll = event.extrinsic ? checkIfBatchAll(event.extrinsic) : false
     const timestamp = event.block.timestamp
@@ -27,6 +29,7 @@ export const getCommonEventData = (event: SubstrateEvent):CommonEventData => {
         blockId,
         blockHash,
         extrinsicId,
+        eventId,
         isSuccess,
         isBatch,
         isBatchAll,

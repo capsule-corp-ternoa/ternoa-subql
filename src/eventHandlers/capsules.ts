@@ -11,11 +11,12 @@ export const capsulesCreatedHandler = async (event: SubstrateEvent): Promise<voi
     //TODO
     if (!event.extrinsic) throw new Error("Capsule created error, extrinsic (for capsuleIpfs) was not found")
     const [_nftIpfs, _capsuleIpfs, _seriesId] = event.extrinsic.extrinsic.args
+    logger.info("capsule data : " + JSON.stringify(event.extrinsic.extrinsic.args))
     const capsuleIpfs = formatString(_capsuleIpfs.toString())
     if (!(capsuleIpfs && capsuleIpfs.length > 0)) throw new Error("Capsule created error, capsuleIpfs not found")
-    const eventId = event.idx.toString()
     const record = await NftEntity.get(nftId.toString())
     if (record === undefined) throw new Error("NFT to convert to capsule not found in db")
+    logger.info(JSON.stringify(record))
     const date = new Date()
     const serieRecord = await SerieEntity.get(record.serieId)
     if (serieRecord && serieRecord.locked === false){
@@ -29,7 +30,7 @@ export const capsulesCreatedHandler = async (event: SubstrateEvent): Promise<voi
     record.frozenCaps = (balance as Balance).toBigInt().toString();
     record.updatedAt = date
     await record.save()
-    await genericTransferHandler(eventId, owner, 'Capsule deposit', balance, commonEventData)
+    await genericTransferHandler(owner, 'Capsule deposit', balance, commonEventData)
 }
 
 export const capsulesRemovedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -37,7 +38,6 @@ export const capsulesRemovedHandler = async (event: SubstrateEvent): Promise<voi
     if (!commonEventData.isSuccess) throw new Error("Capsule removed error, extrinsic isSuccess : false")
     const signer = getSigner(event)
     const [nftId, balance] = event.event.data;
-    const eventId = event.idx.toString()
     const record = await NftEntity.get(nftId.toString())
     if (record === undefined) throw new Error("Capsule to revert to NFT not found in db")
     const date = new Date()
@@ -47,7 +47,7 @@ export const capsulesRemovedHandler = async (event: SubstrateEvent): Promise<voi
     record.frozenCaps = "0"
     record.updatedAt = date
     await record.save()
-    await genericTransferHandler(eventId, "Capsule deposit returned", signer, balance, commonEventData)
+    await genericTransferHandler("Capsule deposit returned", signer, balance, commonEventData)
 }
 
 export const capsulesFundsAddedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -55,14 +55,13 @@ export const capsulesFundsAddedHandler = async (event: SubstrateEvent): Promise<
     if (!commonEventData.isSuccess) throw new Error("Capsule funds added error, extrinsic isSuccess : false")
     const signer = getSigner(event)
     const [nftId, balance] = event.event.data;
-    const eventId = event.idx.toString()
     const record = await NftEntity.get(nftId.toString())
     if (record === undefined) throw new Error("Capsule to add funds not found in db")
     const date = new Date()
     record.frozenCaps = (BigInt(record.frozenCaps) + (balance as Balance).toBigInt()).toString()
     record.updatedAt = date
     await record.save()
-    await genericTransferHandler(eventId, signer, "Capsule add funds", balance, commonEventData)
+    await genericTransferHandler(signer, "Capsule add funds", balance, commonEventData)
 }
 
 export const capsulesIpfsReferenceChangedHandler = async (event: SubstrateEvent): Promise<void> => {

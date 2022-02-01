@@ -35,8 +35,12 @@ export const hexToString = (hexToConvert: string) => {
 
 export const formatString = (str: string) => {
 	let result = str
-	result = (str.length > 1 && str.substring(0,2) === "0x") ? str.substring(2) : str
-	if (isNumeric(result)) return result
+	let startWith0X = false
+	if(str.length > 1 && str.substring(0,2) === "0x"){
+		result = str.substring(2)
+		startWith0X = true
+	}
+	if (isNumeric(result) && !startWith0X) return result
 	if (isHex(result)) result = hexToString(result)
 	// if (JSON.stringify(result).indexOf('u0000') !== -1){
 	// 	result = JSON.stringify(result).split("u0000").join('')

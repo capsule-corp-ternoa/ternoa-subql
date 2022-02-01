@@ -43,7 +43,6 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     //TODO
     if (!event.extrinsic) throw new Error("Marketplace created error, extrinsic (for kind, commissionFee, name, uri, logoUri, description) was not found")
     const [kind, commissionFee, name, uri, logoUri, description, fee] = event.extrinsic.extrinsic.args
-    const eventId = event.idx.toString()
     const record = new MarketplaceEntity(mpId.toString())
     if (record.id === "1") await createGenesisMarketplace()
     record.kind = kind.toString()
@@ -58,7 +57,7 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     record.createdAt = date
     record.updatedAt = date
     await record.save()
-    await genericTransferHandler(eventId, owner, 'Treasury', fee ? fee : DEFAULT_MARKETPLACE_CREATION_FEE, commonEventData)
+    await genericTransferHandler(owner, 'Treasury', fee ? fee : DEFAULT_MARKETPLACE_CREATION_FEE, commonEventData)
 }
 
 export const marketplaceCommissionFeeChangedHandler = async (event: SubstrateEvent): Promise<void> => {
