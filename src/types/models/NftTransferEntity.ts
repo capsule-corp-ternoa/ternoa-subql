@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class NftTransferEntity implements Entity {
 
     constructor(id: string) {
@@ -30,6 +32,10 @@ export class NftTransferEntity implements Entity {
 
     public amount: string;
 
+    public amountRounded: number;
+
+    public marketplaceId?: string;
+
 
     async save(): Promise<void>{
         let id = this.id;
@@ -51,20 +57,6 @@ export class NftTransferEntity implements Entity {
         }
     }
 
-
-    static async getByBlockId(blockId: string): Promise<NftTransferEntity[] | undefined>{
-      
-      const records = await store.getByField('NftTransferEntity', 'blockId', blockId);
-      return records.map(record => NftTransferEntity.create(record));
-      
-    }
-
-    static async getByExtrinsicId(extrinsicId: string): Promise<NftTransferEntity[] | undefined>{
-      
-      const records = await store.getByField('NftTransferEntity', 'extrinsicId', extrinsicId);
-      return records.map(record => NftTransferEntity.create(record));
-      
-    }
 
     static async getByNftId(nftId: string): Promise<NftTransferEntity[] | undefined>{
       

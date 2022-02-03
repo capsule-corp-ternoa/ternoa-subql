@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class SerieEntity implements Entity {
 
     constructor(id: string) {
@@ -15,6 +17,10 @@ export class SerieEntity implements Entity {
     public owner: string;
 
     public locked: boolean;
+
+    public createdAt: Date;
+
+    public updatedAt: Date;
 
 
     async save(): Promise<void>{

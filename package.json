@@ -1,5 +1,5 @@
 {
-  "name": "subql-ternoa",
+  "name": "subql_ternoa",
   "version": "0.2.0",
   "description": "ternoa indexer : Indexes main events triggered by ternoa blockchain",
   "main": "dist/index.js",
@@ -18,12 +18,12 @@
     "project.yaml"
   ],
   "author": "ternoa",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "devDependencies": {
     "@polkadot/api": "^6",
     "@subql/cli": "latest",
     "@subql/common": "latest",
-    "@subql/types": "latest",
+    "@subql/types": "0.12.0",
     "typescript": "4.4.4"
   },
   "dependencies": {

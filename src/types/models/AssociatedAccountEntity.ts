@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class AssociatedAccountEntity implements Entity {
 
     constructor(id: string) {
@@ -15,6 +17,10 @@ export class AssociatedAccountEntity implements Entity {
     public accountName: string[];
 
     public accountValue: string[];
+
+    public createdAt: Date;
+
+    public updatedAt: Date;
 
 
     async save(): Promise<void>{

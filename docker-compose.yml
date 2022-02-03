@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
   subquery-node:
-    image: onfinality/subql-node:v0.25.0
+    image: onfinality/subql-node:latest
     depends_on:
       - "postgres"
     restart: always
@@ -26,11 +26,9 @@ services:
     command:
       - '-f'
       - '/app'
-      - '--subquery-name=subql-ternoa'
-      - '--local'
+      - '--db-schema=subql_ternoa'
       - '--timeout'
       - '270'
-     #- '–-timestamp-field=true' #TODO when updating
 
   graphql-engine:
     image: query-ternoa #onfinality/subql-query:latest
@@ -38,6 +36,7 @@ services:
       - 3000:3000
     depends_on:
       - "postgres"
+      - "subquery-node"
     restart: always
     environment:
       DB_USER: postgres
@@ -47,5 +46,7 @@ services:
       DB_PORT: 5432
     command:
       - '--name'
-      - 'subql-ternoa' #Same as your project name
+      - 'subql_ternoa' #Same as your project name
       - '--playground'
+      - --indexer=http://subquery-node:3000
+      - --unsafe #Allows us to query more than 100 rows

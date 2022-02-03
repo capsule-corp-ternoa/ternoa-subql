@@ -108,15 +108,13 @@ export class ExtrinsicDispatcher {
             const callData = { section, method, args, batchIndex: index, batchMethodIndex: batchMethodIndexes[key] };
             const extrinsicData = mapExtrinsic(extrinsic)
             let isExcuteSuccess = extrinsicData.isExcuteSuccess
-            if (isExcuteSuccess){
-                return this._emit(
-                    callData,
-                    {
-                        ...extrinsicData,
-                        isExcuteSuccess
-                    }
-                )
-            }
+            return this._emit(
+                callData,
+                {
+                    ...extrinsicData,
+                    isExcuteSuccess
+                }
+            )
         }))
     }
 

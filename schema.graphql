@@ -1,87 +1,25 @@
-type BlockEntity @entity{
-  id: ID!
-  number: Int!
-  hash: String! @index(unique:true)
-  timestamp: Date! @index(unique:true)
-  parentHash: String!
-  stateRoot: String!
-  extrinsicsRoot: String!
-  runtimeVersion: Int!
-  nbExtrinsics: Int!
-  author: String @index
-  sessionId: Int @index
-}
-
-type SessionEntity @entity{
-  id: ID!
-  validators: [String]!
-}
-
-type ExtrinsicEntity @entity{
-  id: ID!
-  block: BlockEntity!
-  extrinsicIndex: Int!
-  hash: String! @index(unique:true)
-  timestamp: Date! @index
-  module: String!
-  call: String!
-  description: ExtrinsicDescriptionEntity!
-  signer: String! @index
-  isSigned: Boolean!
-  signature: String!
-  fees: String
-  nonce: Int!
-  success: Boolean!
-  argsName: [String]!
-  argsValue: [String]!
-  nbEvents: Int!
-}
-
-type ExtrinsicDescriptionEntity @entity{
-  id: ID!
-  module: String!
-  call: String!
-  description: String!
-}
-
-type EventEntity @entity {
-  id: ID!
-  block: BlockEntity!
-  extrinsicId: String
-  eventIndex: Int!
-  module: String!
-  call: String!
-  description: EventDescriptionEntity!
-  argsName: [String]!
-  argsValue: [String]!
-}
-
-type EventDescriptionEntity @entity{
-  id: ID!
-  module: String!
-  call: String!
-  description: String!
-}
-
 type TransferEntity @entity {
-  id: ID! #extrinsic hash or `${extrinsic hash}-${batch index}`
-  block: BlockEntity!
+  id: ID!
+  blockId: String!
   blockHash: String!
-  extrinsic: ExtrinsicEntity!
+  extrinsicId: String!
   isBatch: Int!
   isSudo: Int!
   isSuccess: Int!
-  timestamp: Date! @index #the block which the extrinsic send number
+  timestamp: Date! @index
   from: String!
   to: String!
-  currency: String! #the currency of the transfer
-  amount: String! #the amount of the transfer
+  currency: String!
+  amount: String!
+  amountRounded: Float!
 }
 
 type SerieEntity @entity {
   id: ID!
   owner: String! @index
   locked: Boolean!
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type NftEntity @entity {
@@ -93,20 +31,24 @@ type NftEntity @entity {
   isCapsule: Boolean!
   frozenCaps: String!
   timestampList: Date @index
-  currency: String! #the currency of the transfer
-  price: String #the price of the nft
-  priceTiime: String #the price of the nft
+  currency: String!
+  price: String
+  priceRounded:Float
   listed: Int!
-  timestampBurn: Date @index #when nft is burned
+  isLocked: Boolean!
+  timestampBurn: Date @index
+  timestampCreate: Date! @index
   owner: String! @index
   creator: String! @index
   marketplaceId: String
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type NftTransferEntity @entity {
   id: ID!
-  block: BlockEntity!
-  extrinsic: ExtrinsicEntity!
+  blockId: String!
+  extrinsicId: String!
   nft: NftEntity!
   seriesId: String!
   from: String! @index
@@ -114,14 +56,20 @@ type NftTransferEntity @entity {
   timestamp: Date! @index
   typeOfTransaction: String!
   amount: String!
+  amountRounded: Float!
+  marketplaceId: String
 }
 
 type AccountEntity @entity {
   id: ID!
-  capsAmount: String #transferable
+  capsAmount: String
   capsAmountFrozen: String
   capsAmountTotal: String
-  tiimeAmount: String
+  capsAmountRounded: Float
+  capsAmountFrozenRounded: Float
+  capsAmountTotalRounded: Float
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type MarketplaceEntity @entity {
@@ -131,11 +79,17 @@ type MarketplaceEntity @entity {
   commissionFee: String!
   name: String!
   uri: String
+  allowList: [String]!
+  disallowList: [String]!
   logoUri: String
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type AssociatedAccountEntity @entity {
   id: ID!
   accountName: [String]!
   accountValue: [String]!
+  createdAt: Date!
+  updatedAt: Date!
 }

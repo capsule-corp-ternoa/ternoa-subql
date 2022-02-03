@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class TransferEntity implements Entity {
 
     constructor(id: string) {
@@ -34,6 +36,8 @@ export class TransferEntity implements Entity {
 
     public amount: string;
 
+    public amountRounded: number;
+
 
     async save(): Promise<void>{
         let id = this.id;
@@ -55,20 +59,6 @@ export class TransferEntity implements Entity {
         }
     }
 
-
-    static async getByBlockId(blockId: string): Promise<TransferEntity[] | undefined>{
-      
-      const records = await store.getByField('TransferEntity', 'blockId', blockId);
-      return records.map(record => TransferEntity.create(record));
-      
-    }
-
-    static async getByExtrinsicId(extrinsicId: string): Promise<TransferEntity[] | undefined>{
-      
-      const records = await store.getByField('TransferEntity', 'extrinsicId', extrinsicId);
-      return records.map(record => TransferEntity.create(record));
-      
-    }
 
     static async getByTimestamp(timestamp: Date): Promise<TransferEntity[] | undefined>{
       

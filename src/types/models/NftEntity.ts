@@ -3,6 +3,8 @@ import {Entity, FunctionPropertyNames} from "@subql/types";
 import assert from 'assert';
 
 
+
+
 export class NftEntity implements Entity {
 
     constructor(id: string) {
@@ -30,17 +32,25 @@ export class NftEntity implements Entity {
 
     public price?: string;
 
-    public priceTiime?: string;
+    public priceRounded?: number;
 
     public listed: number;
 
+    public isLocked: boolean;
+
     public timestampBurn?: Date;
+
+    public timestampCreate: Date;
 
     public owner: string;
 
     public creator: string;
 
     public marketplaceId?: string;
+
+    public createdAt: Date;
+
+    public updatedAt: Date;
 
 
     async save(): Promise<void>{
@@ -81,6 +91,13 @@ export class NftEntity implements Entity {
     static async getByTimestampBurn(timestampBurn: Date): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'timestampBurn', timestampBurn);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
+    static async getByTimestampCreate(timestampCreate: Date): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'timestampCreate', timestampCreate);
       return records.map(record => NftEntity.create(record));
       
     }

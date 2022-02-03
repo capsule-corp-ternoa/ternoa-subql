@@ -1,9 +1,10 @@
 import { getCommonExtrinsicData, updateAccount } from '../helpers'
 import { ExtrinsicHandler } from './types'
 import { AssociatedAccountEntity } from '../types';
-import { hexToString, isHex } from '../utils';
+import { formatString } from '../utils';
 
 export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrinsic): Promise<void> => {
+  const date = new Date()
   const { extrinsic: _extrinsic, events } = extrinsic
   const commonExtrinsicData = getCommonExtrinsicData(call, extrinsic)
   const method = call.method
@@ -17,6 +18,7 @@ export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrin
             record = new AssociatedAccountEntity(signer)
             record.accountName = []
             record.accountValue = []
+            record.createdAt = date
         }
         const indexesToDelete:number[] = record.accountName.reduce(function(arr, element, index) {
           if (element === accountName) arr.push(index);
@@ -24,13 +26,14 @@ export const addAssociatedAccountHandler: ExtrinsicHandler = async (call, extrin
         }, []);
         record.accountName = record.accountName.filter((_x,i) => !indexesToDelete.includes(i))
         record.accountValue = record.accountValue.filter((_x,i) => !indexesToDelete.includes(i))
-        let accountValue = isHex(value.toString()) ? hexToString(value.toString()) : value.toString()
+        let accountValue = formatString(value.toString())
         record.accountName.push(accountName)
         record.accountValue.push(accountValue)
+        record.updatedAt = date
         await record.save()
         logger.info("add associated account: " + accountName + " --> " + accountValue)
         // Update concerned accounts
-        await updateAccount(signer, call, extrinsic);
+        await updateAccount(signer);
     } catch (e) {
         logger.error('add associated account error at block: ' + commonExtrinsicData.blockId);
         logger.error('add associated account error detail: ' + e);
