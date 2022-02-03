@@ -29,12 +29,7 @@ export const formatString = (str: string) => {
 		startWith0X = true
 	}
 	if (isNumeric(result) && !startWith0X) return result
-	if (isHex(result)) result = hexToString(result)
-	// if (JSON.stringify(result).indexOf('u0000') !== -1){
-	// 	result = JSON.stringify(result).split("u0000").join('')
-	// 		.split("\\").join('')
-	// 		.split("\"").join('')
-	// }
+	if (isHex(result) && startWith0X) result = hexToString(result)
 	return result
 }
 
