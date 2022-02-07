@@ -32,7 +32,6 @@ export const updateAccount = async (user: string) => {
       }
     });
   } catch (e) {
-    logger.error(e.toString());
+    logger.error(JSON.stringify(e));
   }
-
 }
