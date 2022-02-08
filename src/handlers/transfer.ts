@@ -7,7 +7,7 @@ import { roundPrice } from "../utils";
 export const genericTransferHandler = async (
     from: string, 
     to: string,
-    amount: Codec,
+    amount: Codec | string,
     commonExtrinsicData: {
         hash: string;
         blockId: string;
@@ -28,7 +28,7 @@ export const genericTransferHandler = async (
         transferRecord.from = from
         transferRecord.to = to
         transferRecord.currency = "CAPS"
-        transferRecord.amount = (amount as Balance).toBigInt().toString();
+        transferRecord.amount = typeof amount === "string" ? amount : (amount as Balance).toBigInt().toString();
         transferRecord.amountRounded = roundPrice(transferRecord.amount)
         await transferRecord.save()
     }catch(err){
