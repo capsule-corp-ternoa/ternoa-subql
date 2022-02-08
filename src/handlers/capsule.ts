@@ -167,7 +167,7 @@ export const removeCapsuleHandler: ExtrinsicHandler = async (call, extrinsic): P
         record.updatedAt = date
         await record.save()
         // Record Deposit returned Event
-        const extrinsicIndex = event.phase.isApplyExtrinsic ? event.phase.asApplyExtrinsic.toNumber() : 0
+        const extrinsicIndex = event?.phase.isApplyExtrinsic ? event.phase.asApplyExtrinsic.toNumber() : 0
         await genericTransferHandler("Capsule deposit returned", signer.toString(), amount, commonExtrinsicData, call.batchMethodIndex || 0, extrinsicIndex)
         // Update concerned accounts
         await updateAccount(signer);
@@ -200,7 +200,7 @@ export const addFundsHandler: ExtrinsicHandler = async (call, extrinsic): Promis
         record.updatedAt = date
         await record.save()
         // Record Deposit added Event
-        const extrinsicIndex = event.phase.isApplyExtrinsic ? event.phase.asApplyExtrinsic.toNumber() : 0
+        const extrinsicIndex = event?.phase.isApplyExtrinsic ? event.phase.asApplyExtrinsic.toNumber() : 0
         await genericTransferHandler(signer.toString(), "Capsule deposit add funds", amount, commonExtrinsicData, call.batchMethodIndex || 0, extrinsicIndex)
         // Update concerned accounts
         await updateAccount(signer);
