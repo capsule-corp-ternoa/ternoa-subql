@@ -28,11 +28,11 @@ export const updateAccount = async (user: string) => {
         record.updatedAt = date
         await record.save();
       }catch(err){
-        throw err
+        logger.error(JSON.stringify(err))
       }
     });
-  } catch (e) {
-    logger.error(JSON.stringify(e));
+  } catch (err) {
+    logger.error(JSON.stringify(err))
   }
 
 }
