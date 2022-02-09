@@ -92,3 +92,8 @@ type AssociatedAccountEntity @entity {
   createdAt: Date!
   updatedAt: Date!
 }
+
+type AggregateResultEntity @entity {
+  id: ID!
+  occurences: Int!
+}
