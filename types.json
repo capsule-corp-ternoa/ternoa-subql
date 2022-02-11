@@ -12,7 +12,7 @@
     "BalanceCaps": "Balance",
     "NFTId": "u32",
     "TernoaString": "Vec<u8>",
-    "NFTSeriesId": "Text",
+    "NFTSeriesId": "Vec<u8>",
     "NFTData": {
       "owner": "AccountId",
       "ipfs_reference": "Text",
