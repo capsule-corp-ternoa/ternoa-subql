@@ -5,6 +5,8 @@ import assert from 'assert';
 
 
 
+type NftTransferEntityProps = Omit<NftTransferEntity, NonNullable<FunctionPropertyNames<NftTransferEntity>>>;
+
 export class NftTransferEntity implements Entity {
 
     constructor(id: string) {
@@ -51,7 +53,7 @@ export class NftTransferEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get NftTransferEntity entity without an ID");
         const record = await store.get('NftTransferEntity', id.toString());
         if (record){
-            return NftTransferEntity.create(record);
+            return NftTransferEntity.create(record as NftTransferEntityProps);
         }else{
             return;
         }
@@ -61,33 +63,33 @@ export class NftTransferEntity implements Entity {
     static async getByNftId(nftId: string): Promise<NftTransferEntity[] | undefined>{
       
       const records = await store.getByField('NftTransferEntity', 'nftId', nftId);
-      return records.map(record => NftTransferEntity.create(record));
+      return records.map(record => NftTransferEntity.create(record as NftTransferEntityProps));
       
     }
 
     static async getByFrom(from: string): Promise<NftTransferEntity[] | undefined>{
       
       const records = await store.getByField('NftTransferEntity', 'from', from);
-      return records.map(record => NftTransferEntity.create(record));
+      return records.map(record => NftTransferEntity.create(record as NftTransferEntityProps));
       
     }
 
     static async getByTo(to: string): Promise<NftTransferEntity[] | undefined>{
       
       const records = await store.getByField('NftTransferEntity', 'to', to);
-      return records.map(record => NftTransferEntity.create(record));
+      return records.map(record => NftTransferEntity.create(record as NftTransferEntityProps));
       
     }
 
     static async getByTimestamp(timestamp: Date): Promise<NftTransferEntity[] | undefined>{
       
       const records = await store.getByField('NftTransferEntity', 'timestamp', timestamp);
-      return records.map(record => NftTransferEntity.create(record));
+      return records.map(record => NftTransferEntity.create(record as NftTransferEntityProps));
       
     }
 
 
-    static create(record: Partial<Omit<NftTransferEntity, FunctionPropertyNames<NftTransferEntity>>> & Entity): NftTransferEntity {
+    static create(record: NftTransferEntityProps): NftTransferEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new NftTransferEntity(record.id);
         Object.assign(entity,record);

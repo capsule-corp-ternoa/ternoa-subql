@@ -12,8 +12,8 @@ network:
   # genesisHash: '0xd9adfc7ea82be63ba28088d62b96e9270ad2af25c962afc393361909670835b2' #testnet
   # endpoint: 'wss://testnet.ternoa.com'
   # dictionary: 'https://dictionary-testnet.ternoa.dev/'
-  genesisHash: '0x710016a91bfbd4ffc5035ae19b7b94be74a2fd2f693cc692aaedae35c0cacd58'
-  endpoint: wss://dev.chaos.ternoa.com
+  genesisHash: '0x1d9abf500e6c3aa6ce02353b9daeca70c7a8dbb812e52d2febeeaed3181357e6'
+  endpoint: wss://chain-dev-latest.ternoa.dev
   chaintypes:
     file: ./types.json
 dataSources:
@@ -26,7 +26,7 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: associatedAccounts
-            method: AltVRUsernameChanged
+            method: UserAccountAdded
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -121,17 +121,22 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: marketplace
+            method: NftUnlisted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
             method: NftSold
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: nfts
-            method: Burned
+            method: NFTBurned
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: nfts
-            method: Created
+            method: NFTCreated
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -141,4 +146,9 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: nfts
-            method: Transfer
+            method: NFTTransferred
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nfts
+            method: NFTLent

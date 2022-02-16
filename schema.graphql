@@ -38,6 +38,7 @@ type NftEntity @entity {
   timestampCreate: Date! @index
   owner: String! @index
   creator: String! @index
+  viewer: String @index
   marketplaceId: String
   createdAt: Date!
   updatedAt: Date!

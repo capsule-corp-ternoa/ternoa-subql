@@ -7,77 +7,83 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
     logger.info(key)
     try{
         switch(key){
-            case 'associatedAccounts.AltVRUsernameChanged':
-                await eventHandlers.altVRUsernameChangedHandler(event)
+            case 'associatedAccounts.UserAccountAdded': // Not tested, need to add any account key first from root account
+                await eventHandlers.usernameChangedHandler(event)
                 break;
             case 'balances.Transfer':
                 await eventHandlers.transferHandler(event)
                 break;
-            case 'capsules.CapsuleFundsAdded':
+            case 'capsules.CapsuleFundsAdded': // not tested, pallet not available
                 await eventHandlers.capsulesFundsAddedHandler(event)
                 break;
-            case 'capsules.CapsuleIpfsReferenceChanged':
+            case 'capsules.CapsuleIpfsReferenceChanged': // not tested, pallet not available
                 await eventHandlers.capsulesIpfsReferenceChangedHandler(event)
                 break;
-            case 'capsules.CapsuleRemoved':
+            case 'capsules.CapsuleRemoved': // not tested, pallet not available
                 await eventHandlers.capsulesRemovedHandler(event)
                 break;
-            case 'capsules.CapsuleCreated':
+            case 'capsules.CapsuleCreated': // not tested, pallet not available
                 await eventHandlers.capsulesCreatedHandler(event)
                 break;
-            case 'marketplace.AccountAddedToAllowList':
+            case 'marketplace.AccountAddedToAllowList': // not tested, pallet not available
                 await eventHandlers.accountAddedToAllowListHandler(event)
                 break;
-            case 'marketplace.AccountAddedToDisallowList':
+            case 'marketplace.AccountAddedToDisallowList': // not tested, pallet not available
                 await eventHandlers.accountAddedToDisallowListHandler(event)
                 break;
-            case 'marketplace.AccountRemovedFromAllowList':
+            case 'marketplace.AccountRemovedFromAllowList': // not tested, pallet not available
                 await eventHandlers.accountRemovedFromAllowListHandler(event)
                 break;
-            case 'marketplace.AccountRemovedFromDisallowList':
+            case 'marketplace.AccountRemovedFromDisallowList': // not tested, pallet not available
                 await eventHandlers.accountRemovedFromDisallowListHandler(event)
                 break;
-            case 'marketplace.MarketplaceCreated':
+            case 'marketplace.MarketplaceCreated': // not tested, pallet not available
                 await eventHandlers.marketplaceCreatedHandler(event)
                 break;
-            case 'marketplace.MarketplaceCommissionFeeChanged':
+            case 'marketplace.MarketplaceCommissionFeeChanged': // not tested, pallet not available
                 await eventHandlers.marketplaceCommissionFeeChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceDescriptionUpdated'://TODO Weird name
+            case 'marketplace.MarketplaceDescriptionUpdated': // not tested, pallet not available//TODO Weird name
                 await eventHandlers.marketplaceDescriptionChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceLogoUriUpdated'://TODO Weird name
+            case 'marketplace.MarketplaceLogoUriUpdated': // not tested, pallet not available//TODO Weird name
                 await eventHandlers.marketplaceLogoUriChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceTypeChanged':
+            case 'marketplace.MarketplaceTypeChanged': // not tested, pallet not available
                 await eventHandlers.marketplaceTypeChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceNameChanged':
+            case 'marketplace.MarketplaceNameChanged': // not tested, pallet not available
                 await eventHandlers.marketplaceNameChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceChangedOwner'://TODO Weird name
+            case 'marketplace.MarketplaceChangedOwner': // not tested, pallet not available//TODO Weird name
                 await eventHandlers.marketplaceOwnerChangedHandler(event)
                 break;
-            case 'marketplace.MarketplaceUriUpdated'://TODO Weird name
+            case 'marketplace.MarketplaceUriUpdated': // not tested, pallet not available//TODO Weird name
                 await eventHandlers.marketplaceUriChangedHandler(event)
                 break;
-            case 'marketplace.NftListed':
+            case 'marketplace.NftListed': // not tested, pallet not available
                 await eventHandlers.marketplaceNftListedHandler(event)
                 break;
-            case 'marketplace.NftSold':
+            case 'marketplace.NftUnlisted': // not tested, pallet not available
+                await eventHandlers.marketplaceNftUnlistedHandler(event)
+                break;
+            case 'marketplace.NftSold': // not tested, pallet not available
                 await eventHandlers.marketplaceNftSoldHandler(event)
                 break;
-            case 'nfts.Burned'://OK
+            case 'nfts.NFTBurned':
                 await eventHandlers.nftsBurnedHandler(event)
                 break;
-            case 'nfts.Created'://OK
+            case 'nfts.NFTCreated': // ok
                 await eventHandlers.nftsCreatedHandler(event)
                 break;
-            case 'nfts.SeriesFinished'://OK
+            case 'nfts.SeriesFinished': // ok
                 await eventHandlers.nftsSeriesFinishedHandler(event)
                 break;
-            case 'nfts.Transfer'://OK
+            case 'nfts.NFTTransferred':
                 await eventHandlers.nftsTransferHandler(event)
+                break;
+            case 'nfts.NFTLent': // ok
+                await eventHandlers.nftsLentHandler(event)
                 break;
             default:
                 break;

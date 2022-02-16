@@ -88,3 +88,15 @@ export const nftsSeriesFinishedHandler = async (event: SubstrateEvent): Promise<
     record.updatedAt = date
     await record.save()
 }
+
+export const nftsLentHandler = async (event: SubstrateEvent): Promise<void> => {
+    const commonEventData = getCommonEventData(event)
+    if (!commonEventData.isSuccess) throw new Error("NFT lent error, extrinsic isSuccess : false")
+    const [id, viewer] = event.event.data;
+    const date = new Date()
+    let record = await NftEntity.get(id.toString());
+    if (record === undefined) throw new Error("NFT to lend not found in db")
+    record.viewer = (viewer && viewer.toString().length > 0) ? viewer.toString() : null
+    record.updatedAt = date
+    await record.save()
+}
