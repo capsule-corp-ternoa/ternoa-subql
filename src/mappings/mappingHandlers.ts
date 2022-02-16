@@ -7,10 +7,10 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
     logger.info(key)
     try{
         switch(key){
-            case 'associatedAccounts.UserAccountAdded': // Not tested, need to add any account key first from root account
+            case 'associatedAccounts.UserAccountAdded': // not tested, need to add any account key first from root account
                 await eventHandlers.usernameChangedHandler(event)
                 break;
-            case 'balances.Transfer':
+            case 'balances.Transfer': // ok
                 await eventHandlers.transferHandler(event)
                 break;
             case 'capsules.CapsuleFundsAdded': // not tested, pallet not available
@@ -70,7 +70,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'marketplace.NftSold': // not tested, pallet not available
                 await eventHandlers.marketplaceNftSoldHandler(event)
                 break;
-            case 'nfts.NFTBurned':
+            case 'nfts.NFTBurned': // ok
                 await eventHandlers.nftsBurnedHandler(event)
                 break;
             case 'nfts.NFTCreated': // ok
@@ -79,7 +79,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'nfts.SeriesFinished': // ok
                 await eventHandlers.nftsSeriesFinishedHandler(event)
                 break;
-            case 'nfts.NFTTransferred':
+            case 'nfts.NFTTransferred': // ok
                 await eventHandlers.nftsTransferHandler(event)
                 break;
             case 'nfts.NFTLent': // ok
