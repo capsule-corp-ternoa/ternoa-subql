@@ -170,6 +170,8 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         }else{
           logger.error('nft transaction error:' + commonExtrinsicData.blockHash);
         }
+        await updateAccount(signer);
+        await updateAccount(oldOwner);
       }else{
         logger.error('buy nft error: for NFT id - ' + nftId.toString() + " at hash " + commonExtrinsicData.blockHash);
         logger.error('buy nft error detail: nft not found in db');
