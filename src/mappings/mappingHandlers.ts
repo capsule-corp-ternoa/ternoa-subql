@@ -67,7 +67,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             case 'marketplace.NftUnlisted': // not tested, pallet not available
                 await eventHandlers.marketplaceNftUnlistedHandler(event)
                 break;
-            case 'marketplace.NftSold': // not tested, pallet not available
+            case 'marketplace.NftSold': // not tested, pallet not available, when test, check that it trigger a balance transfer, else add update account for old owner
                 await eventHandlers.marketplaceNftSoldHandler(event)
                 break;
             case 'nfts.NFTBurned': // ok
