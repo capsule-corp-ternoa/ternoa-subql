@@ -167,6 +167,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         if (eventTransfer && eventTransfer.event && eventTransfer.event.data){
           const amount = (eventTransfer.event.data[2] as Balance).toBigInt().toString();
           await nftTransferEntityHandler(record, oldOwner, commonExtrinsicData, "sale", amount, marketplaceId)
+          await genericTransferHandler(signer.toString(), oldOwner.toString(), amount, commonExtrinsicData, call.batchMethodIndex || 0, Number(commonExtrinsicData.extrinsicId))
         }else{
           logger.error('nft transaction error:' + commonExtrinsicData.blockHash);
         }
