@@ -157,6 +157,7 @@ export const buyHandler: ExtrinsicHandler = async (call, extrinsic): Promise<voi
         const marketplaceId = record.marketplaceId
         record.owner = signer.toString();
         record.listed = 0;
+        record.marketplaceId = null;
         record.isLocked = false;
         record.price = '';
         record.priceRounded = null;
@@ -198,7 +199,6 @@ export const NFTtransferHandler: ExtrinsicHandler = async (call, extrinsic): Pro
     const record = await NftEntity.get(nftId.toString());
     if (record !== undefined) {
       const oldOwner = record.owner
-      record.listed = 0;
       record.owner = data.id
       record.updatedAt = date
       await record.save()
