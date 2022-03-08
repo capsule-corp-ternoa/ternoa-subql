@@ -156,6 +156,7 @@ export const marketplaceNftSoldHandler = async (event: SubstrateEvent): Promise<
     const marketplaceId = record.marketplaceId
     record.owner = buyer.toString();
     record.listed = 0;
+    record.marketplaceId = null;
     record.isLocked = false;
     record.price = '';
     record.priceRounded = null;
