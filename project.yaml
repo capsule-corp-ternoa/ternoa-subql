@@ -6,14 +6,8 @@ repository: ''
 schema:
   file: ./schema.graphql
 network:
-  # genesisHash: '0xd44bcfb0e98da45ace37e4df8469e5dbba8c4fc5449acda24c50cea6f5f2ca99' #staging
-  # endpoint: 'wss://staging.chaos.ternoa.com'
-  # dictionary: 'https://dictionary-staging.ternoa.dev/'
-  # genesisHash: '0xd9adfc7ea82be63ba28088d62b96e9270ad2af25c962afc393361909670835b2' #testnet
-  # endpoint: 'wss://testnet.ternoa.com'
-  # dictionary: 'https://dictionary-testnet.ternoa.dev/'
-  genesisHash: '0x1d9abf500e6c3aa6ce02353b9daeca70c7a8dbb812e52d2febeeaed3181357e6'
-  endpoint: wss://chain-dev-latest.ternoa.dev
+  genesisHash: '0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace'
+  endpoint: wss://alphanet.ternoa.com
   chaintypes:
     file: ./types.json
 dataSources:
