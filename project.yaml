@@ -8,8 +8,7 @@ schema:
 network:
   genesisHash: '0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace'
   endpoint: wss://alphanet.ternoa.com
-  chaintypes:
-    file: ./types.json
+  dictionary: https://dictionary-alphanet.ternoa.dev/
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
@@ -26,6 +25,8 @@ dataSources:
           filter:
             module: balances
             method: Transfer
+            
+              
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

@@ -5,8 +5,6 @@ import assert from 'assert';
 
 
 
-type AssociatedAccountEntityProps = Omit<AssociatedAccountEntity, NonNullable<FunctionPropertyNames<AssociatedAccountEntity>>>;
-
 export class AssociatedAccountEntity implements Entity {
 
     constructor(id: string) {
@@ -39,7 +37,7 @@ export class AssociatedAccountEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get AssociatedAccountEntity entity without an ID");
         const record = await store.get('AssociatedAccountEntity', id.toString());
         if (record){
-            return AssociatedAccountEntity.create(record as AssociatedAccountEntityProps);
+            return AssociatedAccountEntity.create(record);
         }else{
             return;
         }
@@ -47,7 +45,7 @@ export class AssociatedAccountEntity implements Entity {
 
 
 
-    static create(record: AssociatedAccountEntityProps): AssociatedAccountEntity {
+    static create(record: Partial<Omit<AssociatedAccountEntity, FunctionPropertyNames<AssociatedAccountEntity>>> & Entity): AssociatedAccountEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new AssociatedAccountEntity(record.id);
         Object.assign(entity,record);

@@ -31,7 +31,7 @@ services:
       - '270'
 
   graphql-engine:
-    image: query-ternoa #onfinality/subql-query:latest
+    image: onfinality/subql-query:latest
     ports:
       - 3000:3000
     depends_on:
