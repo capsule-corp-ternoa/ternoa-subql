@@ -18,11 +18,6 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
-            module: associatedAccounts
-            method: UserAccountAdded
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
             module: balances
             method: Transfer
             
@@ -31,7 +26,70 @@ dataSources:
           filter:
             module: nft
             method: NFTCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTBurned
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTTransferred
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTDelegated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTRoyaltySet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTMintFeeSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CollectionCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CollectionBurned
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CollectionClosed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CollectionLimited
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTAddedToCollection
 
+
+
+
+
+
+
+
+
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: associatedAccounts
+            method: UserAccountAdded
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

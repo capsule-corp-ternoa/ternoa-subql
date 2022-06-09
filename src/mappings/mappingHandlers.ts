@@ -71,20 +71,26 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             //     await eventHandlers.marketplaceNftSoldHandler(event)
             //     break;
             case 'nft.NFTCreated': // ok
-                await eventHandlers.nftsCreatedHandler(event)
+                await eventHandlers.nftCreatedHandler(event)
                 break;
-            case 'nfts.NFTBurned': // ok
-                await eventHandlers.nftsBurnedHandler(event)
+            case 'nfts.NFTBurned': //ok
+                await eventHandlers.nftBurnedHandler(event)
                 break;
-            // case 'nfts.SeriesFinished': // ok
+            case 'nfts.NFTTransferred':
+                await eventHandlers.nftTransferHandler(event)
+                break;
+            case 'nfts.NFTDelegated':
+                await eventHandlers.nftDelegatedHandler(event)
+                break;
+            case 'nfts.NFTRoyaltySet':
+                await eventHandlers.nftRoyaltySetHandler(event)
+                break;
+            case 'nfts.NFTMintFeeSet':
+                await eventHandlers.nftMintFeeSetHandler(event)
+                break;
+            // case 'nfts.SeriesFinished':
             //     await eventHandlers.nftsSeriesFinishedHandler(event)
             //     break;
-            case 'nfts.NFTTransferred': // ok
-                await eventHandlers.nftsTransferHandler(event)
-                break;
-            case 'nfts.NFTLent': // ok
-                await eventHandlers.nftsLentHandler(event)
-                break;
             default:
                 break;
         }
