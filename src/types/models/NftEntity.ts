@@ -14,45 +14,43 @@ export class NftEntity implements Entity {
 
     public id: string;
 
-    public serieId: string;
-
     public nftId: string;
-
-    public nftIpfs: string;
-
-    public capsuleIpfs?: string;
-
-    public isCapsule: boolean;
-
-    public frozenCaps: string;
-
-    public timestampList?: Date;
-
-    public currency: string;
-
-    public price?: string;
-
-    public priceRounded?: number;
-
-    public listed: number;
-
-    public isLocked: boolean;
-
-    public timestampBurn?: Date;
-
-    public timestampCreate: Date;
 
     public owner: string;
 
     public creator: string;
 
-    public viewer?: string;
+    public offchainData: string;
 
-    public marketplaceId?: string;
+    public collectionId?: string;
+
+    public royalty: number;
+
+    public mintFee: string;
+
+    public mintFeeRounded?: number;
+
+    public isCapsule: boolean;
+
+    public listedForSale: boolean;
+
+    public isSecret: boolean;
+
+    public delegatee?: string;
+
+    public isDelegated: boolean;
+
+    public isSoulbound: boolean;
 
     public createdAt: Date;
 
     public updatedAt: Date;
+
+    public timestampCreate: Date;
+
+    public timestampBurn?: Date;
+
+    public timestampList?: Date;
 
 
     async save(): Promise<void>{
@@ -76,34 +74,6 @@ export class NftEntity implements Entity {
     }
 
 
-    static async getBySerieId(serieId: string): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'serieId', serieId);
-      return records.map(record => NftEntity.create(record));
-      
-    }
-
-    static async getByTimestampList(timestampList: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampList', timestampList);
-      return records.map(record => NftEntity.create(record));
-      
-    }
-
-    static async getByTimestampBurn(timestampBurn: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampBurn', timestampBurn);
-      return records.map(record => NftEntity.create(record));
-      
-    }
-
-    static async getByTimestampCreate(timestampCreate: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => NftEntity.create(record));
-      
-    }
-
     static async getByOwner(owner: string): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'owner', owner);
@@ -118,9 +88,37 @@ export class NftEntity implements Entity {
       
     }
 
-    static async getByViewer(viewer: string): Promise<NftEntity[] | undefined>{
+    static async getByCollectionId(collectionId: string): Promise<NftEntity[] | undefined>{
       
-      const records = await store.getByField('NftEntity', 'viewer', viewer);
+      const records = await store.getByField('NftEntity', 'collectionId', collectionId);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
+    static async getByDelegatee(delegatee: string): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'delegatee', delegatee);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
+    static async getByTimestampCreate(timestampCreate: Date): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'timestampCreate', timestampCreate);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
+    static async getByTimestampBurn(timestampBurn: Date): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'timestampBurn', timestampBurn);
+      return records.map(record => NftEntity.create(record));
+      
+    }
+
+    static async getByTimestampList(timestampList: Date): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'timestampList', timestampList);
       return records.map(record => NftEntity.create(record));
       
     }

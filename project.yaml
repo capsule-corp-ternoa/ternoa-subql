@@ -6,9 +6,9 @@ repository: ''
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace'
-  endpoint: wss://alphanet.ternoa.com
-  dictionary: https://dictionary-alphanet.ternoa.dev/
+  genesisHash: '0x5097f5760dd0a37e4e048bfc18ce9ddf915a9e96a113ac46d99c2f17033ce81d'
+  endpoint: wss://dev-0.ternoa.network/
+  # dictionary: https://dictionary-alphanet.ternoa.dev/
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
@@ -26,7 +26,12 @@ dataSources:
             module: balances
             method: Transfer
             
-              
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTCreated
+
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

@@ -12,51 +12,51 @@ type TransferEntity @entity {
   amountRounded: Float!
 }
 
-type SerieEntity @entity {
+type CollectionEntity @entity {
   id: ID!
   owner: String! @index
-  locked: Boolean!
-  createdAt: Date!
-  updatedAt: Date!
+	offchain_data: String!,
+  nfts: [NftEntity],
+	limit: Int,
+	isClosed: Boolean!,
+  timestampCreate: Date! @index
+  timestampBurn: Date @index
+  timestampClose: Date @index
+  timestampLimit: Date @index
 }
 
 type NftEntity @entity {
   id: ID!
-  serie: SerieEntity!
   nftId: String!
-  nftIpfs: String!
-  capsuleIpfs: String
-  isCapsule: Boolean!
-  frozenCaps: String!
-  timestampList: Date @index
-  currency: String!
-  price: String
-  priceRounded:Float
-  listed: Int!
-  isLocked: Boolean!
-  timestampBurn: Date @index
-  timestampCreate: Date! @index
+	collection: CollectionEntity
   owner: String! @index
   creator: String! @index
-  viewer: String @index
-  marketplaceId: String
+  offchainData: String!
+  royalty: Int!
+  mintFee: String!
+  mintFeeRounded: Float
+  isCapsule: Boolean!
+  listedForSale: Boolean!
+  isSecret: Boolean!
+  delegatee: String @index
+  isDelegated: Boolean!
+  isSoulbound: Boolean!
   createdAt: Date!
   updatedAt: Date!
+  timestampCreate: Date! @index
+  timestampBurn: Date @index
+  timestampList: Date @index
 }
 
-type NftTransferEntity @entity {
+type NftOperationEntity @entity {
   id: ID!
   blockId: String!
   extrinsicId: String!
   nft: NftEntity!
-  seriesId: String!
   from: String! @index
-  to: String! @index
+  to: String! @index 
   timestamp: Date! @index
-  typeOfTransaction: String!
-  amount: String!
-  amountRounded: Float!
-  marketplaceId: String
+  typeOfTransaction: String! #create, burn, transfer, sell, list, delegate, addToCollection, unlist
 }
 
 type AccountEntity @entity {
@@ -67,29 +67,6 @@ type AccountEntity @entity {
   capsAmountRounded: Float
   capsAmountFrozenRounded: Float
   capsAmountTotalRounded: Float
-  createdAt: Date!
-  updatedAt: Date!
-}
-
-type MarketplaceEntity @entity {
-  id: ID!
-  owner: String!
-  kind: String!
-  commissionFee: String!
-  name: String!
-  uri: String
-  allowList: [String]!
-  disallowList: [String]!
-  logoUri: String
-  description: String
-  createdAt: Date!
-  updatedAt: Date!
-}
-
-type AssociatedAccountEntity @entity {
-  id: ID!
-  accountName: [String]!
-  accountValue: [String]!
   createdAt: Date!
   updatedAt: Date!
 }

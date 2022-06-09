@@ -1,6 +1,6 @@
 import { SubstrateEvent } from "@subql/types";
 import { Balance } from '@polkadot/types/interfaces';
-import { genericTransferHandler, nftTransferEntityHandler } from ".";
+import { genericTransferHandler, nftOperationEntityHandler,  } from ".";
 import { formatString, getCommonEventData, roundPrice } from "../helpers";
 import { MarketplaceEntity, NftEntity } from "../types";
 
@@ -162,7 +162,7 @@ export const marketplaceNftSoldHandler = async (event: SubstrateEvent): Promise<
     record.priceRounded = null;
     record.updatedAt = date
     await record.save()
-    await nftTransferEntityHandler(record, oldOwner, commonEventData, "sale", price, marketplaceId)
+    await nftOperationEntityHandler(record, oldOwner, commonEventData, "sale", price, marketplaceId)
 }
 
 export const marketplaceNftListedHandler = async (event: SubstrateEvent): Promise<void> => {

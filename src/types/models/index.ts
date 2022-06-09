@@ -4,17 +4,13 @@
 
 export {TransferEntity} from "./TransferEntity"
 
-export {SerieEntity} from "./SerieEntity"
+export {CollectionEntity} from "./CollectionEntity"
 
 export {NftEntity} from "./NftEntity"
 
-export {NftTransferEntity} from "./NftTransferEntity"
+export {NftOperationEntity} from "./NftOperationEntity"
 
 export {AccountEntity} from "./AccountEntity"
-
-export {MarketplaceEntity} from "./MarketplaceEntity"
-
-export {AssociatedAccountEntity} from "./AssociatedAccountEntity"
 
 export {AggregateResultEntity} from "./AggregateResultEntity"
 
