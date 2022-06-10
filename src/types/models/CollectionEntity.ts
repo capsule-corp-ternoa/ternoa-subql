@@ -14,11 +14,13 @@ export class CollectionEntity implements Entity {
 
     public id: string;
 
+    public collectionId: string;
+
     public owner: string;
 
     public offchain_data: string;
 
-    public nftsId?: string[];
+    public nfts?: string[];
 
     public limit?: number;
 
@@ -57,13 +59,6 @@ export class CollectionEntity implements Entity {
     static async getByOwner(owner: string): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'owner', owner);
-      return records.map(record => CollectionEntity.create(record));
-      
-    }
-
-    static async getByNftsId(nftsId: string): Promise<CollectionEntity[] | undefined>{
-      
-      const records = await store.getByField('CollectionEntity', 'nftsId', nftsId);
       return records.map(record => CollectionEntity.create(record));
       
     }

@@ -16,13 +16,13 @@ export class NftEntity implements Entity {
 
     public nftId: string;
 
+    public collectionId?: string;
+
     public owner: string;
 
     public creator: string;
 
     public offchainData: string;
-
-    public collectionId?: string;
 
     public royalty: number;
 
@@ -84,13 +84,6 @@ export class NftEntity implements Entity {
     static async getByCreator(creator: string): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'creator', creator);
-      return records.map(record => NftEntity.create(record));
-      
-    }
-
-    static async getByCollectionId(collectionId: string): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'collectionId', collectionId);
       return records.map(record => NftEntity.create(record));
       
     }

@@ -7,11 +7,26 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
     logger.info(key)
     try{
         switch(key){
-            case 'associatedAccounts.UserAccountAdded': // not tested, need to add any account key first from root account
-                await eventHandlers.usernameChangedHandler(event)
+            case 'balances.Transfer':
+                await eventHandlers.transferHandler(event)
                 break;
-            // case 'balances.Transfer': // ok
-            //     await eventHandlers.transferHandler(event)
+            case 'nft.NFTCreated':
+                await eventHandlers.nftCreatedHandler(event)
+                break;
+            case 'nft.NFTBurned':
+                await eventHandlers.nftBurnedHandler(event)
+                break;
+            case 'nft.NFTTransferred':
+                await eventHandlers.nftTransferHandler(event)
+                break;
+            case 'nft.NFTDelegated':
+                await eventHandlers.nftDelegatedHandler(event)
+                break;
+            case 'nft.NFTRoyaltySet':
+                await eventHandlers.nftRoyaltySetHandler(event)
+                break;
+            // case 'associatedAccounts.UserAccountAdded': // not tested, need to add any account key first from root account
+            //     await eventHandlers.usernameChangedHandler(event)
             //     break;
             // case 'capsules.CapsuleFundsAdded': // not tested, pallet not available
             //     await eventHandlers.capsulesFundsAddedHandler(event)
@@ -69,27 +84,6 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
             //     break;
             // case 'marketplace.NftSold': // not tested, pallet not available, when test, check that it trigger a balance transfer, else add update account for old owner
             //     await eventHandlers.marketplaceNftSoldHandler(event)
-            //     break;
-            case 'nft.NFTCreated': // ok
-                await eventHandlers.nftCreatedHandler(event)
-                break;
-            case 'nfts.NFTBurned': //ok
-                await eventHandlers.nftBurnedHandler(event)
-                break;
-            case 'nfts.NFTTransferred':
-                await eventHandlers.nftTransferHandler(event)
-                break;
-            case 'nfts.NFTDelegated':
-                await eventHandlers.nftDelegatedHandler(event)
-                break;
-            case 'nfts.NFTRoyaltySet':
-                await eventHandlers.nftRoyaltySetHandler(event)
-                break;
-            case 'nfts.NFTMintFeeSet':
-                await eventHandlers.nftMintFeeSetHandler(event)
-                break;
-            // case 'nfts.SeriesFinished':
-            //     await eventHandlers.nftsSeriesFinishedHandler(event)
             //     break;
             default:
                 break;

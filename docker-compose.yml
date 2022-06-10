@@ -3,6 +3,7 @@ version: '3'
 services:
   postgres:
     image: postgres:12-alpine
+    command: postgres -c stats_temp_directory=/tmp
     ports:
       - 5432:5432
     volumes:

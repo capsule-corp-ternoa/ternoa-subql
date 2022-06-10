@@ -14,9 +14,10 @@ type TransferEntity @entity {
 
 type CollectionEntity @entity {
   id: ID!
+  collectionId: String!,
   owner: String! @index
 	offchain_data: String!,
-  nfts: [NftEntity],
+  nfts: [String],
 	limit: Int,
 	isClosed: Boolean!,
   timestampCreate: Date! @index
@@ -28,7 +29,7 @@ type CollectionEntity @entity {
 type NftEntity @entity {
   id: ID!
   nftId: String!
-	collection: CollectionEntity
+	collectionId: String
   owner: String! @index
   creator: String! @index
   offchainData: String!

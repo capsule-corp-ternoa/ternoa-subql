@@ -23,14 +23,14 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.listedForSale = false
     record.isSecret = false
     record.isDelegated = false
-    record.isSoulbound = Boolean(isSoulbound)
+    record.isSoulbound = isSoulbound.toString() === 'true'
     record.createdAt = date
     record.updatedAt = date
     record.timestampCreate = commonEventData.timestamp
     await record.save()
     if (record.collectionId) {
       let collectionRecord = await CollectionEntity.get(record.collectionId)
-      collectionRecord.nftsId.push(record.nftId)
+      collectionRecord.nfts.push(record.nftId)
       await collectionRecord.save()
     }
     await nftOperationEntityHandler(record, "null address", commonEventData, "creation")
@@ -47,10 +47,6 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   if (record === undefined) throw new Error("NFT to burn not found in db")
   const oldOwner = record.owner
   record.owner = "null address"
-  // possible to burn an nft that belong to a collection ??
-  if (record.collectionId !== null || undefined) record.collectionId = null
-  // possible to burn an nft that is delegated ??
-  if (record.isDelegated) record.delegatee = null
   record.timestampBurn = commonEventData.timestamp
   record.updatedAt = date
   await record.save()
@@ -59,52 +55,41 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
 
 export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
-  if (!commonEventData.isSuccess) throw new Error("NFT transfer error, extrinsic isSuccess : false")
+  if (!commonEventData.isSuccess) throw new Error("NFT transfered error, extrinsic isSuccess : false")
   const [nftId, from, to] = event.event.data
   const date = new Date()
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT to transfer not found in db")
-  // record.listed = 0;
-  // record.marketplaceId = null;
   record.owner = to.toString()
   record.updatedAt = date
   await record.save()
   await nftOperationEntityHandler(record, from.toString(), commonEventData, "transfer")
 }
 
-// export const nftsSeriesFinishedHandler = async (
-// 	event: SubstrateEvent
-// ): Promise<void> => {
-// 	const commonEventData = getCommonEventData(event);
-// 	if (!commonEventData.isSuccess)
-// 		throw new Error(
-// 			"NFT series finished error, extrinsic isSuccess : false"
-// 		);
-// 	const [seriesId] = event.event.data;
-// 	const date = new Date();
-// 	let record = await SerieEntity.get(seriesId.toString());
-// 	if (record === undefined)
-// 		record = await SerieEntity.get(formatString(seriesId.toString()));
-// 	if (record === undefined)
-// 		throw new Error("Series to finish not found in db");
-// 	record.locked = true;
-// 	record.updatedAt = date;
-// 	await record.save();
-// };
-
 export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
-  if (!commonEventData.isSuccess) throw new Error("NFT lent error, extrinsic isSuccess : false")
-  const [id, viewer] = event.event.data
+  if (!commonEventData.isSuccess) throw new Error("NFT delegated error, extrinsic isSuccess : false")
+  const [id, recipient] = event.event.data
   const date = new Date()
   let record = await NftEntity.get(id.toString())
-  if (record === undefined) throw new Error("NFT to lend not found in db")
-  // record.viewer =
-  // 	viewer && viewer.toString().length > 0 ? viewer.toString() : null;
+  if (record === undefined) throw new Error("NFT to delegate not found in db")
+  const oldOwner = record.owner
+  record.delegatee = recipient?.toString() || null;
+  record.isDelegated = record.delegatee ? true : false; 
   record.updatedAt = date
   await record.save()
+  await nftOperationEntityHandler(record, oldOwner, commonEventData, "delegate")
 }
 
-export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void> => {}
-
-export const nftMintFeeSetHandler = async (event: SubstrateEvent): Promise<void> => {}
+export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void> => {
+	const commonEventData = getCommonEventData(event)
+	if (!commonEventData.isSuccess) throw new Error("NFT royalty set error, extrinsic isSuccess : false")
+	const [id, royalty] = event.event.data
+	const date = new Date()
+	let record = await NftEntity.get(id.toString())
+	if (record === undefined) throw new Error("NFT to set royalty not found in db")
+	record.royalty = Number(royalty) / 10000 //premill or number
+	record.updatedAt = date
+	await record.save() 
+	//check if nftOperationEntityHandler must be recorded for nft attribute update as Royaltyset.
+}

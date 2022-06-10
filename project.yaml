@@ -50,11 +50,6 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: nft
-            method: NFTMintFeeSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
             method: CollectionCreated
         - handler: handleEvent
           kind: substrate/EventHandler
