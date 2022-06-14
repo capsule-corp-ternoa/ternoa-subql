@@ -2,11 +2,11 @@ specVersion: 0.2.0
 name: subql_ternoa
 version: 1.0.0
 description: Ternoa data indexer
-repository: ''
+repository: ""
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: '0x5097f5760dd0a37e4e048bfc18ce9ddf915a9e96a113ac46d99c2f17033ce81d'
+  genesisHash: "0x5097f5760dd0a37e4e048bfc18ce9ddf915a9e96a113ac46d99c2f17033ce81d"
   endpoint: wss://dev-0.ternoa.network/
   # dictionary: https://dictionary-alphanet.ternoa.dev/
 dataSources:
@@ -20,7 +20,7 @@ dataSources:
           filter:
             module: balances
             method: Transfer
-            
+
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -72,136 +72,8 @@ dataSources:
             module: nft
             method: NFTAddedToCollection
 
-
-
-
-
-
-
-
-
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: associatedAccounts
             method: UserAccountAdded
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: capsules
-            method: CapsuleFundsAdded
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: capsules
-            method: CapsuleIpfsReferenceChanged
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: capsules
-            method: CapsuleRemoved
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: capsules
-            method: CapsuleCreated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: AccountAddedToAllowList
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: AccountAddedToDisallowList
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: AccountRemovedFromAllowList
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: AccountRemovedFromDisallowList
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceCreated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceCommissionFeeChanged
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceDescriptionUpdated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceLogoUriUpdated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceTypeChanged
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceNameChanged
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceChangedOwner
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceUriUpdated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NftListed
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NftUnlisted
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NftSold
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nfts
-            method: NFTBurned
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nfts
-            method: NFTCreated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nfts
-            method: SeriesFinished
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nfts
-            method: NFTTransferred
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nfts
-            method: NFTLent
