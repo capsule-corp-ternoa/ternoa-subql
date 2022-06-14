@@ -10,6 +10,10 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "balances.Transfer":
         await eventHandlers.transferHandler(event)
         break
+      case "bridge.DepositMade":
+        const signer = getSigner(event)
+        await updateAccount(signer)
+        break
       case "nft.NFTCreated":
         await eventHandlers.nftCreatedHandler(event)
         break
