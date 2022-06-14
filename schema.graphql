@@ -14,12 +14,12 @@ type TransferEntity @entity {
 
 type CollectionEntity @entity {
   id: ID!
-  collectionId: String!,
+  collectionId: String!
   owner: String! @index
-	offchain_data: String!,
-  nfts: [String],
-	limit: Int,
-	isClosed: Boolean!,
+  offchainData: String!
+  nfts: [String]
+  limit: Int
+  isClosed: Boolean!
   timestampCreate: Date! @index
   timestampBurn: Date @index
   timestampClose: Date @index
@@ -29,7 +29,7 @@ type CollectionEntity @entity {
 type NftEntity @entity {
   id: ID!
   nftId: String!
-	collectionId: String
+  collectionId: String
   owner: String! @index
   creator: String! @index
   offchainData: String!
@@ -55,7 +55,7 @@ type NftOperationEntity @entity {
   extrinsicId: String!
   nft: NftEntity!
   from: String! @index
-  to: String! @index 
+  to: String! @index
   timestamp: Date! @index
   typeOfTransaction: String! #create, burn, transfer, sell, list, delegate, addToCollection, unlist
 }
