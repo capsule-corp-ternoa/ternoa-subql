@@ -16,7 +16,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.owner = owner.toString()
     record.creator = owner.toString()
     record.offchainData = offchainData.toString()
-    record.royalty = Number(royalty) / 10000
+    record.royalty = String(Number(royalty.toString()) / 10000)
     record.mintFee = mintFee.toString()
     record.mintFeeRounded = roundPrice(record.mintFee)
     record.isCapsule = false
@@ -89,7 +89,7 @@ export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void>
   const date = new Date()
   let record = await NftEntity.get(id.toString())
   if (record === undefined) throw new Error("NFT to set royalty not found in db")
-  record.royalty = Number(royalty) / 10000 //premill or number
+  record.royalty = String(Number(royalty.toString()) / 10000)
   record.updatedAt = date
   await record.save()
   //check if nftOperationEntityHandler must be recorded for nft attribute update as Royaltyset.

@@ -33,7 +33,7 @@ type NftEntity @entity {
   owner: String! @index
   creator: String! @index
   offchainData: String!
-  royalty: Int!
+  royalty: String!
   mintFee: String!
   mintFeeRounded: Float
   isCapsule: Boolean!
