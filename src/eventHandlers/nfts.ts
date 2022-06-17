@@ -15,7 +15,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.collectionId = collectionId ? collectionId.toString() : null
     record.owner = owner.toString()
     record.creator = owner.toString()
-    record.offchainData = offchainData.toString()
+    record.offchainData = formatString(offchainData.toString())
     record.royalty = String(Number(royalty.toString()) / 10000)
     record.mintFee = mintFee.toString()
     record.mintFeeRounded = roundPrice(record.mintFee)
@@ -107,7 +107,7 @@ export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promis
     record.limit = limit ? Number(limit.toString()) : null //collectionSizeLimit: 1,000,000
     record.nfts = null
     record.owner = owner.toString()
-    record.offchainData = offchainData.toString()
+    record.offchainData = formatString(offchainData.toString())
     record.timestampCreate = commonEventData.timestamp
     await record.save()
   }
