@@ -6,7 +6,7 @@ repository: ""
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: "0x5097f5760dd0a37e4e048bfc18ce9ddf915a9e96a113ac46d99c2f17033ce81d"
+  genesisHash: "0x9e141cf1d6a8ac8d792ad4ec08a30b469d48c9456d71473c805152c701f3c457"
   endpoint: wss://dev-0.ternoa.network/
   # dictionary: https://dictionary-alphanet.ternoa.dev/
 dataSources:
@@ -101,7 +101,7 @@ dataSources:
           filter:
             module: marketplace
             method: MarketplaceMintFeeSet
-         - handler: handleEvent
+        - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: marketplace

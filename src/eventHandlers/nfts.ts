@@ -74,12 +74,11 @@ export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> 
   const date = new Date()
   let record = await NftEntity.get(id.toString())
   if (record === undefined) throw new Error("NFT to delegate not found in db")
-  const oldOwner = record.owner
   record.delegatee = recipient?.toString() || null
   record.isDelegated = record.delegatee ? true : false
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, oldOwner, commonEventData, "delegate")
+  await nftOperationEntityHandler(record, record.owner, commonEventData, "delegate")
 }
 
 export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -92,7 +91,7 @@ export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void>
   record.royalty = String(Number(royalty.toString()) / 10000)
   record.updatedAt = date
   await record.save()
-  //check if nftOperationEntityHandler must be recorded for nft attribute update as Royaltyset.
+  await nftOperationEntityHandler(record, record.owner, commonEventData, "setRoyalty")
 }
 
 export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -146,13 +145,19 @@ export const nftCollectionLimitedHandler = async (event: SubstrateEvent): Promis
   await record.save()
 }
 
-export const nftNFTAddedToCollectionHandler = async (event: SubstrateEvent): Promise<void> => {
+export const nftAddedToCollectionHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT add to collection error, extrinsic isSuccess : false")
   const [nftId, collectionId] = event.event.data
-  const record = await CollectionEntity.get(collectionId.toString())
-  if (record === undefined) throw new Error("Collection where nft is added not found in db")
-  if (record.nfts) record.nfts.push(nftId.toString())
-  else record.nfts = [nftId.toString()]
-  await record.save()
+  const collectionRecord = await CollectionEntity.get(collectionId.toString())
+  const nftRecord = await NftEntity.get(nftId.toString())
+  if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
+  if (nftRecord === undefined) throw new Error("NFT not found in db")
+  if(nftRecord.collectionId) throw new Error("NFT already contains a collection")
+  if (collectionRecord.nfts) collectionRecord.nfts.push(nftId.toString())
+  else collectionRecord.nfts = [nftId.toString()]
+  nftRecord.collectionId = collectionId.toString()
+  await collectionRecord.save()
+  await nftRecord.save()
+  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, "addNftToCollection")
 }

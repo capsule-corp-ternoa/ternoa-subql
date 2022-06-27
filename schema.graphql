@@ -42,16 +42,9 @@ type NftEntity @entity {
   isDelegated: Boolean!
   isSoulbound: Boolean!
   listedForSale: Boolean!
-  #
   price: String
   priceRounded:Float
-  commissionFee:string
-  buyer:string
-  listedPrice: string
-  marketplaceCut:string
-  royaltyCut:string
   marketplaceId: String
-  #
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index
@@ -65,9 +58,22 @@ type NftOperationEntity @entity {
   extrinsicId: String!
   nft: NftEntity!
   from: String! @index
-  to: String! @index
+  to: String @index
+  collectionId: String @index
+  commissionFee: String
+  listingFee: String
+  price: String
+  priceRounded:Float
+  royalty: Float
+  marketplaceCut:String
+  royaltyCut:String
+  commissionFeeRounded: Float
+  listingFeeRounded: Float
+  marketplaceCutRounded:Float
+  royaltyCutRounded:Float
+  marketplaceId: String
   timestamp: Date! @index
-  typeOfTransaction: String! #create, burn, transfer, sell, list, delegate, addToCollection, unlist
+  typeOfTransaction: String! #create, burn, transfer, sell, list, delegate, addToCollection, unlist, setRoyalty
 }
 
 type MarketplaceEntity @entity {

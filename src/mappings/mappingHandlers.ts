@@ -42,7 +42,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         await eventHandlers.nftCollectionLimitedHandler(event)
         break
       case "nft.NFTAddedToCollection":
-        await eventHandlers.nftNFTAddedToCollectionHandler(event)
+        await eventHandlers.nftAddedToCollectionHandler(event)
         break
       case "marketplace.MarketplaceCreated":
         await eventHandlers.marketplaceCreatedHandler(event)

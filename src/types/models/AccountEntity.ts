@@ -5,8 +5,6 @@ import assert from 'assert';
 
 
 
-type AccountEntityProps = Omit<AccountEntity, NonNullable<FunctionPropertyNames<AccountEntity>>>;
-
 export class AccountEntity implements Entity {
 
     constructor(id: string) {
@@ -47,7 +45,7 @@ export class AccountEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get AccountEntity entity without an ID");
         const record = await store.get('AccountEntity', id.toString());
         if (record){
-            return AccountEntity.create(record as AccountEntityProps);
+            return AccountEntity.create(record);
         }else{
             return;
         }
@@ -55,7 +53,7 @@ export class AccountEntity implements Entity {
 
 
 
-    static create(record: AccountEntityProps): AccountEntity {
+    static create(record: Partial<Omit<AccountEntity, FunctionPropertyNames<AccountEntity>>> & Entity): AccountEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new AccountEntity(record.id);
         Object.assign(entity,record);
