@@ -44,6 +44,30 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.NFTAddedToCollection":
         await eventHandlers.nftNFTAddedToCollectionHandler(event)
         break
+      case "marketplace.MarketplaceCreated":
+        await eventHandlers.marketplaceCreatedHandler(event)
+        break
+      case "marketplace.MarketplaceOwnerSet":
+        await eventHandlers.marketplaceOwnerSetHandler(event)
+        break
+      case "marketplace.MarketplaceKindSet":
+        await eventHandlers.marketplaceKindSetHandler(event)
+        break
+      case "marketplace.MarketplaceConfigSet":
+        await eventHandlers.marketplaceConfigSetHandler(event)
+        break
+      case "marketplace.MarketplaceMintFeeSet":
+        await eventHandlers.marketplaceMintFeeSetHandler(event)
+        break
+      case "marketplace.NFTListed":
+        await eventHandlers.nftListedHandler(event)
+        break
+      case "marketplace.NFTUnlisted":
+        await eventHandlers.nftUnlistedHandler(event)
+        break
+      case "marketplace.NFTSold":
+        await eventHandlers.nftSoldHandler(event)
+        break    
       // case 'associatedAccounts.UserAccountAdded': // not tested, need to add any account key first from root account
       //     await eventHandlers.usernameChangedHandler(event)
       //     break;
