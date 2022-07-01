@@ -43,7 +43,7 @@ type NftEntity @entity {
   isSoulbound: Boolean!
   listedForSale: Boolean!
   price: String
-  priceRounded:Float
+  priceRounded: Float
   marketplaceId: String
   createdAt: Date!
   updatedAt: Date!
@@ -60,20 +60,22 @@ type NftOperationEntity @entity {
   from: String! @index
   to: String @index
   collectionId: String @index
-  commissionFee: String
-  listingFee: String
-  price: String
-  priceRounded:Float
-  royalty: Float
-  marketplaceCut:String
-  royaltyCut:String
+  commissionFeeType: String #Flat or Percentage
+  commissionFee: String # Need to be changed to Float : if percentage permill/10000 or flat = format from ternoaJS
   commissionFeeRounded: Float
+  listingFeeType: String #Flat or Percentage
+  listingFee: String # Need to be changed to Float : if percentage permill/10000 or flat = format from ternoaJS
   listingFeeRounded: Float
-  marketplaceCutRounded:Float
-  royaltyCutRounded:Float
+  price: String
+  priceRounded: Float
+  royalty: Float
+  royaltyCut: String
+  royaltyCutRounded: Float
   marketplaceId: String
+  marketplaceCut: String
+  marketplaceCutRounded: Float
   timestamp: Date! @index
-  typeOfTransaction: String! #create, burn, transfer, sell, list, delegate, addToCollection, unlist, setRoyalty
+  typeOfTransaction: String!
 }
 
 type MarketplaceEntity @entity {
@@ -81,8 +83,10 @@ type MarketplaceEntity @entity {
   marketplaceId: String!
   owner: String!
   kind: String!
-  commissionFee: String
-  listingFee:String
+  commissionFeeType: String
+  commissionFee: String  # Need to be changed to Float
+  listingFeeType: String
+  listingFee: String  # Need to be changed to Float
   accountList: [String]
   offchainData: String
   createdAt: Date!

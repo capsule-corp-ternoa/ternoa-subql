@@ -56,9 +56,6 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "marketplace.MarketplaceConfigSet":
         await eventHandlers.marketplaceConfigSetHandler(event)
         break
-      case "marketplace.MarketplaceMintFeeSet":
-        await eventHandlers.marketplaceMintFeeSetHandler(event)
-        break
       case "marketplace.NFTListed":
         await eventHandlers.nftListedHandler(event)
         break

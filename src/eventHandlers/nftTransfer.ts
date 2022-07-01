@@ -36,21 +36,21 @@ export const nftOperationEntityHandler = async (
       break
     case "sell":
       nftOperationRecord.to = record.owner
-      nftOperationRecord.marketplaceCut = args[0]
-      nftOperationRecord.royaltyCut = args[1]
-      nftOperationRecord.price = record.price
-      nftOperationRecord.priceRounded = record.priceRounded
+      nftOperationRecord.price = args[0]
+      nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
+      nftOperationRecord.marketplaceCut = args[1]
       nftOperationRecord.marketplaceCutRounded = roundPrice(nftOperationRecord.marketplaceCut)
+      nftOperationRecord.royaltyCut = args[2]
       nftOperationRecord.royaltyCutRounded = roundPrice(nftOperationRecord.royaltyCut)
       break
     case "list":
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = record.price
       nftOperationRecord.priceRounded = record.priceRounded
-      nftOperationRecord.listingFee = args[0]
+      nftOperationRecord.commissionFee = args[0]
+      nftOperationRecord.commissionFeeRounded = roundPrice(nftOperationRecord.commissionFee) //record.commissionType === "percentage" ? args[0] : roundPrice(nftOperationRecord.commissionFee)
+      nftOperationRecord.listingFee = args[1]
       nftOperationRecord.listingFeeRounded = roundPrice(nftOperationRecord.listingFee)
-      nftOperationRecord.commissionFee = args[1]
-      nftOperationRecord.commissionFeeRounded = roundPrice(nftOperationRecord.commissionFee)
       break
     case "unlist":
       break

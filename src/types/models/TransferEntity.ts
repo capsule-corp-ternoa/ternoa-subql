@@ -5,6 +5,8 @@ import assert from 'assert';
 
 
 
+type TransferEntityProps = Omit<TransferEntity, NonNullable<FunctionPropertyNames<TransferEntity>>>;
+
 export class TransferEntity implements Entity {
 
     constructor(id: string) {
@@ -49,7 +51,7 @@ export class TransferEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get TransferEntity entity without an ID");
         const record = await store.get('TransferEntity', id.toString());
         if (record){
-            return TransferEntity.create(record);
+            return TransferEntity.create(record as TransferEntityProps);
         }else{
             return;
         }
@@ -59,12 +61,12 @@ export class TransferEntity implements Entity {
     static async getByTimestamp(timestamp: Date): Promise<TransferEntity[] | undefined>{
       
       const records = await store.getByField('TransferEntity', 'timestamp', timestamp);
-      return records.map(record => TransferEntity.create(record));
+      return records.map(record => TransferEntity.create(record as TransferEntityProps));
       
     }
 
 
-    static create(record: Partial<Omit<TransferEntity, FunctionPropertyNames<TransferEntity>>> & Entity): TransferEntity {
+    static create(record: TransferEntityProps): TransferEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new TransferEntity(record.id);
         Object.assign(entity,record);
