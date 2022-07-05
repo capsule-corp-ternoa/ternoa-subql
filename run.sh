@@ -23,4 +23,4 @@ env | grep DB_
 
 npm install -g @subql/query
 
-subql-query --name subql_ternoa --playground --unsafe #unsafe to get more than 100 rows
+subql-query --name subql_ternoa --playground

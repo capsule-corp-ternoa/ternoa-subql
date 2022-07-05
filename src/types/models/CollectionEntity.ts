@@ -5,6 +5,8 @@ import assert from 'assert';
 
 
 
+type CollectionEntityProps = Omit<CollectionEntity, NonNullable<FunctionPropertyNames<CollectionEntity>>>;
+
 export class CollectionEntity implements Entity {
 
     constructor(id: string) {
@@ -23,6 +25,8 @@ export class CollectionEntity implements Entity {
     public nfts?: string[];
 
     public limit?: number;
+
+    public hasReachedLimit: boolean;
 
     public isClosed: boolean;
 
@@ -49,7 +53,7 @@ export class CollectionEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get CollectionEntity entity without an ID");
         const record = await store.get('CollectionEntity', id.toString());
         if (record){
-            return CollectionEntity.create(record);
+            return CollectionEntity.create(record as CollectionEntityProps);
         }else{
             return;
         }
@@ -59,40 +63,40 @@ export class CollectionEntity implements Entity {
     static async getByOwner(owner: string): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'owner', owner);
-      return records.map(record => CollectionEntity.create(record));
+      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
       
     }
 
     static async getByTimestampCreate(timestampCreate: Date): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => CollectionEntity.create(record));
+      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
       
     }
 
     static async getByTimestampBurn(timestampBurn: Date): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'timestampBurn', timestampBurn);
-      return records.map(record => CollectionEntity.create(record));
+      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
       
     }
 
     static async getByTimestampClose(timestampClose: Date): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'timestampClose', timestampClose);
-      return records.map(record => CollectionEntity.create(record));
+      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
       
     }
 
     static async getByTimestampLimit(timestampLimit: Date): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'timestampLimit', timestampLimit);
-      return records.map(record => CollectionEntity.create(record));
+      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
       
     }
 
 
-    static create(record: Partial<Omit<CollectionEntity, FunctionPropertyNames<CollectionEntity>>> & Entity): CollectionEntity {
+    static create(record: CollectionEntityProps): CollectionEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new CollectionEntity(record.id);
         Object.assign(entity,record);

@@ -1,12 +1,11 @@
 import { NftEntity, NftOperationEntity } from "../types"
-import { CommonEventData, roundPrice } from "../helpers"
+import { CommonEventData } from "../helpers"
 
 export const nftOperationEntityHandler = async (
   record: NftEntity,
   oldOwner: string,
   commonEventData: CommonEventData,
   typeOfTransaction: string,
-  args?: any[],
 ): Promise<void> => {
   const nftOperationRecord = new NftOperationEntity(commonEventData.blockHash + "-" + commonEventData.eventId)
   nftOperationRecord.blockId = commonEventData.blockId
@@ -29,30 +28,10 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.to = record.delegatee || "none"
       break
     case "setRoyalty":
-      nftOperationRecord.royalty = Number(record.royalty)
+      nftOperationRecord.royalty = record.royalty
       break
     case "addNftToCollection":
       nftOperationRecord.collectionId = record.collectionId
-      break
-    case "sell":
-      nftOperationRecord.to = record.owner
-      nftOperationRecord.marketplaceCut = args[0]
-      nftOperationRecord.royaltyCut = args[1]
-      nftOperationRecord.price = record.price
-      nftOperationRecord.priceRounded = record.priceRounded
-      nftOperationRecord.marketplaceCutRounded = roundPrice(nftOperationRecord.marketplaceCut)
-      nftOperationRecord.royaltyCutRounded = roundPrice(nftOperationRecord.royaltyCut)
-      break
-    case "list":
-      nftOperationRecord.marketplaceId = record.marketplaceId
-      nftOperationRecord.price = record.price
-      nftOperationRecord.priceRounded = record.priceRounded
-      nftOperationRecord.listingFee = args[0]
-      nftOperationRecord.listingFeeRounded = roundPrice(nftOperationRecord.listingFee)
-      nftOperationRecord.commissionFee = args[1]
-      nftOperationRecord.commissionFeeRounded = roundPrice(nftOperationRecord.commissionFee)
-      break
-    case "unlist":
       break
   }
   await nftOperationRecord.save()

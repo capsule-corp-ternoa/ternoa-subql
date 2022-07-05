@@ -50,4 +50,3 @@ services:
       - 'subql_ternoa' #Same as your project name
       - '--playground'
       - --indexer=http://subquery-node:3000
-      - --unsafe #Allows us to query more than 100 rows

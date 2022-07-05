@@ -19,6 +19,7 @@ type CollectionEntity @entity {
   offchainData: String!
   nfts: [String]
   limit: Int
+  hasReachedLimit: Boolean!
   isClosed: Boolean!
   timestampCreate: Date! @index
   timestampBurn: Date @index
@@ -33,7 +34,7 @@ type NftEntity @entity {
   owner: String! @index
   creator: String! @index
   offchainData: String!
-  royalty: String!
+  royalty: Float!
   mintFee: String!
   mintFeeRounded: Float
   isCapsule: Boolean!
@@ -42,9 +43,6 @@ type NftEntity @entity {
   isDelegated: Boolean!
   isSoulbound: Boolean!
   listedForSale: Boolean!
-  price: String
-  priceRounded:Float
-  marketplaceId: String
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index
@@ -60,33 +58,9 @@ type NftOperationEntity @entity {
   from: String! @index
   to: String @index
   collectionId: String @index
-  commissionFee: String
-  listingFee: String
-  price: String
-  priceRounded:Float
   royalty: Float
-  marketplaceCut:String
-  royaltyCut:String
-  commissionFeeRounded: Float
-  listingFeeRounded: Float
-  marketplaceCutRounded:Float
-  royaltyCutRounded:Float
-  marketplaceId: String
   timestamp: Date! @index
-  typeOfTransaction: String! #create, burn, transfer, sell, list, delegate, addToCollection, unlist, setRoyalty
-}
-
-type MarketplaceEntity @entity {
-  id: ID!
-  marketplaceId: String!
-  owner: String!
-  kind: String!
-  commissionFee: String
-  listingFee:String
-  accountList: [String]
-  offchainData: String
-  createdAt: Date!
-  updatedAt: Date!
+  typeOfTransaction: String!
 }
 
 type AccountEntity @entity {
