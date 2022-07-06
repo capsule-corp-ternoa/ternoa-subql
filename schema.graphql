@@ -43,6 +43,9 @@ type NftEntity @entity {
   isDelegated: Boolean!
   isSoulbound: Boolean!
   listedForSale: Boolean!
+  price: String
+  priceRounded: Float
+  marketplaceId: String
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index
@@ -58,9 +61,39 @@ type NftOperationEntity @entity {
   from: String! @index
   to: String @index
   collectionId: String @index
+  commissionFeeType: String
+  commissionFee: String
+  commissionFeeRounded: Float
+  listingFeeType: String
+  listingFee: String
+  listingFeeRounded: Float
+  price: String
+  priceRounded: Float
   royalty: Float
+  royaltyCut: String
+  royaltyCutRounded: Float
+  marketplaceId: String
+  marketplaceCut: String
+  marketplaceCutRounded: Float
   timestamp: Date! @index
   typeOfTransaction: String!
+}
+
+type MarketplaceEntity @entity {
+  id: ID!
+  marketplaceId: String!
+  owner: String!
+  kind: String!
+  commissionFeeType: String
+  commissionFee: String
+  commissionFeeRounded: Float 
+  listingFeeType: String
+  listingFee: String
+  listingFeeRounded: Float
+  accountList: [String]
+  offchainData: String
+  createdAt: Date!
+  updatedAt: Date!
 }
 
 type AccountEntity @entity {

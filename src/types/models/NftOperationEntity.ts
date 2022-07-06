@@ -28,7 +28,33 @@ export class NftOperationEntity implements Entity {
 
     public collectionId?: string;
 
+    public commissionFeeType?: string;
+
+    public commissionFee?: string;
+
+    public commissionFeeRounded?: number;
+
+    public listingFeeType?: string;
+
+    public listingFee?: string;
+
+    public listingFeeRounded?: number;
+
+    public price?: string;
+
+    public priceRounded?: number;
+
     public royalty?: number;
+
+    public royaltyCut?: string;
+
+    public royaltyCutRounded?: number;
+
+    public marketplaceId?: string;
+
+    public marketplaceCut?: string;
+
+    public marketplaceCutRounded?: number;
 
     public timestamp: Date;
 

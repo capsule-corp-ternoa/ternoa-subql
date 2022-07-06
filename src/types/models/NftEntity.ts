@@ -44,6 +44,12 @@ export class NftEntity implements Entity {
 
     public listedForSale: boolean;
 
+    public price?: string;
+
+    public priceRounded?: number;
+
+    public marketplaceId?: string;
+
     public createdAt: Date;
 
     public updatedAt: Date;
