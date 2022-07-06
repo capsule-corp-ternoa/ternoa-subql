@@ -60,11 +60,11 @@ type NftOperationEntity @entity {
   from: String! @index
   to: String @index
   collectionId: String @index
-  commissionFeeType: String #Flat or Percentage
-  commissionFee: String # Need to be changed to Float : if percentage permill/10000 or flat = format from ternoaJS
+  commissionFeeType: String
+  commissionFee: String
   commissionFeeRounded: Float
-  listingFeeType: String #Flat or Percentage
-  listingFee: String # Need to be changed to Float : if percentage permill/10000 or flat = format from ternoaJS
+  listingFeeType: String
+  listingFee: String
   listingFeeRounded: Float
   price: String
   priceRounded: Float
@@ -84,9 +84,11 @@ type MarketplaceEntity @entity {
   owner: String!
   kind: String!
   commissionFeeType: String
-  commissionFee: String  # Need to be changed to Float
+  commissionFee: String
+  commissionFeeRounded: Float 
   listingFeeType: String
-  listingFee: String  # Need to be changed to Float
+  listingFee: String
+  listingFeeRounded: Float
   accountList: [String]
   offchainData: String
   createdAt: Date!

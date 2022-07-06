@@ -1,9 +1,19 @@
 import { SubstrateEvent } from "@subql/types"
+import { bnToBn } from "@polkadot/util/bn"
 import { formatString, getCommonEventData, roundPrice } from "../helpers"
 import { genericTransferHandler } from "./balances"
 import { MarketplaceEntity, NftEntity } from "../types"
 import { nftOperationEntityHandler } from "./nftTransfer"
-import BN from "bn.js"
+
+// type CommissionType = "flat" | "percentage"
+// type MarketplaceDataType = {
+//   owner: string
+//   kind: string
+//   commissionFee: { [type in CommissionType]: string; }
+//   listingFee: { [type in CommissionType]: string; }
+//   accountList: [string]
+//   offchainData: string
+// }
 
 export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
@@ -43,36 +53,39 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   if (isCommissionFeeSet) {
     const parsedDatas = JSON.parse(commissionFee.toString())
     parsedDatas.set.flat
-      ? ((record.commissionFee = parsedDatas.set.flat.toString()),
-      //? ((record.commissionFee = await formatAmount(new BN(parsedDatas.set.flat.toString()))), //Need to be changed to float
+      ? ((record.commissionFee = bnToBn(parsedDatas.set.flat).toString()),
+        (record.commissionFeeRounded = roundPrice(record.commissionFee)),
         (record.commissionFeeType = "Flat"))
-      : ((record.commissionFee = String(Number(parsedDatas.set.percentage.toString()) / 10000)), //Need to be changed to float
+      : ((record.commissionFee = String(Number(parsedDatas.set.percentage.toString()) / 10000)),
+        (record.commissionFeeRounded = Number(record.commissionFee)),
         (record.commissionFeeType = "Percentage"))
   } else if (isCommissionFeeRemoved) {
     record.commissionFee = null
+    record.commissionFeeRounded = null
     record.commissionFeeType = null
   }
 
   if (isListingFeeSet) {
     const parsedDatas = JSON.parse(listingFee.toString())
     parsedDatas.set.flat
-      ? ((record.listingFee = parsedDatas.set.flat.toString()),
-      //? ((record.listingFee = await formatAmount(new BN(parsedDatas.set.flat.toString()))), //Need to be changed to float
+      ? ((record.listingFee = bnToBn(parsedDatas.set.flat).toString()),
+        (record.listingFeeRounded = roundPrice(record.listingFee)),
         (record.listingFeeType = "Flat"))
-      : ((record.listingFee = String(Number(parsedDatas.set.percentage.toString()) / 10000)), //Need to be changed to float
-      (record.listingFeeType = "Percentage"))
+      : ((record.listingFee = String(Number(parsedDatas.set.percentage.toString()) / 10000)),
+        (record.listingFeeRounded = Number(record.listingFee)),
+        (record.listingFeeType = "Percentage"))
   } else if (isListingFeeRemoved) {
     record.listingFee = null
+    record.listingFeeRounded = null
     record.listingFeeType = null
   }
 
   if (isAccountListSet) {
     record.accountList = []
     const parsedDatas = JSON.parse(accountList.toString())
-    // record.accountList = parsedDatas.set.map((account: string) => record.accountList.push(account.toString()))
-    record.accountList.push(parsedDatas.set.toString()) // strings in array??
+    parsedDatas.set.map((account: string) => record.accountList.push(account.toString()))
   } else if (isAccountListRemoved) {
-    record.accountList = []
+    record.accountList = null
   }
 
   if (isOffchainDataSet) {
@@ -81,7 +94,6 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   } else if (isOffchainDataRemoved) {
     record.offchainData = null
   }
-
   record.updatedAt = date
   await record.save()
 }
@@ -116,41 +128,42 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   const [nftId, marketplaceId, price, commissionFee] = event.event.data
   const date = new Date()
 
-  // Format commssion fee to set type
-
-  let marketplaceCommissionFee: any
-  let marketplaceCommissionType: string
+  // Format commission fee to set type
+  let marketplaceCommissionFeeType: string = null
+  let marketplaceCommissionFee: string = null
+  let marketplaceCommissionFeeRounded: number = null
   if (commissionFee.toString()) {
     const parsedCommissionFee = JSON.parse(commissionFee.toString())
-    marketplaceCommissionFee = parsedCommissionFee.flat
-      ? parsedCommissionFee.flat.toString()
-      : String(Number(parsedCommissionFee.percentage.toString()) / 10000)
-    marketplaceCommissionType = parsedCommissionFee.flat ? "Flat" : "Percentage"
-  } else {
-    marketplaceCommissionFee = null
-    marketplaceCommissionType = null
+    const isMarketplaceCommissionFeeFlat = parsedCommissionFee && parsedCommissionFee.flat
+    const isMarketplaceCommissionFeePercentage = parsedCommissionFee && parsedCommissionFee.percentage
+    if (isMarketplaceCommissionFeeFlat) {
+      marketplaceCommissionFeeType = "Flat"
+      marketplaceCommissionFee = bnToBn(parsedCommissionFee.flat).toString()
+      marketplaceCommissionFeeRounded = roundPrice(marketplaceCommissionFee)
+    } else if (isMarketplaceCommissionFeePercentage) {
+      marketplaceCommissionFeeType = "Percentage"
+      marketplaceCommissionFee = String(Number(parsedCommissionFee.percentage.toString()) / 10000)
+      marketplaceCommissionFeeRounded = Number(marketplaceCommissionFee)
+    }
   }
 
   // Format listing fee to set type
-
   const marketplaceDatas = await api.query.marketplace.marketplaces(marketplaceId)
   if (!marketplaceDatas) throw new Error("Marketplace not found in db")
-  logger.info("mp datas " + marketplaceDatas.toString())
-  let marketplaceListingFee: any
-  let marketplaceListingFeeType: string
-  const parsedDatas = JSON.parse(marketplaceDatas.toString())
+  let marketplaceListingFeeType: string = null
+  let marketplaceListingFee: string = null
+  let marketplaceListingFeeRounded: number = null
+  const parsedDatas = JSON.parse(marketplaceDatas.toString()) //as MarketplaceDataType
   const isMarketplaceListingFeeFlat = parsedDatas.listingFee && parsedDatas.listingFee.flat
   const isMarketplaceListingFeePercentage = parsedDatas.listingFee && parsedDatas.listingFee.percentage
-
   if (isMarketplaceListingFeeFlat) {
-    marketplaceListingFee = parsedDatas.listingFee.flat.toString()
     marketplaceListingFeeType = "Flat"
+    marketplaceListingFee = bnToBn(parsedDatas.listingFee.flat).toString()
+    marketplaceListingFeeRounded = roundPrice(marketplaceListingFee)
   } else if (isMarketplaceListingFeePercentage) {
-    marketplaceListingFee = String(Number(parsedDatas.listingFee.percentage.toString()) / 10000)
     marketplaceListingFeeType = "Percentage"
-  } else {
-    marketplaceListingFee = null
-    marketplaceListingFeeType = null
+    marketplaceListingFee = String(Number(parsedDatas.listingFee.percentage.toString()) / 10000)
+    marketplaceListingFeeRounded = Number(marketplaceListingFee)
   }
 
   const record = await NftEntity.get(nftId.toString())
@@ -162,10 +175,14 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.timestampList = date
   record.updatedAt = date
   await record.save()
-  // await nftOperationEntityHandler(record, record.owner, commonEventData, "list", [
-  //   commissionFee.toString(), // what type of fee ??
-  //   marketplaceListingFee, // need to add the Type ??
-  // ])
+  await nftOperationEntityHandler(record, record.owner, commonEventData, "list", [
+    marketplaceCommissionFeeType,
+    marketplaceCommissionFee,
+    marketplaceCommissionFeeRounded,
+    marketplaceListingFeeType,
+    marketplaceListingFee,
+    marketplaceListingFeeRounded,
+  ])
 }
 
 export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -195,11 +212,16 @@ export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   const seller = record.owner
   record.owner = buyer.toString()
   record.listedForSale = false
-  record.marketplaceId = null // ou marketplaceId
+  record.marketplaceId = null
   record.price = null
   record.priceRounded = null
   record.timestampList = null
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, seller, commonEventData, "sell", [listedPrice, marketplaceCut, royaltyCut])
+  await nftOperationEntityHandler(record, seller, commonEventData, "sell", [
+    marketplaceId.toString(),
+    listedPrice.toString(),
+    marketplaceCut.toString(),
+    royaltyCut.toString(),
+  ])
 }

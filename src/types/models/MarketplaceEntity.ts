@@ -26,9 +26,13 @@ export class MarketplaceEntity implements Entity {
 
     public commissionFee?: string;
 
+    public commissionFeeRounded?: number;
+
     public listingFeeType?: string;
 
     public listingFee?: string;
+
+    public listingFeeRounded?: number;
 
     public accountList?: string[];
 
