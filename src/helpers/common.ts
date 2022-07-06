@@ -1,5 +1,5 @@
-// import BN from "bn.js"
-// import { formatBalance } from "ternoa-js"
+import BN from "bn.js"
+import { formatBalance } from "@polkadot/util"
 
 type AnyFunction = <T extends unknown[], R extends unknown>(args?: T) => R | Promise<R>
 
@@ -47,20 +47,8 @@ export const formatString = (str: string) => {
   return result
 }
 
-export const roundPrice = (amount: string) => {
-  try {
-    if (!amount || amount.length === 0 || !isNumeric(amount)) throw new Error()
-    const divider = 1000000000000000000
-    const parsedPrice = (parseInt(amount) / divider).toFixed(3)
-    const roundedPrice = (parseFloat(parsedPrice) * 100) / 100
-    return roundedPrice
-  } catch {
-    return null
-  }
+export const roundPrice = (input : string) => {
+  const inputBN = new BN(input)
+	formatBalance.setDefaults({ decimals: 18, unit: "CAPS" })
+  return Number(formatBalance(inputBN, { forceUnit: "-", withUnit: false }).split(",").join(""))
 }
-
-// export const formatAmount = async (amount: BN) => {
-//     const rawAmount = await formatBalance(amount, { forceUnit: "-", withUnit: false })
-//     const formatedAmount = Number(rawAmount.split(",").join(""))
-//     return formatedAmount
-// }
