@@ -4,6 +4,7 @@ import { getSigner, updateAccount } from "../helpers"
 
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
   const key = `${event.event.section}.${event.event.method}`
+  logger.info(key)
   try {
     switch (key) {
       case "balances.Transfer":
