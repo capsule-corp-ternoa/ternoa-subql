@@ -79,5 +79,45 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
+            module: marketplace
+            method: MarketplaceCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceOwnerSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceKindSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceConfigSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceMintFeeSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTListed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTUnlisted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTSold
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
             module: associatedAccounts
             method: UserAccountAdded
