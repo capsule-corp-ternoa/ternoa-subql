@@ -3,8 +3,8 @@ import { roundPrice } from "../helpers";
 
 export const updateAccount = async (user: string) => {
   try {
-    const data: any = await api.query.system.account(user)
-    const balance = data.balance
+    const res: any = await api.query.system.account(user)
+    const balance = res.data
     if (balance){
       const date = new Date()
       let record = await AccountEntity.get(user);
