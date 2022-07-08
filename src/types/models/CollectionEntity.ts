@@ -18,7 +18,7 @@ export class CollectionEntity implements Entity {
 
     public collectionId: string;
 
-    public owner: string;
+    public owner?: string;
 
     public offchainData: string;
 

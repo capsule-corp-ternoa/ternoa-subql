@@ -20,18 +20,19 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.to = record.owner
       break
     case "burn":
-      nftOperationRecord.to = "null address"
+      nftOperationRecord.to = null
       break
     case "transfer":
       nftOperationRecord.to = record.owner
       break
     case "delegate":
-      nftOperationRecord.to = record.delegatee || "none"
+    case "undelegate":
+      nftOperationRecord.to = record.delegatee
       break
     case "setRoyalty":
       nftOperationRecord.royalty = record.royalty
       break
-    case "addNftToCollection":
+    case "addToCollection":
       nftOperationRecord.collectionId = record.collectionId
       break
     case "sell":

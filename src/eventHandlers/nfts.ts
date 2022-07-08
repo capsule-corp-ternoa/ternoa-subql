@@ -36,7 +36,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
       if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
-    await nftOperationEntityHandler(record, "null address", commonEventData, "create")
+    await nftOperationEntityHandler(record, null, commonEventData, "create")
     await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
   }
 }
@@ -49,7 +49,7 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT to burn not found in db")
   const oldOwner = record.owner
-  record.owner = "null address"
+  record.owner = null
   record.timestampBurn = commonEventData.timestamp
   if (record.collectionId) {
     let collectionRecord = await CollectionEntity.get(record.collectionId)
@@ -98,7 +98,8 @@ export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> 
   record.isDelegated = record.delegatee ? true : false
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, "delegate")
+  const typeOfTransaction = record.delegatee ? "delegate" : "undelegate"
+  await nftOperationEntityHandler(record, record.owner, commonEventData, typeOfTransaction)
 }
 
 export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -138,7 +139,7 @@ export const nftCollectionBurnedHandler = async (event: SubstrateEvent): Promise
   const [collectionId] = event.event.data
   const record = await CollectionEntity.get(collectionId.toString())
   if (record === undefined) throw new Error("NFT collection to burn not found in db")
-  record.owner = "null address"
+  record.owner = null
   record.timestampBurn = commonEventData.timestamp
   await record.save()
 }
@@ -180,5 +181,5 @@ export const nftAddedToCollectionHandler = async (event: SubstrateEvent): Promis
   if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
   await collectionRecord.save()
   await nftRecord.save()
-  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, "addNftToCollection")
+  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, "addToCollection")
 }

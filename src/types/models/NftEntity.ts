@@ -20,7 +20,7 @@ export class NftEntity implements Entity {
 
     public collectionId?: string;
 
-    public owner: string;
+    public owner?: string;
 
     public creator: string;
 
