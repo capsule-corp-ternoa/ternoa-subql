@@ -22,7 +22,7 @@ export class NftOperationEntity implements Entity {
 
     public nftId: string;
 
-    public from: string;
+    public from?: string;
 
     public to?: string;
 
