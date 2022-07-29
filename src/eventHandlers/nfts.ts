@@ -56,7 +56,7 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
     if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
     const nftIndex = collectionRecord.nfts.indexOf(nftId.toString())
     if (collectionRecord.nfts.length === 1 && nftIndex === 0) {
-      collectionRecord.nfts = null
+      collectionRecord.nfts = []
     } else {
       collectionRecord.nfts = [
         ...collectionRecord.nfts.slice(0, nftIndex),
@@ -125,6 +125,7 @@ export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promis
     record.owner = owner.toString()
     record.offchainData = formatString(offchainData.toString())
     record.collectionId = collectionId.toString()
+    record.nfts = []
     record.hasReachedLimit = false
     record.isClosed = false
     record.limit = Number(limit.toString()) || null
