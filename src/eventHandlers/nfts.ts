@@ -31,8 +31,8 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     if (record.collectionId) {
       let collectionRecord = await CollectionEntity.get(record.collectionId)
       if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-      if (collectionRecord.nfts) collectionRecord.nfts.push(record.nftId)
-      else collectionRecord.nfts = [record.nftId]
+      collectionRecord.nfts.push(record.nftId)
+      collectionRecord.nbNfts = collectionRecord.nbNfts +1
       if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
@@ -54,15 +54,19 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   if (record.collectionId) {
     let collectionRecord = await CollectionEntity.get(record.collectionId)
     if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-    const nftIndex = collectionRecord.nfts.indexOf(nftId.toString())
-    if (collectionRecord.nfts.length === 1 && nftIndex === 0) {
-      collectionRecord.nfts = []
-    } else {
-      collectionRecord.nfts = [
-        ...collectionRecord.nfts.slice(0, nftIndex),
-        ...collectionRecord.nfts.slice(nftIndex + 1),
-      ]
-    }
+    collectionRecord.nfts = collectionRecord.nfts.filter(x => x !== nftId.toString())
+    collectionRecord.nbNfts = collectionRecord.nbNfts -1
+  
+    // const nftIndex = collectionRecord.nfts.indexOf(nftId.toString())
+    // if (collectionRecord.nfts.length === 1 && nftIndex === 0) {
+    //   collectionRecord.nfts = []
+    //   collectionRecord.nbNfts = 0
+    // } else {
+    //   collectionRecord.nfts = [
+    //     ...collectionRecord.nfts.slice(0, nftIndex),
+    //     ...collectionRecord.nfts.slice(nftIndex + 1),
+    //   ]
+    // }
     if (collectionRecord.hasReachedLimit) {
       collectionRecord.hasReachedLimit = false
     }
@@ -126,6 +130,7 @@ export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promis
     record.offchainData = formatString(offchainData.toString())
     record.collectionId = collectionId.toString()
     record.nfts = []
+    record.nbNfts = 0
     record.hasReachedLimit = false
     record.isClosed = false
     record.limit = Number(limit.toString()) || null
@@ -176,8 +181,8 @@ export const nftAddedToCollectionHandler = async (event: SubstrateEvent): Promis
   if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
   if (nftRecord === undefined) throw new Error("NFT not found in db")
   if (nftRecord.collectionId) throw new Error("NFT already contains a collection")
-  if (collectionRecord.nfts) collectionRecord.nfts.push(nftId.toString())
-  else collectionRecord.nfts = [nftId.toString()]
+  collectionRecord.nfts.push(nftId.toString())
+  collectionRecord.nbNfts = collectionRecord.nbNfts + 1
   nftRecord.collectionId = collectionId.toString()
   if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
   await collectionRecord.save()
