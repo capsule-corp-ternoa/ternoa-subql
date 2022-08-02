@@ -23,6 +23,6 @@ env | grep DB_
 
 [ -z "$TIMEOUT" ] && export TIMEOUT="20000"
 
-npm install -g @subql/node@0.25.0
+npm install -g @subql/node@1.5.1
 
 subql-node -f . --db-schema=subql_ternoa --timeout $TIMEOUT
