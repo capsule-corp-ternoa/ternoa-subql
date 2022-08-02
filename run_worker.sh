@@ -25,4 +25,4 @@ env | grep DB_
 
 npm install -g @subql/node
 
-subql-node -f . --db-schema=subql_ternoa --timeout $TIMEOUT
+subql-node -f . --db-schema=subql_ternoa --timeout $TIMEOUT --debug
