@@ -5,8 +5,6 @@ import assert from 'assert';
 
 
 
-type MarketplaceEntityProps = Omit<MarketplaceEntity, NonNullable<FunctionPropertyNames<MarketplaceEntity>>>;
-
 export class MarketplaceEntity implements Entity {
 
     constructor(id: string) {
@@ -57,7 +55,7 @@ export class MarketplaceEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get MarketplaceEntity entity without an ID");
         const record = await store.get('MarketplaceEntity', id.toString());
         if (record){
-            return MarketplaceEntity.create(record as MarketplaceEntityProps);
+            return MarketplaceEntity.create(record);
         }else{
             return;
         }
@@ -67,19 +65,19 @@ export class MarketplaceEntity implements Entity {
     static async getByMarketplaceId(marketplaceId: string): Promise<MarketplaceEntity[] | undefined>{
       
       const records = await store.getByField('MarketplaceEntity', 'marketplaceId', marketplaceId);
-      return records.map(record => MarketplaceEntity.create(record as MarketplaceEntityProps));
+      return records.map(record => MarketplaceEntity.create(record));
       
     }
 
     static async getByOwner(owner: string): Promise<MarketplaceEntity[] | undefined>{
       
       const records = await store.getByField('MarketplaceEntity', 'owner', owner);
-      return records.map(record => MarketplaceEntity.create(record as MarketplaceEntityProps));
+      return records.map(record => MarketplaceEntity.create(record));
       
     }
 
 
-    static create(record: MarketplaceEntityProps): MarketplaceEntity {
+    static create(record: Partial<Omit<MarketplaceEntity, FunctionPropertyNames<MarketplaceEntity>>> & Entity): MarketplaceEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new MarketplaceEntity(record.id);
         Object.assign(entity,record);
