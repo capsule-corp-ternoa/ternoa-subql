@@ -27,7 +27,6 @@
     "@polkadot/api": "8.11.3",
     "@subql/cli": "1.2.1",
     "@subql/common": "1.2.1",
-    "@subql/node": "^1.5.0",
     "@subql/types": "1.1.0",
     "bn.js": "5.2.1"
   },
