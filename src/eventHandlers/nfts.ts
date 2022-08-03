@@ -56,17 +56,6 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
     if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
     collectionRecord.nfts = collectionRecord.nfts.filter(x => x !== nftId.toString())
     collectionRecord.nbNfts = collectionRecord.nbNfts -1
-  
-    // const nftIndex = collectionRecord.nfts.indexOf(nftId.toString())
-    // if (collectionRecord.nfts.length === 1 && nftIndex === 0) {
-    //   collectionRecord.nfts = []
-    //   collectionRecord.nbNfts = 0
-    // } else {
-    //   collectionRecord.nfts = [
-    //     ...collectionRecord.nfts.slice(0, nftIndex),
-    //     ...collectionRecord.nfts.slice(nftIndex + 1),
-    //   ]
-    // }
     if (collectionRecord.hasReachedLimit) {
       collectionRecord.hasReachedLimit = false
     }
