@@ -20,7 +20,9 @@ export class CollectionEntity implements Entity {
 
     public offchainData: string;
 
-    public nfts?: string[];
+    public nfts: string[];
+
+    public nbNfts: number;
 
     public limit?: number;
 
