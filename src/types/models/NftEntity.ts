@@ -80,6 +80,13 @@ export class NftEntity implements Entity {
     }
 
 
+    static async getByCollectionId(collectionId: string): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'collectionId', collectionId);
+      return records.map(record => NftEntity.create(record as NftEntityProps));
+      
+    }
+
     static async getByOwner(owner: string): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'owner', owner);

@@ -17,7 +17,8 @@ type CollectionEntity @entity {
   collectionId: String!
   owner: String @index
   offchainData: String!
-  nfts: [String]
+  nfts: [String]!
+  nbNfts: Int!
   limit: Int
   hasReachedLimit: Boolean!
   isClosed: Boolean!
@@ -30,7 +31,7 @@ type CollectionEntity @entity {
 type NftEntity @entity {
   id: ID!
   nftId: String!
-  collectionId: String
+  collection: CollectionEntity
   owner: String @index
   creator: String! @index
   offchainData: String!
