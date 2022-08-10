@@ -12,6 +12,7 @@ export const nftOperationEntityHandler = async (
   nftOperationRecord.blockId = commonEventData.blockId
   nftOperationRecord.extrinsicId = commonEventData.extrinsicId
   nftOperationRecord.nftId = record.id
+  nftOperationRecord.collectionId = record.collectionId
   nftOperationRecord.from = oldOwner
   nftOperationRecord.timestamp = commonEventData.timestamp
   nftOperationRecord.typeOfTransaction = typeOfTransaction
@@ -31,9 +32,6 @@ export const nftOperationEntityHandler = async (
       break
     case "setRoyalty":
       nftOperationRecord.royalty = record.royalty
-      break
-    case "addToCollection":
-      nftOperationRecord.collectionId = record.collectionId
       break
     case "sell":
       nftOperationRecord.to = record.owner
