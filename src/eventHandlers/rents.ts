@@ -52,11 +52,12 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   const isRenteeCancellationFeeNft = Boolean(parsedRenteeCancellationFee && parsedRenteeCancellationFee.nft >= 0)
 
   let nftRecord = await NftEntity.get(nftId.toString())
-  if (nftRecord === undefined) throw new Error("NFT record found in db for when creating rental contract")
+  if (nftRecord === undefined) throw new Error("NFT record not found in db for when creating rental contract")
   nftRecord.isRented = true
   await nftRecord.save()
 
   let record = await RentEntity.get(nftId.toString())
+  // what's happen if contract has already been created ??
   if (record === undefined) {
     record = new RentEntity(nftId.toString())
     const date = new Date()
@@ -151,8 +152,34 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   record.timestampStart = commonEventData.timestamp
   await record.save()
   let nftRecord = await NftEntity.get(nftId.toString())
-  if (nftRecord === undefined) throw new Error("NFT record found in db for when creating rental contract")
+  if (nftRecord === undefined) throw new Error("NFT record not found in db for when starting rental contract")
   nftRecord.rentee = record.rentee
   await nftRecord.save()
   // await nftOperationEntityHandler(record, null, commonEventData, "RentContractStarted")
+}
+
+export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT rent contract revoked error, extrinsic isSuccess : false")
+  const [nftId, revokedBy] = event.event.data
+  let record = await RentEntity.get(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  record.hasStarted = false // ?? TBC 
+  record.hasEnded = true // ?? TBC 
+  record.revokedBy = revokedBy.toString()
+  record.timestampRevoke = commonEventData.timestamp
+  //what happen when rent contract is created again. How to prepare best ??
+  //if rentee ?? delete or leave ?
+  //if startblock ?? delete or leave 
+  //if blockSubscriptionRenewal ?? delete or leave?
+  //...
+  // this case put back to null when creating contract ??
+  await record.save()
+
+  let nftRecord = await NftEntity.get(nftId.toString())
+  if (nftRecord === undefined) throw new Error("NFT record not found in db for when revoking rental contract")
+  nftRecord.isRented = false
+  nftRecord.rentee = null
+  await nftRecord.save()
+  // await nftOperationEntityHandler(record, null, commonEventData, "RentContractRevoked")
 }
