@@ -6,7 +6,7 @@ repository: ""
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: "0x6a1a5cfc187f24500e963081aed8013098078ebce700672a2f94186a5c7210c7"
+  genesisHash: "0xf8189f5d351782e4286c9afe3c6218ff585ac79b82d366244289fb346eb765df"
   endpoint: wss://dev-0.ternoa.network/
   # dictionary: https://dictionary-alphanet.ternoa.dev/
 dataSources:
@@ -76,6 +76,56 @@ dataSources:
           filter:
             module: nft
             method: NFTAddedToCollection
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractStarted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractRevoked
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractOfferCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractOfferRetracted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractSubscriptionTermsChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractSubscriptionTermsAccepted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractEnded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractSubscriptionPeriodStarted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractAvailableExpired
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

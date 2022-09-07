@@ -10,6 +10,8 @@ export {NftEntity} from "./NftEntity"
 
 export {NftOperationEntity} from "./NftOperationEntity"
 
+export {RentEntity} from "./RentEntity"
+
 export {MarketplaceEntity} from "./MarketplaceEntity"
 
 export {AccountEntity} from "./AccountEntity"

@@ -44,6 +44,9 @@ type NftEntity @entity {
   isDelegated: Boolean!
   isSoulbound: Boolean!
   listedForSale: Boolean!
+  isRented: Boolean!
+  rentee:String
+  rentalContract: RentEntity
   price: String
   priceRounded: Float
   marketplaceId: String
@@ -78,6 +81,48 @@ type NftOperationEntity @entity {
   marketplaceCutRounded: Float
   timestamp: Date! @index
   typeOfTransaction: String!
+}
+
+
+type RentEntity @entity {
+  id: ID!
+  nftId: String!
+  hasStarted: Boolean!
+  hasEnded: Boolean!
+  isExpired: Boolean!
+  renter: String! @index
+  rentee: String @index
+  startBlockId: String
+  durationType: String!
+  blockDuration: Int
+  blockSubscriptionRenewal: Int 
+  nbSubscriptionRenewal: Int
+  acceptanceType: String!
+  acceptanceList: [String]
+  revocationType: String!
+  revokedBy: String
+  rentFeeType: String!
+  rentFee: String!
+  rentFeeRounded: Float!
+  rentOffers: [String] #rent offers empty when an offer is accepted ?
+  nbRentOffers: Int
+  areTermsAccepted: Boolean
+  nbTermsUpdate: Int
+  renterCancellationFeeType: String
+  renterCancellationFee: String
+  renterCancellationFeeRounded: Float
+  renteeCancellationFeeType: String
+  renteeCancellationFee: String
+  renteeCancellationFeeRounded: Float
+  timestampCreate: Date! @index
+  timestampStart: Date @index
+  timestampLastSubscriptionRenewal: Date
+  timestampNextSubscriptionRenewal: Date
+  timestampLastTermsUpdate: Date
+  timestampLastOffer: Date
+  timestampEnd: Date
+  timestampRevoke: Date
+  timestampExpire: Date
 }
 
 type MarketplaceEntity @entity {
