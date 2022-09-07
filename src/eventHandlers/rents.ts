@@ -208,3 +208,26 @@ export const rentContractOfferRetractedHandler = async (event : SubstrateEvent):
   // confirm that record.nbRentOffers not updated ??
   await record.save()
 }
+
+export const rentContractSubscriptionTermsChangedHandler = async (event : SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT contract subscription terms changed error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await RentEntity.get(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  //hasStarted: false //TBC ?? 
+  record.areTermsAccepted = false //TBC ??
+  record.nbTermsUpdate = record.nbTermsUpdate +1
+  record.timestampLastTermsUpdate = commonEventData.timestamp
+  await record.save()
+}
+
+export const rentContractSubscriptionTermsAcceptedHandler = async (event : SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT contract subscription terms accepted error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await RentEntity.get(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  record.areTermsAccepted = true
+  await record.save()
+}

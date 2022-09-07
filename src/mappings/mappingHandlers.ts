@@ -59,12 +59,12 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "rent.ContractOfferRetracted":
         await eventHandlers.rentContractOfferRetractedHandler(event)
         break
-      // case "rent.ContractSubscriptionTermsChanged":
-      //     await eventHandlers.rentContractSubscriptionTermsChangedHandler(event)
-      //     break
-      // case "rent.ContractSubscriptionTermsAccepted":
-      //     await eventHandlers.rentContractSubscriptionTermsAcceptedHandler(event)
-      //     break
+      case "rent.ContractSubscriptionTermsChanged":
+          await eventHandlers.rentContractSubscriptionTermsChangedHandler(event)
+          break
+      case "rent.ContractSubscriptionTermsAccepted":
+          await eventHandlers.rentContractSubscriptionTermsAcceptedHandler(event)
+          break
       // case "rent.ContractEnded":
       //     await eventHandlers.rentContractEndedHandler(event)
       //     break
