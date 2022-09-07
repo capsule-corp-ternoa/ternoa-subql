@@ -149,6 +149,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   record.hasStarted = true
   record.rentee = rentee.toString()
   record.startBlockId = data.startBlock.toString() // not number ??
+  // record.rentOffers: [] need to be emptied ??
   record.timestampStart = commonEventData.timestamp
   await record.save()
   let nftRecord = await NftEntity.get(nftId.toString())
@@ -194,5 +195,16 @@ export const rentContractOfferCreatedHandler = async (event : SubstrateEvent): P
   else record.rentOffers = [rentee.toString()]
   record.nbRentOffers = record.nbRentOffers +1 // nbRentOffersRecieived better ?
   record.timestampLastOffer= commonEventData.timestamp
+  await record.save()
+}
+
+export const rentContractOfferRetractedHandler = async (event : SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT rent offer retracted error, extrinsic isSuccess : false")
+  const [nftId, rentee] = event.event.data
+  let record = await RentEntity.get(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  record.rentOffers = record.rentOffers.filter(x => x !== rentee.toString())
+  // confirm that record.nbRentOffers not updated ??
   await record.save()
 }
