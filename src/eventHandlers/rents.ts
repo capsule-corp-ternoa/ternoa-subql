@@ -7,6 +7,7 @@ import {
   RentFeeAction,
   RevocationAction,
 } from "ternoa-js/rent/enum"
+import { getRentalContractData } from "ternoa-js"
 
 import { nftOperationEntityHandler } from "./nftTransfer"
 import { getCommonEventData, roundPrice } from "../helpers"
@@ -135,4 +136,23 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
     await record.save()
     // await nftOperationEntityHandler(record, null, commonEventData, "RentContractCreated")
   }
+}
+
+export const rentContractStartedHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT rent contract started error, extrinsic isSuccess : false")
+  const [nftId, rentee] = event.event.data
+  const data = await getRentalContractData(Number(nftId.toString()))
+  let record = await RentEntity.get(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  record.hasStarted = true
+  record.rentee = rentee.toString()
+  record.startBlockId = data.startBlock.toString() // not number ??
+  record.timestampStart = commonEventData.timestamp
+  await record.save()
+  let nftRecord = await NftEntity.get(nftId.toString())
+  if (nftRecord === undefined) throw new Error("NFT record found in db for when creating rental contract")
+  nftRecord.rentee = record.rentee
+  await nftRecord.save()
+  // await nftOperationEntityHandler(record, null, commonEventData, "RentContractStarted")
 }
