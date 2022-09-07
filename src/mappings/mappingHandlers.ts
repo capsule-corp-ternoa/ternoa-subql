@@ -44,6 +44,36 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.NFTAddedToCollection":
         await eventHandlers.nftAddedToCollectionHandler(event)
         break
+      case "rent.ContractCreated":
+        await eventHandlers.rentContractCreatedHandler(event)
+        break
+      // case "rent.ContractStarted":
+      //   await eventHandlers.rentContractStartedHandler(event)
+      //   break
+      // case "rent.ContractRevoked":
+      //     await eventHandlers.rentContractRevokedHandler(event)
+      //     break
+      // case "rent.ContractOfferCreated":
+      //     await eventHandlers.rentContractOfferCreatedHandler(event)
+      //     break
+      // case "rent.ContractOfferRetracted":
+      //   await eventHandlers.rentContractOfferRetractedHandler(event)
+      //   break
+      // case "rent.ContractSubscriptionTermsChanged":
+      //     await eventHandlers.rentContractSubscriptionTermsChangedHandler(event)
+      //     break
+      // case "rent.ContractSubscriptionTermsAccepted":
+      //     await eventHandlers.rentContractSubscriptionTermsAcceptedHandler(event)
+      //     break
+      // case "rent.ContractEnded":
+      //     await eventHandlers.rentContractEndedHandler(event)
+      //     break
+      // case "rent.ContractSubscriptionPeriodStarted":
+      //   await eventHandlers.rentContractSubscriptionPeriodStartedHandler(event)
+      //   break
+      // case "rent.ContractAvailableExpired":
+      //     await eventHandlers.rentContractAvailableExpiredHandler(event)
+      //     break
       case "marketplace.MarketplaceCreated":
         await eventHandlers.marketplaceCreatedHandler(event)
         break
