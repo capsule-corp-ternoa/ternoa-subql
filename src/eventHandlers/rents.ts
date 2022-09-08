@@ -256,5 +256,21 @@ export const rentContractEndedHandler = async (event : SubstrateEvent): Promise<
 
 //ContractSubscriptionPeriodStarted => rentContractSubscriptionPeriodStartedHandler
 //const [nftId] = event.event.data
-//ContractAvailableExpired => rentContractAvailableExpiredHandler
-//const [nftId] = event.event.data
+
+export const rentContractAvailableExpiredHandler = async (event : SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT contract expired error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await RentEntity.get(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  record.isExpired = true
+  record.timestampExpire = commonEventData.timestamp
+  //remove all fields to null ?? 
+  await record.save()
+  // Side Effects on NftEntity
+  let nftRecord = await NftEntity.get(nftId.toString())
+  if (nftRecord === undefined) throw new Error("NFT record not found in db for when rental contract expired")
+  nftRecord.isRented = false
+  nftRecord.rentee = null
+  await nftRecord.save()
+}
