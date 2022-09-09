@@ -86,7 +86,7 @@ type NftOperationEntity @entity {
 
 type RentEntity @entity {
   id: ID!
-  nftId: String!
+  nftId: String! @index
   hasStarted: Boolean!
   hasEnded: Boolean!
   isExpired: Boolean!
@@ -104,7 +104,7 @@ type RentEntity @entity {
   rentFeeType: String!
   rentFee: String!
   rentFeeRounded: Float!
-  rentOffers: [String] #rent offers empty when an offer is accepted ?
+  rentOffers: [String]
   nbRentOffers: Int
   areTermsAccepted: Boolean
   nbTermsUpdate: Int

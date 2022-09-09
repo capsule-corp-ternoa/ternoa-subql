@@ -112,6 +112,13 @@ export class RentEntity implements Entity {
     }
 
 
+    static async getByNftId(nftId: string): Promise<RentEntity[] | undefined>{
+      
+      const records = await store.getByField('RentEntity', 'nftId', nftId);
+      return records.map(record => RentEntity.create(record as RentEntityProps));
+      
+    }
+
     static async getByRenter(renter: string): Promise<RentEntity[] | undefined>{
       
       const records = await store.getByField('RentEntity', 'renter', renter);
