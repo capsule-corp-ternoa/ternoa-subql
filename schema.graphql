@@ -79,6 +79,13 @@ type NftOperationEntity @entity {
   marketplaceId: String
   marketplaceCut: String
   marketplaceCutRounded: Float
+  rentalContractDurationType: String
+  rentalContractBlockDuration: Int
+  rentalContractBlockSubscriptionRenewal: Int 
+  rentalContractStartBlock: Int
+  rentalContractFeeType: String
+  rentalContractFee: String
+  rentalContractFeeRounded:Float
   timestamp: Date! @index
   typeOfTransaction: String!
 }

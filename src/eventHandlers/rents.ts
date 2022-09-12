@@ -16,6 +16,7 @@ import { getLastRentContract } from "../helpers/rent"
 //import { blockNumberToDate, getActiveSubscribedRentalContracts } from "ternoa-js"
 
 export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
+
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT rent contract created error, extrinsic isSuccess : false")
   const [
@@ -135,20 +136,22 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when creating rental contract")
   nftRecord.isRented = true
   await nftRecord.save()
-  // await nftOperationEntityHandler(record, null, commonEventData, "RentContractCreated")
+
+  // Side Effects on NftOperationEntity
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "RentalContractCreated", [record.durationType])
 }
 
 export const rentContractStartedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT rent contract started error, extrinsic isSuccess : false")
   const [nftId, rentee] = event.event.data
-  //const data = await getRentalContractData(Number(nftId.toString())) issue with ternoaJS export
+  //const data = await getRentalContractData(Number(nftId.toString())) //issue with ternoaJS export
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasStarted = true
   record.rentee = rentee.toString()
   //record.startBlockId = data.startBlock.toString() // not number ??
-  record.rentOffers =  [] // or null ??
+  record.rentOffers = [] // or null ??
   record.timestampStart = commonEventData.timestamp
   await record.save()
 
@@ -157,8 +160,19 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when rental contract started")
   nftRecord.rentee = record.rentee
   await nftRecord.save()
-  // await nftOperationEntityHandler(record, null, commonEventData, "RentContractStarted")
+
+  // Side Effects on NftOperationEntity
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "RentalContractStarted", [
+    record.startBlockId,
+    record.durationType,
+    record.blockDuration,
+    record.blockSubscriptionRenewal,
+    record.rentFeeType,
+    record.rentFee,
+    record.rentFeeRounded,
+  ])
 }
+
 export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT rent offer created error, extrinsic isSuccess : false")
@@ -167,7 +181,7 @@ export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Pr
   if (record === undefined) throw new Error("Rental contract not found in db")
   if (record.rentOffers) record.rentOffers.push(rentee.toString())
   else record.rentOffers = [rentee.toString()]
-  record.nbRentOffers = record.nbRentOffers + 1 // totalRentOffersRecieived better ? currentNbOffer needed ? 
+  record.nbRentOffers = record.nbRentOffers + 1 // totalRentOffersRecieived better ? currentNbOffer needed ?
   record.timestampLastOffer = commonEventData.timestamp
   await record.save()
 }
@@ -215,15 +229,18 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasEnded = true // if record.hasStarted ?? has Ended : null // Warning on rent.ts helper
   record.revokedBy = revokedBy.toString()
-  record.timestampRevoke = commonEventData.timestamp  
+  record.timestampRevoke = commonEventData.timestamp
   await record.save()
+
   // Side Effects on NftEntity
   let nftRecord = await NftEntity.get(nftId.toString())
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when revoking rental contract")
   nftRecord.isRented = false
   nftRecord.rentee = null
   await nftRecord.save()
-  // await nftOperationEntityHandler(record, null, commonEventData, "RentContractRevoked")
+
+  // Side Effects on NftOperationEntity
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "RentalContractRevoked")
 }
 
 // [Root Events] - Automatic events :
@@ -238,12 +255,16 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   record.revokedBy = revokedBy.toString() // means contract terms changed and not accepted => address of rentee
   record.timestampEnd = commonEventData.timestamp
   await record.save()
+
   // Side Effects on NftEntity
   let nftRecord = await NftEntity.get(nftId.toString())
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when rental contract ended")
   nftRecord.isRented = false
   nftRecord.rentee = null
   await nftRecord.save()
+
+  // Side Effects on NftOperationEntity
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "RentalContractEnded")
 }
 
 export const rentContractAvailableExpiredHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -255,12 +276,16 @@ export const rentContractAvailableExpiredHandler = async (event: SubstrateEvent)
   record.isExpired = true
   record.timestampExpire = commonEventData.timestamp
   await record.save()
+
   // Side Effects on NftEntity
   let nftRecord = await NftEntity.get(nftId.toString())
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when rental contract expired")
   nftRecord.isRented = false
   nftRecord.rentee = null
   await nftRecord.save()
+
+  // Side Effects on NftOperationEntity
+  await nftOperationEntityHandler(nftRecord, null, commonEventData, "RentalContractExpired")
 }
 
 export const rentContractSubscriptionPeriodStartedHandler = async (event: SubstrateEvent): Promise<void> => {
