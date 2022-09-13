@@ -102,7 +102,8 @@ type RentEntity @entity {
   startBlockId: String
   durationType: String!
   blockDuration: Int
-  blockSubscriptionRenewal: Int 
+  blockSubscriptionRenewal: Int
+  nextSubscriptionRenewalBlockId: Int
   nbSubscriptionRenewal: Int
   acceptanceType: String!
   acceptanceList: [String]
@@ -123,8 +124,7 @@ type RentEntity @entity {
   renteeCancellationFeeRounded: Float
   timestampCreate: Date! @index
   timestampStart: Date @index
-  timestampLastSubscriptionRenewal: Date
-  timestampNextSubscriptionRenewal: Date
+  timestampLastSubscriptionRenewal: Date #timestampNextSubscriptionRenewal: Date
   timestampLastTermsUpdate: Date
   timestampLastOffer: Date
   timestampEnd: Date

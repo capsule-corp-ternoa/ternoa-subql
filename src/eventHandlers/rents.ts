@@ -7,13 +7,11 @@ import {
   RentFeeAction,
   RevocationAction,
 } from "ternoa-js/rent/enum"
-// import { getRentalContractData } from "ternoa-js/rent/storage"
 
 import { nftOperationEntityHandler } from "./nftTransfer"
 import { getCommonEventData, roundPrice } from "../helpers"
 import { NftEntity, RentEntity } from "../types"
 import { getLastRentContract } from "../helpers/rent"
-//import { blockNumberToDate, getActiveSubscribedRentalContracts } from "ternoa-js"
 
 export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
 
@@ -138,19 +136,20 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "RentalContractCreated", [record.durationType])
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCreated", [record.durationType])
 }
 
 export const rentContractStartedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT rent contract started error, extrinsic isSuccess : false")
   const [nftId, rentee] = event.event.data
-  //const data = await getRentalContractData(Number(nftId.toString())) //issue with ternoaJS export
+  //const data = await getRentalContractData(Number(nftId.toString()))
+  //const startBlockId = data.startBlock.toString()
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasStarted = true
   record.rentee = rentee.toString()
-  //record.startBlockId = data.startBlock.toString() // not number ??
+  record.startBlockId = commonEventData.blockId
   record.rentOffers = [] // or null ??
   record.timestampStart = commonEventData.timestamp
   await record.save()
@@ -162,7 +161,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "RentalContractStarted", [
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractStarted", [
     record.startBlockId,
     record.durationType,
     record.blockDuration,
@@ -240,7 +239,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "RentalContractRevoked")
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "rentalContractRevoked")
 }
 
 // [Root Events] - Automatic events :
@@ -264,7 +263,7 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "RentalContractEnded")
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "rentalContractEnded")
 }
 
 export const rentContractAvailableExpiredHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -285,7 +284,7 @@ export const rentContractAvailableExpiredHandler = async (event: SubstrateEvent)
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, null, commonEventData, "RentalContractExpired")
+  await nftOperationEntityHandler(nftRecord, null, commonEventData, "rentalContractExpired")
 }
 
 export const rentContractSubscriptionPeriodStartedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -297,11 +296,13 @@ export const rentContractSubscriptionPeriodStartedHandler = async (event: Substr
   if (record === undefined) throw new Error("Rental contract not found in db")
   // const { subscriptionQueue } = await getActiveSubscribedRentalContracts() // does not exist anymore on dev-1 and changed on dev-0
   // const filteredQueue = subscriptionQueue.filter((x: number[]) => {
-  //   if (x[0] == Number(nftId.toString())) return x[1]
+  //   if (x[0] == Number(nftId.toString()) &) return x[1]
   // })
   //const filteredQueue = subscriptionQueue.filter((x: number[]) => x[0] === Number(nftId.toString()))
+  // record.timestampNextSubscriptionRenewal = await blockNumberToDate(filteredQueue[1])
+  const nextBlockId = record.blockDuration + +commonEventData.blockId
   record.nbSubscriptionRenewal = record.nbSubscriptionRenewal + 1
   record.timestampLastSubscriptionRenewal = commonEventData.timestamp
-  // record.timestampNextSubscriptionRenewal = await blockNumberToDate(filteredQueue[1])
+  record.nextSubscriptionRenewalBlockId = nextBlockId
   await record.save()
 }

@@ -36,6 +36,8 @@ export class RentEntity implements Entity {
 
     public blockSubscriptionRenewal?: number;
 
+    public nextSubscriptionRenewalBlockId?: number;
+
     public nbSubscriptionRenewal?: number;
 
     public acceptanceType: string;
@@ -77,8 +79,6 @@ export class RentEntity implements Entity {
     public timestampStart?: Date;
 
     public timestampLastSubscriptionRenewal?: Date;
-
-    public timestampNextSubscriptionRenewal?: Date;
 
     public timestampLastTermsUpdate?: Date;
 
