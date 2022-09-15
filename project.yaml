@@ -23,6 +23,11 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
+            module: balances
+            method: Deposit
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
             module: bridge
             method: DepositMade
 
