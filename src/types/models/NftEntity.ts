@@ -42,7 +42,7 @@ export class NftEntity implements Entity {
 
     public isSoulbound: boolean;
 
-    public listedForSale: boolean;
+    public isListed: boolean;
 
     public price?: string;
 

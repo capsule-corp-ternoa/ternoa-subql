@@ -20,7 +20,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.mintFee = mintFee.toString()
     record.mintFeeRounded = roundPrice(record.mintFee)
     record.isCapsule = false
-    record.listedForSale = false
+    record.isListed = false
     record.isSecret = false
     record.isDelegated = false
     record.isSoulbound = isSoulbound.toString() === "true"
@@ -32,7 +32,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
       let collectionRecord = await CollectionEntity.get(record.collectionId)
       if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
       collectionRecord.nfts.push(record.nftId)
-      collectionRecord.nbNfts = collectionRecord.nbNfts +1
+      collectionRecord.nbNfts = collectionRecord.nbNfts + 1
       if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
@@ -54,8 +54,8 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   if (record.collectionId) {
     let collectionRecord = await CollectionEntity.get(record.collectionId)
     if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-    collectionRecord.nfts = collectionRecord.nfts.filter(x => x !== nftId.toString())
-    collectionRecord.nbNfts = collectionRecord.nbNfts -1
+    collectionRecord.nfts = collectionRecord.nfts.filter((x) => x !== nftId.toString())
+    collectionRecord.nbNfts = collectionRecord.nbNfts - 1
     if (collectionRecord.hasReachedLimit) {
       collectionRecord.hasReachedLimit = false
     }
