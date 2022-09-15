@@ -14,7 +14,6 @@ import { NftEntity, RentEntity } from "../types"
 import { getLastRentContract } from "../helpers/rent"
 
 export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
-
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT rent contract created error, extrinsic isSuccess : false")
   const [
@@ -52,7 +51,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   )
   const isRenteeCancellationFeeNft = Boolean(parsedRenteeCancellationFee && parsedRenteeCancellationFee.nft >= 0)
 
-  let record = new RentEntity(`${commonEventData.blockId}-${commonEventData.extrinsicId}-${nftId.toString()}`)
+  let record = new RentEntity(`${commonEventData.extrinsicId}-${nftId.toString()}`)
   const date = new Date()
   record.nftId = nftId.toString()
   record.hasStarted = false
@@ -94,7 +93,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   } else {
     record.rentFeeType = RentFeeAction.NFT
     record.rentFee = parsedRentFee.nft.toString() // must be a Number not a string but need to update Schema String | Int
-    record.rentFeeRounded = Number.parseInt(record.rentFee) // just record.rentFee
+    record.rentFeeRounded = Number.parseInt(record.rentFee)
   }
 
   if (isRenterCancellationFeeFixed) {
@@ -108,7 +107,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   } else if (isRenterCancellationFeeNft) {
     record.renterCancellationFeeType = CancellationFeeAction.NFT
     record.renterCancellationFee = parsedRenterCancellationFee.nft.toString() // must be a Number not a string but need to update Schema String | Int
-    record.renterCancellationFeeRounded = Number.parseInt(record.renterCancellationFee) // just record.renterCancellationFee
+    record.renterCancellationFeeRounded = Number.parseInt(record.renterCancellationFee)
   }
 
   if (isRenteeCancellationFeeFixed) {
@@ -122,7 +121,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   } else if (isRenteeCancellationFeeNft) {
     record.renteeCancellationFeeType = CancellationFeeAction.NFT
     record.renteeCancellationFee = parsedRenteeCancellationFee.nft.toString() // must be a Number not a string but need to update Schema String | Int
-    record.renteeCancellationFeeRounded = Number.parseInt(record.renteeCancellationFee) // just record.renteeCancellationFee
+    record.renteeCancellationFeeRounded = Number.parseInt(record.renteeCancellationFee)
   }
   record.areTermsAccepted = false
   //record.createdAt = date
@@ -136,20 +135,23 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCreated", [record.durationType])
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCreated", [
+    record.durationType,
+  ])
 }
 
 export const rentContractStartedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT rent contract started error, extrinsic isSuccess : false")
   const [nftId, rentee] = event.event.data
-  //const data = await getRentalContractData(Number(nftId.toString()))
-  //const startBlockId = data.startBlock.toString()
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasStarted = true
   record.rentee = rentee.toString()
   record.startBlockId = commonEventData.blockId
+  if (record.durationType === DurationAction.Subscription) {
+    record.nextSubscriptionRenewalBlockId = record.blockDuration + +record.startBlockId
+  }
   record.rentOffers = [] // or null ??
   record.timestampStart = commonEventData.timestamp
   await record.save()
@@ -180,7 +182,7 @@ export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Pr
   if (record === undefined) throw new Error("Rental contract not found in db")
   if (record.rentOffers) record.rentOffers.push(rentee.toString())
   else record.rentOffers = [rentee.toString()]
-  record.nbRentOffers = record.nbRentOffers + 1 // totalRentOffersRecieived better ? currentNbOffer needed ?
+  record.nbRentOffers = record.nbRentOffers + 1 // totalRentOffersRecieived better ?? currentNbOffer needed ?
   record.timestampLastOffer = commonEventData.timestamp
   await record.save()
 }
@@ -200,9 +202,16 @@ export const rentContractSubscriptionTermsChangedHandler = async (event: Substra
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess)
     throw new Error("NFT contract subscription terms changed error, extrinsic isSuccess : false")
-  const [nftId] = event.event.data
+  const [nftId, duration, rentFee] = event.event.data
+  const parsedDuration = JSON.parse(duration.toString())
+  const parsedRentFee = JSON.parse(rentFee.toString())
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
+  record.blockDuration = Number.parseInt(parsedDuration.subscription[0].toString())
+  record.blockSubscriptionRenewal =
+    parsedDuration.subscription[1] && Number.parseInt(parsedDuration.subscription[1].toString())
+  record.rentFee = bnToBn(parsedRentFee.tokens).toString()
+  record.rentFeeRounded = roundPrice(record.rentFee)
   record.areTermsAccepted = false
   record.nbTermsUpdate = record.nbTermsUpdate + 1
   record.timestampLastTermsUpdate = commonEventData.timestamp
@@ -251,7 +260,7 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasEnded = true
-  record.revokedBy = revokedBy.toString() // means contract terms changed and not accepted => address of rentee
+  record.revokedBy = revokedBy.toString().length > 0 ? revokedBy.toString() : null
   record.timestampEnd = commonEventData.timestamp
   await record.save()
 
@@ -294,12 +303,6 @@ export const rentContractSubscriptionPeriodStartedHandler = async (event: Substr
   const [nftId] = event.event.data
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
-  // const { subscriptionQueue } = await getActiveSubscribedRentalContracts() // does not exist anymore on dev-1 and changed on dev-0
-  // const filteredQueue = subscriptionQueue.filter((x: number[]) => {
-  //   if (x[0] == Number(nftId.toString()) &) return x[1]
-  // })
-  //const filteredQueue = subscriptionQueue.filter((x: number[]) => x[0] === Number(nftId.toString()))
-  // record.timestampNextSubscriptionRenewal = await blockNumberToDate(filteredQueue[1])
   const nextBlockId = record.blockDuration + +commonEventData.blockId
   record.nbSubscriptionRenewal = record.nbSubscriptionRenewal + 1
   record.timestampLastSubscriptionRenewal = commonEventData.timestamp
