@@ -42,6 +42,8 @@ export class MarketplaceEntity implements Entity {
 
     public updatedAt: Date;
 
+    public timestampCreate: Date;
+
 
     async save(): Promise<void>{
         let id = this.id;
@@ -74,6 +76,13 @@ export class MarketplaceEntity implements Entity {
     static async getByOwner(owner: string): Promise<MarketplaceEntity[] | undefined>{
       
       const records = await store.getByField('MarketplaceEntity', 'owner', owner);
+      return records.map(record => MarketplaceEntity.create(record as MarketplaceEntityProps));
+      
+    }
+
+    static async getByTimestampCreate(timestampCreate: Date): Promise<MarketplaceEntity[] | undefined>{
+      
+      const records = await store.getByField('MarketplaceEntity', 'timestampCreate', timestampCreate);
       return records.map(record => MarketplaceEntity.create(record as MarketplaceEntityProps));
       
     }

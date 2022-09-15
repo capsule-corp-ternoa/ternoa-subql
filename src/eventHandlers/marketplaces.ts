@@ -29,6 +29,7 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     record.kind = kind.toString()
     record.createdAt = date
     record.updatedAt = date
+    record.timestampCreate = commonEventData.timestamp
     await record.save()
     await genericTransferHandler(owner, "Treasury", fee.toString(), commonEventData)
   }

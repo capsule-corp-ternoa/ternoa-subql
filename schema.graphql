@@ -95,6 +95,7 @@ type MarketplaceEntity @entity {
   offchainData: String
   createdAt: Date!
   updatedAt: Date!
+  timestampCreate: Date! @index
 }
 
 type AccountEntity @entity {
