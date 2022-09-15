@@ -46,7 +46,7 @@ type NftEntity @entity {
   isListed: Boolean!
   price: String
   priceRounded: Float
-  marketplaceId: String
+  marketplace: MarketplaceEntity
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index
@@ -73,7 +73,7 @@ type NftOperationEntity @entity {
   royalty: Float
   royaltyCut: String
   royaltyCutRounded: Float
-  marketplaceId: String
+  marketplaceId: String @index
   marketplaceCut: String
   marketplaceCutRounded: Float
   timestamp: Date! @index

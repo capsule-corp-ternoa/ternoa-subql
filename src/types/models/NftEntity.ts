@@ -110,6 +110,13 @@ export class NftEntity implements Entity {
       
     }
 
+    static async getByMarketplaceId(marketplaceId: string): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'marketplaceId', marketplaceId);
+      return records.map(record => NftEntity.create(record as NftEntityProps));
+      
+    }
+
     static async getByTimestampCreate(timestampCreate: Date): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'timestampCreate', timestampCreate);
