@@ -173,7 +173,7 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.marketplaceId = marketplaceId.toString()
   record.price = price.toString()
   record.priceRounded = roundPrice(record.price)
-  record.timestampList = date
+  record.timestampList = commonEventData.timestamp
   record.updatedAt = date
   await record.save()
   await nftOperationEntityHandler(record, record.owner, commonEventData, "list", [
