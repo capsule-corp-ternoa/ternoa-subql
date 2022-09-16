@@ -4,6 +4,7 @@ import { formatString, getCommonEventData, roundPrice } from "../helpers"
 import { genericTransferHandler } from "./balances"
 import { MarketplaceEntity, NftEntity } from "../types"
 import { nftOperationEntityHandler } from "./nftTransfer"
+import { TypeOfListing } from "./nfts"
 
 // type CommissionType = "flat" | "percentage"
 // type MarketplaceDataType = {
@@ -170,6 +171,7 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT not found in db")
   record.isListed = true
+  record.typeOfListing = TypeOfListing.Sale
   record.marketplaceId = marketplaceId.toString()
   record.price = price.toString()
   record.priceRounded = roundPrice(record.price)
@@ -194,6 +196,7 @@ export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> =
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT not found in db")
   record.isListed = false
+  record.typeOfListing = null
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
@@ -213,6 +216,7 @@ export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   const seller = record.owner
   record.owner = buyer.toString()
   record.isListed = false
+  record.typeOfListing = null
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null

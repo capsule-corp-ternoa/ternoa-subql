@@ -3,6 +3,11 @@ import { getCommonEventData, formatString, roundPrice } from "../helpers"
 import { CollectionEntity, NftEntity } from "../types"
 import { genericTransferHandler, nftOperationEntityHandler } from "."
 
+export enum TypeOfListing {
+  Auction = "auction",
+  Sale = "sale",
+}
+
 export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT created error, extrinsic isSuccess : false")
@@ -21,6 +26,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.mintFeeRounded = roundPrice(record.mintFee)
     record.isCapsule = false
     record.isListed = false
+    record.typeOfListing = null
     record.isSecret = false
     record.isDelegated = false
     record.isSoulbound = isSoulbound.toString() === "true"
