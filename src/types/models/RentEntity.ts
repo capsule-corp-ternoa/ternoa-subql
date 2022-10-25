@@ -32,7 +32,7 @@ export class RentEntity implements Entity {
 
     public startBlockId?: number;
 
-    public duration: string;
+    public durationType: string;
 
     public blockDuration?: number;
 
@@ -48,7 +48,7 @@ export class RentEntity implements Entity {
 
     public nbTermsUpdate?: number;
 
-    public acceptance: string;
+    public acceptanceType: string;
 
     public acceptanceList?: string[];
 
@@ -56,11 +56,11 @@ export class RentEntity implements Entity {
 
     public revokedBy?: string;
 
+    public rentFeeType: string;
+
     public rentFee: string;
 
-    public rentFeeValue: string;
-
-    public rentFeeValueRounded: number;
+    public rentFeeRounded: number;
 
     public rentOffers?: string[];
 
@@ -68,17 +68,17 @@ export class RentEntity implements Entity {
 
     public totalRentOffersRecieived?: number;
 
+    public renterCancellationFeeType?: string;
+
     public renterCancellationFee?: string;
 
-    public renterCancellationFeeValue?: string;
+    public renterCancellationFeeRounded?: number;
 
-    public renterCancellationFeeValueRounded?: number;
+    public renteeCancellationFeeType?: string;
 
     public renteeCancellationFee?: string;
 
-    public renteeCancellationFeeValue?: string;
-
-    public renteeCancellationFeeValueRounded?: number;
+    public renteeCancellationFeeRounded?: number;
 
     public timestampCreate: Date;
 

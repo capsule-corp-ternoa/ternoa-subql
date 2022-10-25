@@ -101,7 +101,7 @@ type RentEntity @entity {
   renter: String! @index
   rentee: String @index
   startBlockId: Int
-  duration: String!
+  durationType: String!
   blockDuration: Int
   maxSubscriptionBlockDuration: Int
   isSubscriptionChangeable: Boolean
@@ -109,22 +109,22 @@ type RentEntity @entity {
   nbSubscriptionRenewal: Int
   newTermsAvailable: Boolean
   nbTermsUpdate: Int
-  acceptance: String!
+  acceptanceType: String!
   acceptanceList: [String]
   renterCanRevoke: Boolean!
   revokedBy: String
+  rentFeeType: String!
   rentFee: String!
-  rentFeeValue: String!
-  rentFeeValueRounded: Float!
+  rentFeeRounded: Float!
   rentOffers: [String]
   nbRentOffers: Int
   totalRentOffersRecieived: Int
+  renterCancellationFeeType: String
   renterCancellationFee: String
-  renterCancellationFeeValue: String
-  renterCancellationFeeValueRounded: Float
+  renterCancellationFeeRounded: Float
+  renteeCancellationFeeType: String
   renteeCancellationFee: String
-  renteeCancellationFeeValue: String
-  renteeCancellationFeeValueRounded: Float
+  renteeCancellationFeeRounded: Float
   timestampCreate: Date! @index
   timestampStart: Date @index
   timestampLastSubscriptionRenewal: Date

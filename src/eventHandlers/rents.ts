@@ -43,10 +43,10 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   record.rentOffers = []
 
   if (isDurationFixed) {
-    record.duration = DurationAction.Fixed
+    record.durationType = DurationAction.Fixed
     record.blockDuration = Number.parseInt(parsedDuration.fixed.toString())
   } else {
-    record.duration = DurationAction.Subscription
+    record.durationType = DurationAction.Subscription
     record.blockDuration = Number.parseInt(parsedDuration.subscription.periodLength.toString())
     record.maxSubscriptionBlockDuration = Number.parseInt(parsedDuration.subscription.maxDuration.toString())
     record.isSubscriptionChangeable = Boolean(parsedDuration.subscription.isChangeable.toString() === "true")
@@ -54,66 +54,66 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   }
 
   if (isAutoAcceptance) {
-    record.acceptance = AcceptanceAction.AutoAcceptance
+    record.acceptanceType = AcceptanceAction.AutoAcceptance
     record.acceptanceList = parsedAcceptance.autoAcceptance?.map((account: string) => account) ?? []
   } else {
-    record.acceptance = AcceptanceAction.ManualAcceptance
+    record.acceptanceType = AcceptanceAction.ManualAcceptance
     record.acceptanceList = parsedAcceptance.manualAcceptance?.map((account: string) => account) ?? []
   }
 
   if (isRentFeeToken) {
-    record.rentFee = RentFeeAction.Tokens
-    record.rentFeeValue = bnToBn(parsedRentFee.tokens).toString() 
-    record.rentFeeValueRounded = roundPrice(record.rentFeeValue)
+    record.rentFeeType = RentFeeAction.Tokens
+    record.rentFee = bnToBn(parsedRentFee.tokens).toString() 
+    record.rentFeeRounded = roundPrice(record.rentFee)
   } else {
     record.rentFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-    record.rentFeeValue = parsedRentFee.nft.toString()
-    record.rentFeeValueRounded = Number.parseInt(record.rentFeeValue)
+    record.rentFee = parsedRentFee.nft.toString()
+    record.rentFeeRounded = Number.parseInt(record.rentFee)
   }
 
   switch (true) {
     case parsedRenterCancellationFee && CancellationFeeAction.FixedTokens in parsedRenterCancellationFee:
-      record.renterCancellationFee = CancellationFeeAction.FixedTokens
-      record.renterCancellationFeeValue = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
-      record.renterCancellationFeeValueRounded = roundPrice(record.renterCancellationFeeValue)
+      record.renterCancellationFeeType = CancellationFeeAction.FixedTokens
+      record.renterCancellationFee = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
+      record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
       break
     case parsedRenterCancellationFee && CancellationFeeAction.FlexibleTokens in parsedRenterCancellationFee:
-      record.renterCancellationFee = CancellationFeeAction.FlexibleTokens
-      record.renterCancellationFeeValue = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
-      record.renterCancellationFeeValueRounded = roundPrice(record.renterCancellationFeeValue)
+      record.renterCancellationFeeType = CancellationFeeAction.FlexibleTokens
+      record.renterCancellationFee = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
+      record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
       break
     case parsedRenterCancellationFee && "nft" in parsedRenterCancellationFee: // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-      record.renterCancellationFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-      record.renterCancellationFeeValue = parsedRenterCancellationFee.nft.toString()
-      record.renterCancellationFeeValueRounded = Number(record.renterCancellationFeeValue)
+      record.renterCancellationFeeType = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+      record.renterCancellationFee = parsedRenterCancellationFee.nft.toString()
+      record.renterCancellationFeeRounded = Number(record.renterCancellationFee)
       break
     default:
       record.renterCancellationFee = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
-      record.renterCancellationFeeValue = null
-      record.renterCancellationFeeValueRounded = null
+      record.renterCancellationFee = null
+      record.renterCancellationFeeRounded = null
       break
   }
 
   switch (true) {
     case parsedRenteeCancellationFee && CancellationFeeAction.FixedTokens in parsedRenteeCancellationFee:
-      record.renteeCancellationFee = CancellationFeeAction.FixedTokens
-      record.renteeCancellationFeeValue = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
-      record.renteeCancellationFeeValueRounded = roundPrice(record.renteeCancellationFeeValue)
+      record.renteeCancellationFeeType = CancellationFeeAction.FixedTokens
+      record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
+      record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
       break
     case parsedRenteeCancellationFee && CancellationFeeAction.FlexibleTokens in parsedRenteeCancellationFee:
-      record.renteeCancellationFee = CancellationFeeAction.FlexibleTokens
-      record.renteeCancellationFeeValue = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
-      record.renteeCancellationFeeValueRounded = roundPrice(record.renteeCancellationFeeValue)
+      record.renteeCancellationFeeType = CancellationFeeAction.FlexibleTokens
+      record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
+      record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
       break
     case parsedRenteeCancellationFee && "nft" in parsedRenteeCancellationFee: // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-      record.renteeCancellationFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-      record.renteeCancellationFeeValue = parsedRenteeCancellationFee.nft.toString()
-      record.renteeCancellationFeeValueRounded = Number(record.renteeCancellationFeeValue)
+      record.renteeCancellationFeeType = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+      record.renteeCancellationFee = parsedRenteeCancellationFee.nft.toString()
+      record.renteeCancellationFeeRounded = Number(record.renteeCancellationFee)
       break
     default:
-      record.renteeCancellationFee = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
-      record.renteeCancellationFeeValue = null
-      record.renteeCancellationFeeValueRounded = null
+      record.renteeCancellationFeeType = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+      record.renteeCancellationFee = null
+      record.renteeCancellationFeeRounded = null
       break
   }
   record.timestampCreate = commonEventData.timestamp
@@ -128,7 +128,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
 
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCreated", [
-    record.duration,
+    record.durationType,
   ])
 }
 
@@ -141,7 +141,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   record.hasStarted = true
   record.rentee = rentee.toString()
   record.startBlockId = Number(commonEventData.blockId)
-  if (record.duration === DurationAction.Subscription) {
+  if (record.durationType === DurationAction.Subscription) {
     record.nextSubscriptionRenewalBlockId = record.blockDuration + record.startBlockId
   }
   record.rentOffers = []
@@ -158,12 +158,12 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractStarted", [
     record.startBlockId,
-    record.duration,
+    record.durationType,
     record.blockDuration,
     record.maxSubscriptionBlockDuration,
+    record.rentFeeType,
     record.rentFee,
-    record.rentFeeValue,
-    record.rentFeeValueRounded,
+    record.rentFeeRounded,
   ])
 }
 
@@ -203,8 +203,8 @@ export const rentContractSubscriptionTermsChangedHandler = async (event: Substra
   record.maxSubscriptionBlockDuration = Number.parseInt(maxDuration.toString())
   record.isSubscriptionChangeable = Boolean(isChangeable.toString() === "true")
   record.newTermsAvailable = true
-  record.rentFeeValue = bnToBn(rentFee.toString()).toString()
-  record.rentFeeValueRounded = roundPrice(record.rentFeeValue)
+  record.rentFee = bnToBn(rentFee.toString()).toString()
+  record.rentFeeRounded = roundPrice(record.rentFee)
   record.nbTermsUpdate = record.nbTermsUpdate + 1
   record.timestampLastTermsUpdate = commonEventData.timestamp
   await record.save()
