@@ -37,7 +37,7 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
 export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace config set error, extrinsic isSuccess : false")
-  const [marketplaceId, commissionFee, listingFee, accountList, offchainData] = event.event.data
+  const [marketplaceId, commissionFee, listingFee, accountList, offchainData, collectionList] = event.event.data
   const date = new Date()
   const record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) throw new Error("Marketplace not found in db")
@@ -49,6 +49,8 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   const isAccountListRemoved = accountList.toString() === "Remove"
   const isOffchainDataSet = offchainData.toString() !== "Noop" && offchainData.toString() !== "Remove"
   const isOffchainDataRemoved = offchainData.toString() === "Remove"
+  const isCollectionListSet = collectionList.toString() !== "Noop" && collectionList.toString() !== "Remove"
+  const isCollectionListRemoved = collectionList.toString() === "Remove"
 
   if (isCommissionFeeSet) {
     const parsedDatas = JSON.parse(commissionFee.toString())
@@ -93,6 +95,14 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
     record.offchainData = formatString(parsedDatas.set.toString())
   } else if (isOffchainDataRemoved) {
     record.offchainData = null
+  }
+
+  if (isCollectionListSet) {
+    record.collectionList = []
+    const parsedDatas = JSON.parse(collectionList.toString())
+    parsedDatas.set.map((collection: number) => record.collectionList?.push(collection))
+  } else if (isCollectionListRemoved) {
+    record.collectionList = []
   }
   record.updatedAt = date
   await record.save()
