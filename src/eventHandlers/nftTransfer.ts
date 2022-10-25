@@ -57,21 +57,17 @@ export const nftOperationEntityHandler = async (
     case "unlist":
       break
     case "rentalContractCreated":
-      nftOperationRecord.rentalContractDurationType = args[0]
+      nftOperationRecord.rentalContractDuration = args[0]
       break
     case "rentalContractStarted":
       nftOperationRecord.to = record.rentee
       nftOperationRecord.rentalContractStartBlock = args[0]
-      nftOperationRecord.rentalContractDurationType = args[1]
+      nftOperationRecord.rentalContractDuration = args[1]
       nftOperationRecord.rentalContractBlockDuration = args[2]
-      nftOperationRecord.rentalContractBlockSubscriptionRenewal = args[3]
-      nftOperationRecord.rentalContractFeeType = args[4]
-      nftOperationRecord.rentalContractFee = args[5]
-      nftOperationRecord.rentalContractFeeRounded = args[6]
-      break
-    case "rentalContractRevoked":
-    case "rentalContractEnded":
-    case "rentalContractExpired":
+      nftOperationRecord.rentalContractMaxSubscriptionBlockDuration = args[3]
+      nftOperationRecord.rentalContractFee = args[4]
+      nftOperationRecord.rentalContractFeeValue = args[5]
+      nftOperationRecord.rentalContractFeeValueRounded = args[6]
       break
   }
   await nftOperationRecord.save()

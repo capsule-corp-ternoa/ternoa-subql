@@ -1,12 +1,6 @@
 import { SubstrateEvent } from "@subql/types"
 import { bnToBn } from "@polkadot/util/bn"
-import {
-  AcceptanceAction,
-  CancellationFeeAction,
-  DurationAction,
-  RentFeeAction,
-  RevocationAction,
-} from "ternoa-js/rent/enum"
+import { AcceptanceAction, CancellationFeeAction, DurationAction, RentFeeAction } from "ternoa-js/rent/enum"
 
 import { nftOperationEntityHandler } from "./nftTransfer"
 import { getCommonEventData, roundPrice } from "../helpers"
@@ -21,110 +15,107 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
     renter,
     duration,
     acceptanceType,
-    revocationType,
+    renterCanRevoke,
     rentFee,
     renterCancellationFee,
     renteeCancellationFee,
   ] = event.event.data
 
-  const parsedDuration = duration.toString() !== DurationAction.Infinite && JSON.parse(duration.toString())
-  const isDurationFixed = parsedDuration && Boolean(parsedDuration.fixed)
-  const isDurationSubscription = parsedDuration && Boolean(parsedDuration.subscription)
+  const parsedDuration = JSON.parse(duration.toString())
+  const isDurationFixed = DurationAction.Fixed in parsedDuration
   const parsedAcceptance = JSON.parse(acceptanceType.toString())
-  const isAutoAcceptance = Boolean(parsedAcceptance.autoAcceptance === null || parsedAcceptance.autoAcceptance)
-  const isrevocationTypeNoRevocation = Boolean(revocationType.toString() === RevocationAction.NoRevocation)
-  const isrevocationTypeOnSubscriptionChange = Boolean(
-    revocationType.toString() === RevocationAction.OnSubscriptionChange,
-  )
+  const isAutoAcceptance = AcceptanceAction.AutoAcceptance in parsedAcceptance
   const parsedRentFee = JSON.parse(rentFee.toString())
-  const isRentFeeToken = Boolean(parsedRentFee.tokens)
-  const parsedRenterCancellationFee = renterCancellationFee.toString() && JSON.parse(renterCancellationFee.toString())
-  const isRenterCancellationFeeFixed = Boolean(parsedRenterCancellationFee && parsedRenterCancellationFee.fixedTokens)
-  const isRenterCancellationFeeFlexible = Boolean(
-    parsedRenterCancellationFee && parsedRenterCancellationFee.flexibleTokens,
-  )
-  const isRenterCancellationFeeNft = Boolean(parsedRenterCancellationFee && parsedRenterCancellationFee.nft >= 0)
-  const parsedRenteeCancellationFee = renteeCancellationFee.toString() && JSON.parse(renteeCancellationFee.toString())
-  const isRenteeCancellationFeeFixed = Boolean(parsedRenteeCancellationFee && parsedRenteeCancellationFee.fixedTokens)
-  const isRenteeCancellationFeeFlexible = Boolean(
-    parsedRenteeCancellationFee && parsedRenteeCancellationFee.flexibleTokens,
-  )
-  const isRenteeCancellationFeeNft = Boolean(parsedRenteeCancellationFee && parsedRenteeCancellationFee.nft >= 0)
+  const isRentFeeToken = RentFeeAction.Tokens in parsedRentFee
+  const parsedRenterCancellationFee =
+    renterCancellationFee.toString() !== "None" && JSON.parse(renterCancellationFee.toString()) // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+  const parsedRenteeCancellationFee =
+    renteeCancellationFee.toString() !== "None" && JSON.parse(renteeCancellationFee.toString()) // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
 
   let record = new RentEntity(`${commonEventData.extrinsicId}-${nftId.toString()}`)
-  const date = new Date()
   record.nftId = nftId.toString()
   record.hasStarted = false
   record.hasEnded = false
+  record.hasBeenCanceled = false
   record.isExpired = false
   record.renter = renter.toString()
+  record.renterCanRevoke = renterCanRevoke.toString() === "true"
+  record.rentOffers = []
+
   if (isDurationFixed) {
-    record.durationType = DurationAction.Fixed
+    record.duration = DurationAction.Fixed
     record.blockDuration = Number.parseInt(parsedDuration.fixed.toString())
-  } else if (isDurationSubscription) {
-    record.durationType = DurationAction.Subscription
-    record.blockDuration = Number.parseInt(parsedDuration.subscription[0].toString())
-    record.blockSubscriptionRenewal =
-      parsedDuration.subscription[1] && Number.parseInt(parsedDuration.subscription[1].toString())
   } else {
-    record.durationType = DurationAction.Infinite
+    record.duration = DurationAction.Subscription
+    record.blockDuration = Number.parseInt(parsedDuration.subscription.periodLength.toString())
+    record.maxSubscriptionBlockDuration = Number.parseInt(parsedDuration.subscription.maxDuration.toString())
+    record.isSubscriptionChangeable = Boolean(parsedDuration.subscription.isChangeable.toString() === "true")
+    record.newTermsAvailable = Boolean(parsedDuration.subscription.newTerms.toString() === "true")
   }
 
   if (isAutoAcceptance) {
-    record.acceptanceType = AcceptanceAction.AutoAcceptance
+    record.acceptance = AcceptanceAction.AutoAcceptance
     record.acceptanceList = parsedAcceptance.autoAcceptance?.map((account: string) => account) ?? []
   } else {
-    record.acceptanceType = AcceptanceAction.ManualAcceptance
+    record.acceptance = AcceptanceAction.ManualAcceptance
     record.acceptanceList = parsedAcceptance.manualAcceptance?.map((account: string) => account) ?? []
   }
 
-  if (isrevocationTypeNoRevocation) {
-    record.revocationType = RevocationAction.NoRevocation
-  } else if (isrevocationTypeOnSubscriptionChange) {
-    record.revocationType = RevocationAction.OnSubscriptionChange
-  } else {
-    record.revocationType = RevocationAction.Anytime
-  }
-
   if (isRentFeeToken) {
-    record.rentFeeType = RentFeeAction.Tokens
-    record.rentFee = bnToBn(parsedRentFee.tokens).toString()
-    record.rentFeeRounded = roundPrice(record.rentFee)
+    record.rentFee = RentFeeAction.Tokens
+    record.rentFeeValue = bnToBn(parsedRentFee.tokens).toString() 
+    record.rentFeeValueRounded = roundPrice(record.rentFeeValue)
   } else {
-    record.rentFeeType = RentFeeAction.NFT
-    record.rentFee = parsedRentFee.nft.toString() // must be a Number not a string but need to update Schema String | Int
-    record.rentFeeRounded = Number.parseInt(record.rentFee)
+    record.rentFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+    record.rentFeeValue = parsedRentFee.nft.toString()
+    record.rentFeeValueRounded = Number.parseInt(record.rentFeeValue)
   }
 
-  if (isRenterCancellationFeeFixed) {
-    record.renterCancellationFeeType = CancellationFeeAction.FixedTokens
-    record.renterCancellationFee = bnToBn(parsedRenterCancellationFee.fixedTokens).toString()
-    record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
-  } else if (isRenterCancellationFeeFlexible) {
-    record.renterCancellationFeeType = CancellationFeeAction.FlexibleTokens
-    record.renterCancellationFee = bnToBn(parsedRenterCancellationFee.flexibleTokens).toString()
-    record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
-  } else if (isRenterCancellationFeeNft) {
-    record.renterCancellationFeeType = CancellationFeeAction.NFT
-    record.renterCancellationFee = parsedRenterCancellationFee.nft.toString() // must be a Number not a string but need to update Schema String | Int
-    record.renterCancellationFeeRounded = Number.parseInt(record.renterCancellationFee)
+  switch (true) {
+    case parsedRenterCancellationFee && CancellationFeeAction.FixedTokens in parsedRenterCancellationFee:
+      record.renterCancellationFee = CancellationFeeAction.FixedTokens
+      record.renterCancellationFeeValue = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
+      record.renterCancellationFeeValueRounded = roundPrice(record.renterCancellationFeeValue)
+      break
+    case parsedRenterCancellationFee && CancellationFeeAction.FlexibleTokens in parsedRenterCancellationFee:
+      record.renterCancellationFee = CancellationFeeAction.FlexibleTokens
+      record.renterCancellationFeeValue = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
+      record.renterCancellationFeeValueRounded = roundPrice(record.renterCancellationFeeValue)
+      break
+    case parsedRenterCancellationFee && "nft" in parsedRenterCancellationFee: // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+      record.renterCancellationFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+      record.renterCancellationFeeValue = parsedRenterCancellationFee.nft.toString()
+      record.renterCancellationFeeValueRounded = Number(record.renterCancellationFeeValue)
+      break
+    default:
+      record.renterCancellationFee = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+      record.renterCancellationFeeValue = null
+      record.renterCancellationFeeValueRounded = null
+      break
   }
 
-  if (isRenteeCancellationFeeFixed) {
-    record.renteeCancellationFeeType = CancellationFeeAction.FixedTokens
-    record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee.fixedTokens).toString()
-    record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
-  } else if (isRenteeCancellationFeeFlexible) {
-    record.renteeCancellationFeeType = CancellationFeeAction.FlexibleTokens
-    record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee.flexibleTokens).toString()
-    record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
-  } else if (isRenteeCancellationFeeNft) {
-    record.renteeCancellationFeeType = CancellationFeeAction.NFT
-    record.renteeCancellationFee = parsedRenteeCancellationFee.nft.toString() // must be a Number not a string but need to update Schema String | Int
-    record.renteeCancellationFeeRounded = Number.parseInt(record.renteeCancellationFee)
+  switch (true) {
+    case parsedRenteeCancellationFee && CancellationFeeAction.FixedTokens in parsedRenteeCancellationFee:
+      record.renteeCancellationFee = CancellationFeeAction.FixedTokens
+      record.renteeCancellationFeeValue = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
+      record.renteeCancellationFeeValueRounded = roundPrice(record.renteeCancellationFeeValue)
+      break
+    case parsedRenteeCancellationFee && CancellationFeeAction.FlexibleTokens in parsedRenteeCancellationFee:
+      record.renteeCancellationFee = CancellationFeeAction.FlexibleTokens
+      record.renteeCancellationFeeValue = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
+      record.renteeCancellationFeeValueRounded = roundPrice(record.renteeCancellationFeeValue)
+      break
+    case parsedRenteeCancellationFee && "nft" in parsedRenteeCancellationFee: // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+      record.renteeCancellationFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+      record.renteeCancellationFeeValue = parsedRenteeCancellationFee.nft.toString()
+      record.renteeCancellationFeeValueRounded = Number(record.renteeCancellationFeeValue)
+      break
+    default:
+      record.renteeCancellationFee = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+      record.renteeCancellationFeeValue = null
+      record.renteeCancellationFeeValueRounded = null
+      break
   }
-  record.areTermsAccepted = false
-  //record.createdAt = date
   record.timestampCreate = commonEventData.timestamp
   await record.save()
 
@@ -132,11 +123,12 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   let nftRecord = await NftEntity.get(nftId.toString())
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when creating rental contract")
   nftRecord.isRented = true
+  nftRecord.rentalContractId = `${commonEventData.extrinsicId}-${nftId.toString()}`
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCreated", [
-    record.durationType,
+    record.duration,
   ])
 }
 
@@ -148,11 +140,12 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasStarted = true
   record.rentee = rentee.toString()
-  record.startBlockId = commonEventData.blockId
-  if (record.durationType === DurationAction.Subscription) {
-    record.nextSubscriptionRenewalBlockId = record.blockDuration + +record.startBlockId
+  record.startBlockId = Number(commonEventData.blockId)
+  if (record.duration === DurationAction.Subscription) {
+    record.nextSubscriptionRenewalBlockId = record.blockDuration + record.startBlockId
   }
-  record.rentOffers = [] // or null ??
+  record.rentOffers = []
+  record.nbRentOffers = 0
   record.timestampStart = commonEventData.timestamp
   await record.save()
 
@@ -165,12 +158,12 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractStarted", [
     record.startBlockId,
-    record.durationType,
+    record.duration,
     record.blockDuration,
-    record.blockSubscriptionRenewal,
-    record.rentFeeType,
+    record.maxSubscriptionBlockDuration,
     record.rentFee,
-    record.rentFeeRounded,
+    record.rentFeeValue,
+    record.rentFeeValueRounded,
   ])
 }
 
@@ -182,7 +175,8 @@ export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Pr
   if (record === undefined) throw new Error("Rental contract not found in db")
   if (record.rentOffers) record.rentOffers.push(rentee.toString())
   else record.rentOffers = [rentee.toString()]
-  record.nbRentOffers = record.nbRentOffers + 1 // totalRentOffersRecieived better ?? currentNbOffer needed ?
+  record.nbRentOffers = record.nbRentOffers + 1
+  record.totalRentOffersRecieived = record.totalRentOffersRecieived + 1
   record.timestampLastOffer = commonEventData.timestamp
   await record.save()
 }
@@ -194,7 +188,7 @@ export const rentContractOfferRetractedHandler = async (event: SubstrateEvent): 
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.rentOffers = record.rentOffers.filter((x) => x !== rentee.toString())
-  // confirm that record.nbRentOffers not updated ??
+  record.nbRentOffers = record.nbRentOffers > 0 ? record.nbRentOffers - 1 : record.nbRentOffers
   await record.save()
 }
 
@@ -202,17 +196,15 @@ export const rentContractSubscriptionTermsChangedHandler = async (event: Substra
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess)
     throw new Error("NFT contract subscription terms changed error, extrinsic isSuccess : false")
-  const [nftId, duration, rentFee] = event.event.data
-  const parsedDuration = JSON.parse(duration.toString())
-  const parsedRentFee = JSON.parse(rentFee.toString())
+  const [nftId, period, maxDuration, isChangeable, rentFee] = event.event.data
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
-  record.blockDuration = Number.parseInt(parsedDuration.subscription[0].toString())
-  record.blockSubscriptionRenewal =
-    parsedDuration.subscription[1] && Number.parseInt(parsedDuration.subscription[1].toString())
-  record.rentFee = bnToBn(parsedRentFee.tokens).toString()
-  record.rentFeeRounded = roundPrice(record.rentFee)
-  record.areTermsAccepted = false
+  record.blockDuration = Number.parseInt(period.toString())
+  record.maxSubscriptionBlockDuration = Number.parseInt(maxDuration.toString())
+  record.isSubscriptionChangeable = Boolean(isChangeable.toString() === "true")
+  record.newTermsAvailable = true
+  record.rentFeeValue = bnToBn(rentFee.toString()).toString()
+  record.rentFeeValueRounded = roundPrice(record.rentFeeValue)
   record.nbTermsUpdate = record.nbTermsUpdate + 1
   record.timestampLastTermsUpdate = commonEventData.timestamp
   await record.save()
@@ -225,8 +217,30 @@ export const rentContractSubscriptionTermsAcceptedHandler = async (event: Substr
   const [nftId] = event.event.data
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
-  record.areTermsAccepted = true
+  record.newTermsAvailable = false
   await record.save()
+}
+
+export const rentContractCanceledHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT rent contract canceled error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await getLastRentContract(nftId.toString())
+  if (record === undefined) throw new Error("Rental contract not found in db")
+  record.hasBeenCanceled = true
+  record.timestampCancel = commonEventData.timestamp
+  await record.save()
+
+  // Side Effects on NftEntity
+  let nftRecord = await NftEntity.get(nftId.toString())
+  if (nftRecord === undefined) throw new Error("NFT record not found in db for when revoking rental contract")
+  nftRecord.isRented = false
+  nftRecord.rentee = null
+  nftRecord.rentalContractId = null
+  await nftRecord.save()
+
+  // Side Effects on NftOperationEntity
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCanceled")
 }
 
 export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -235,7 +249,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   const [nftId, revokedBy] = event.event.data
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
-  record.hasEnded = true // if record.hasStarted ?? has Ended : null // Warning on rent.ts helper
+  record.hasEnded = true
   record.revokedBy = revokedBy.toString()
   record.timestampRevoke = commonEventData.timestamp
   await record.save()
@@ -245,6 +259,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when revoking rental contract")
   nftRecord.isRented = false
   nftRecord.rentee = null
+  nftRecord.rentalContractId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -269,13 +284,14 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when rental contract ended")
   nftRecord.isRented = false
   nftRecord.rentee = null
+  nftRecord.rentalContractId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "rentalContractEnded")
 }
 
-export const rentContractAvailableExpiredHandler = async (event: SubstrateEvent): Promise<void> => {
+export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT contract expired error, extrinsic isSuccess : false")
   const [nftId] = event.event.data
@@ -290,6 +306,7 @@ export const rentContractAvailableExpiredHandler = async (event: SubstrateEvent)
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when rental contract expired")
   nftRecord.isRented = false
   nftRecord.rentee = null
+  nftRecord.rentalContractId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -303,9 +320,10 @@ export const rentContractSubscriptionPeriodStartedHandler = async (event: Substr
   const [nftId] = event.event.data
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
-  const nextBlockId = record.blockDuration + +commonEventData.blockId
-  record.nbSubscriptionRenewal = record.nbSubscriptionRenewal + 1
+  const nextBlockRenewal = record.blockDuration + +commonEventData.blockId
+  const lastBlockRenewal = record.startBlockId + record.maxSubscriptionBlockDuration
+  record.nbSubscriptionRenewal = lastBlockRenewal >= nextBlockRenewal ? record.nbSubscriptionRenewal + 1 : record.nbSubscriptionRenewal
+  record.nextSubscriptionRenewalBlockId = lastBlockRenewal >= nextBlockRenewal ? nextBlockRenewal : lastBlockRenewal
   record.timestampLastSubscriptionRenewal = commonEventData.timestamp
-  record.nextSubscriptionRenewalBlockId = nextBlockId
   await record.save()
 }

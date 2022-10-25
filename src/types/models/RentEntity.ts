@@ -22,57 +22,63 @@ export class RentEntity implements Entity {
 
     public hasEnded: boolean;
 
+    public hasBeenCanceled: boolean;
+
     public isExpired: boolean;
 
     public renter: string;
 
     public rentee?: string;
 
-    public startBlockId?: string;
+    public startBlockId?: number;
 
-    public durationType: string;
+    public duration: string;
 
     public blockDuration?: number;
 
-    public blockSubscriptionRenewal?: number;
+    public maxSubscriptionBlockDuration?: number;
+
+    public isSubscriptionChangeable?: boolean;
 
     public nextSubscriptionRenewalBlockId?: number;
 
     public nbSubscriptionRenewal?: number;
 
-    public acceptanceType: string;
+    public newTermsAvailable?: boolean;
+
+    public nbTermsUpdate?: number;
+
+    public acceptance: string;
 
     public acceptanceList?: string[];
 
-    public revocationType: string;
+    public renterCanRevoke: boolean;
 
     public revokedBy?: string;
 
-    public rentFeeType: string;
-
     public rentFee: string;
 
-    public rentFeeRounded: number;
+    public rentFeeValue: string;
+
+    public rentFeeValueRounded: number;
 
     public rentOffers?: string[];
 
     public nbRentOffers?: number;
 
-    public areTermsAccepted?: boolean;
-
-    public nbTermsUpdate?: number;
-
-    public renterCancellationFeeType?: string;
+    public totalRentOffersRecieived?: number;
 
     public renterCancellationFee?: string;
 
-    public renterCancellationFeeRounded?: number;
+    public renterCancellationFeeValue?: string;
 
-    public renteeCancellationFeeType?: string;
+    public renterCancellationFeeValueRounded?: number;
 
     public renteeCancellationFee?: string;
 
-    public renteeCancellationFeeRounded?: number;
+    public renteeCancellationFeeValue?: string;
+
+    public renteeCancellationFeeValueRounded?: number;
 
     public timestampCreate: Date;
 
@@ -85,6 +91,8 @@ export class RentEntity implements Entity {
     public timestampLastOffer?: Date;
 
     public timestampEnd?: Date;
+
+    public timestampCancel?: Date;
 
     public timestampRevoke?: Date;
 

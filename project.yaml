@@ -6,8 +6,8 @@ repository: ""
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: "0xf8189f5d351782e4286c9afe3c6218ff585ac79b82d366244289fb346eb765df"
-  endpoint: wss://dev-0.ternoa.network/
+  genesisHash: "0xb830bd7275da92f5064e9fead7605a63d2a8c6841267b96f57122867ac9a3abc"
+  endpoint: wss://dev-1.ternoa.network/
   # dictionary: https://dictionary-alphanet.ternoa.dev/
 dataSources:
   - kind: substrate/Runtime
@@ -85,6 +85,11 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: rent
+            method: ContractCanceled
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
             method: ContractStarted
         - handler: handleEvent
           kind: substrate/EventHandler
@@ -125,7 +130,7 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: rent
-            method: ContractAvailableExpired
+            method: ContractExpired
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

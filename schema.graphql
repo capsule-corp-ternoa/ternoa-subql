@@ -79,13 +79,13 @@ type NftOperationEntity @entity {
   marketplaceId: String
   marketplaceCut: String
   marketplaceCutRounded: Float
-  rentalContractDurationType: String
-  rentalContractBlockDuration: Int
-  rentalContractBlockSubscriptionRenewal: Int 
   rentalContractStartBlock: Int
-  rentalContractFeeType: String
+  rentalContractDuration: String
+  rentalContractBlockDuration: Int
+  rentalContractMaxSubscriptionBlockDuration: Int 
   rentalContractFee: String
-  rentalContractFeeRounded:Float
+  rentalContractFeeValue: String
+  rentalContractFeeValueRounded:Float
   timestamp: Date! @index
   typeOfTransaction: String!
 }
@@ -96,38 +96,42 @@ type RentEntity @entity {
   nftId: String! @index
   hasStarted: Boolean!
   hasEnded: Boolean!
+  hasBeenCanceled: Boolean!
   isExpired: Boolean!
   renter: String! @index
   rentee: String @index
-  startBlockId: String
-  durationType: String!
+  startBlockId: Int
+  duration: String!
   blockDuration: Int
-  blockSubscriptionRenewal: Int
+  maxSubscriptionBlockDuration: Int
+  isSubscriptionChangeable: Boolean
   nextSubscriptionRenewalBlockId: Int
   nbSubscriptionRenewal: Int
-  acceptanceType: String!
+  newTermsAvailable: Boolean
+  nbTermsUpdate: Int
+  acceptance: String!
   acceptanceList: [String]
-  revocationType: String!
+  renterCanRevoke: Boolean!
   revokedBy: String
-  rentFeeType: String!
   rentFee: String!
-  rentFeeRounded: Float!
+  rentFeeValue: String!
+  rentFeeValueRounded: Float!
   rentOffers: [String]
   nbRentOffers: Int
-  areTermsAccepted: Boolean
-  nbTermsUpdate: Int
-  renterCancellationFeeType: String
+  totalRentOffersRecieived: Int
   renterCancellationFee: String
-  renterCancellationFeeRounded: Float
-  renteeCancellationFeeType: String
+  renterCancellationFeeValue: String
+  renterCancellationFeeValueRounded: Float
   renteeCancellationFee: String
-  renteeCancellationFeeRounded: Float
+  renteeCancellationFeeValue: String
+  renteeCancellationFeeValueRounded: Float
   timestampCreate: Date! @index
   timestampStart: Date @index
-  timestampLastSubscriptionRenewal: Date #timestampNextSubscriptionRenewal: Date
+  timestampLastSubscriptionRenewal: Date
   timestampLastTermsUpdate: Date
   timestampLastOffer: Date
   timestampEnd: Date
+  timestampCancel: Date
   timestampRevoke: Date
   timestampExpire: Date
 }
@@ -145,6 +149,7 @@ type MarketplaceEntity @entity {
   listingFeeRounded: Float
   accountList: [String]
   offchainData: String
+  collectionList: [Int]
   createdAt: Date!
   updatedAt: Date!
 }
