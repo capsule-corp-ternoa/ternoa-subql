@@ -1,156 +1,137 @@
-# SubQuery - Starter Package
+# 🧐 Ternoa Indexer 
+The Indexer is used to transform blockchain data into a queryable GraphQL database. Allowing users and developers to query specific data for various implementations.
 
+The need for an Indexing solution arises due to the unorganised and unstructured manner in which blockchains usually store data making it highly inefficient to read data directly off of the Distributed ledger.
 
-The Starter Package is an example that you can use as a starting point for developing your SubQuery project.
-A SubQuery package defines which data The SubQuery will index from the Substrate blockchain, and how it will store it. 
+**Table of Contents :**
 
-## Preparation
+- [Introduction](#introduction)
+  - [Architecture](#architecture)
+  - [Error-Reporting](#error-reporting)
+- [Installation](#installation)
+  - [Pre-Requisites](#pre-requisites)
+  - [Install-Indexer](#install-indexer)
+  - [Deployment](#deployment)
+  - [Add Ons](#add-ons)
+    - [Dictionary](#dictionary)
+## Introduction
 
-#### Environment
+A Blockchain stores data in a very disperesed manner, making it incredibly streneous to query relevant data for a specific usecase. There isn't a native feature/functionality to Identify, sort and query linked data (spanning across multiple blocks).
 
-- [Typescript](https://www.typescriptlang.org/) are required to compile project and define types.  
+Blockchain Data aggregation tools are integral for an Multi-chain future. Keeping that in mind, we've created a robust and secure way to index and aggregate data from our blockchain for multi-faceted use.
 
-- Both SubQuery CLI and generated Project have dependencies and require [Node](https://nodejs.org/en/).
-     
+The indexer scans through each block and records all of the transactions. It then parses all of that data into entities and inserts it into a postgres database. Thus allowing one to leverage relevant data according to their specific search filters in a simplified manner.
 
-#### Install the SubQuery CLI
+Ternoa deploys its own indexer, however one can run their own if needed.
 
-Install SubQuery CLI globally on your terminal by using NPM:
+### Architecture
+
+The Indexer goes block by block and parses all the data into a managed Postgress Database.
+
+It's composed of a GraphQL API alongside a Worker which handles the Indexing. This Duo is hosted on a Virtual Machine.
+
+The Indexer is currently hosted on a single VM. It'll later be upscaled to version with 'n' number of Indexer APIs and Indexer Workers hosted across multiple VMs with Load balancers to optimize the entire process.
+
+### Error Reporting
+If you encounter any errors along the way, technical or otherwise. Let us know and we'll deal with it swiftly.
+It'll help us further improve the overall experience for our users.
+- Open a discussion of type `General` in the [Discussions section](https://github.com/capsule-corp-ternoa/ternoa-subql/discussions) if you encounter any unexpected behaviour.
+- Open a Bug report using the [bug template](https://github.com/capsule-corp-ternoa/ternoa-subql/issues/new) if the bug persists.
+- If you can, suggest a fix in a pull request to resolve that issue.
+
+## Installation
+
+### Pre Requisites :
+* Yarn `Installed`
+* Docker and Docker-Compose `Installed and Running`
+
+### Install Indexer :
+
+To index the desired network, make sure to chose the same version for the Dictionary you're using for the Indexer to ensure compatibility. After that, follow the steps which we've underlined below for a seamless experience.
+
+Supported network environments:
+
+- `v43/mainnet` for Mainnet
+- `v43/alphanet` for Alphanet
+
+#### 1. Clone the Repository
+
+Clone this repository by running this command :
 
 ```
-npm install -g @subql/cli
+git clone https://github.com/capsule-corp-ternoa/ternoa-subql.git
 ```
 
-Run help to see available commands and usage provide by CLI
+#### 2. Change Directory
+
+Change the Directory for the desired results : 
 ```
-subql help
+cd ternoa-subql
 ```
 
-## Initialize the starter package
+#### 3. Select Network Environment
 
-Inside the directory in which you want to create the SubQuery project, simply replace `project-name` with your project name and run the command:
-```
-subql init --starter project-name
-```
-Then you should see a folder with your project name has been created inside the directory, you can use this as the start point of your project. And the files should be identical as in the [Directory Structure](https://doc.subquery.network/directory_structure.html).
+Select the appropriate network version which corresponds to the `Dictionary` version you're  to ensure compatibility :
 
-Last, under the project directory, run following command to install all the dependency.
+Move to the appropriate branch depending on the targeted network environment:
+
+- `v43/mainnet` for Mainnet
+- `v43/alphanet` for Alphanet
+
+For example :
+```
+git checkout v43/alphanet
+# The indexer and dictionary should be on same version.
+```
+
+#### 4. Install Dependencies
+
+Install the required dependencies for the project using :
+
 ```
 yarn install
 ```
+#### 5. Generate Type from GraphQL
 
+Generate Types from your GraphQL schema and Operations :
 
-## Configure your project
-
-In the starter package, we have provided a simple example of project configuration. You will be mainly working on the following files:
-
-- The Manifest in `project.yaml`
-- The GraphQL Schema in `schema.graphql`
-- The Mapping functions in `src/mappings/` directory
-
-For more information on how to write the SubQuery, 
-check out our doc section on [Define the SubQuery](https://doc.subquery.network/define_a_subquery.html) 
-
-#### Code generation
-
-In order to index your SubQuery project, it is mandatory to build your project first.
-Run this command under the project directory.
-
-````
+```
 yarn codegen
-````
+```
 
-## Build the project
+#### 6. Build your Implementation
 
-In order to deploy your SubQuery project to our hosted service, it is mandatory to pack your configuration before upload.
-Run pack command from root directory of your project will automatically generate a `your-project-name.tgz` file.
-
+Create an Executable version of your project :
+    
 ```
 yarn build
 ```
 
-## Indexing and Query
+#### 7. Docker pull
 
-Recommended way is to do it without Docker.
+Pull the latest versions of the Docker image using :
 
-### Indexer (subql/node)
-
-Be sure that your postgresql database is installed, and export the configuration
-
-```bash
-export DB_USER=postgres
-export DB_PASS=postgres
-export DB_DATABASE=ternoa
-export DB_HOST=postgres
-export DB_PORT=5432
+```
+docker-compose pull
 ```
 
-Then,
+#### 8. Run 
 
-```bash
-npm install -g @subql/node
-yarn
-yarn build
-subql-node -f . --db-schema=subql_ternoa --network-endpoint wss://dev.chaos.ternoa.com
-```
-
-On the last line, you can Obviously switch from dev.chaos, to any other network endpoint.
-
-### Running a Query Service (subql/query)
-
-Same as the previous step, be sure that your postgresql database is installed, and export the configuration
-
-```bash
-export DB_USER=postgres
-export DB_PASS=postgres
-export DB_DATABASE=ternoa
-export DB_HOST=postgres
-export DB_PORT=5432
-```
-
-Then,
-
-```bash
-npm install -g @subql/query
-yarn
-yarn build
-subql-query --name subql_ternoa --playground
-```
-
-#### Run required systems in docker
-
-First open `docker-compose.yml`, in the `graphql-engine` section and make sure the project name is identical to you have provided previously .
-````yaml
-command:
-  - '--name'
-  - 'subql-starter' #Same as your project name
-  - '--playground'
-````
-
-Then, under the project directory run following command:
+Run your compiled app with Docker using :
 
 ```
 docker-compose up
 ```
+`Wait a few seconds for the indexing to start, then you can check the blockchain data in your local graphql playground.` 
 
-#### Query the project
+### Deployment
 
-Open your browser and head to `http://localhost:3000`.
+Deployment of the Indexer on a Virtual Machine requires the installation and set up of NodeJS to buld and run the implementation, and a Postgres Database to store the indexed Data.
 
-Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
+### Add Ons
 
-For the `subql-starter` project, you can try to query with the following code to get a taste of how it works.
+#### Dictionary
 
-````graphql
-{
-  query{
-    starterEntities(first:10){
-      nodes{
-        field1,
-        field2,
-        field3
-      }
-    }
-  }
-}
-````
+[Ternoa Dictionary](https://github.com/capsule-corp-ternoa/ternoa-subql-dictionary) records all the native substrate on-chain data of the Ternoa blockchain. It's essentially a glossary of data that pre-indexes chain events, drastically improving the overall indexing performance.
+
+The Dictionary works in tandem with the Indexer and acts as the middleman between the Blockchain and the Indexer. This allows the Indexer to query a block's metadata from the dictionary, allowing one to query blocks for specific events and only return the required blocks.
