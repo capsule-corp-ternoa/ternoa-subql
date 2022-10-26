@@ -23,7 +23,7 @@ export const isHex = (str: string) => {
 
 export const isNumeric = (str: string) => {
   if (typeof str != "string") return false
-  return !isNaN(str as unknown as number) && !isNaN(parseFloat(str))
+  return !Number.isFinite(str as unknown as number) && !Number.isFinite(parseFloat(str))
 }
 
 export const hexToString = (hexToConvert: string) => {
@@ -47,8 +47,8 @@ export const formatString = (str: string) => {
   return result
 }
 
-export const roundPrice = (input : string) => {
+export const roundPrice = (input: string) => {
   const inputBN = new BN(input)
-	formatBalance.setDefaults({ decimals: 18, unit: "CAPS" })
+  formatBalance.setDefaults({ decimals: 18, unit: "CAPS" })
   return Number(formatBalance(inputBN, { forceUnit: "-", withUnit: false }).split(",").join(""))
 }

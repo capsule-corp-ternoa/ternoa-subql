@@ -29,6 +29,7 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     record.kind = kind.toString()
     record.createdAt = date
     record.updatedAt = date
+    record.timestampCreate = commonEventData.timestamp
     await record.save()
     await genericTransferHandler(owner, "Treasury", fee.toString(), commonEventData)
   }
@@ -168,11 +169,11 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
 
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT not found in db")
-  record.listedForSale = true
+  record.isListed = true
   record.marketplaceId = marketplaceId.toString()
   record.price = price.toString()
   record.priceRounded = roundPrice(record.price)
-  record.timestampList = date
+  record.timestampList = commonEventData.timestamp
   record.updatedAt = date
   await record.save()
   await nftOperationEntityHandler(record, record.owner, commonEventData, "list", [
@@ -192,7 +193,7 @@ export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> =
   const date = new Date()
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT not found in db")
-  record.listedForSale = false
+  record.isListed = false
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
@@ -211,7 +212,7 @@ export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   if (record === undefined) throw new Error("NFT not found in db")
   const seller = record.owner
   record.owner = buyer.toString()
-  record.listedForSale = false
+  record.isListed = false
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
