@@ -124,5 +124,35 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
+            module: auction
+            method: AuctionCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: AuctionCancelled
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: AuctionCompleted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: BidAdded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: BidRemoved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: BalanceClaimed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
             module: associatedAccounts
             method: UserAccountAdded

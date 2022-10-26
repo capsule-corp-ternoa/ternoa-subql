@@ -12,6 +12,7 @@ export const nftOperationEntityHandler = async (
   nftOperationRecord.blockId = commonEventData.blockId
   nftOperationRecord.extrinsicId = commonEventData.extrinsicId
   nftOperationRecord.nftId = record.id
+  nftOperationRecord.royalty = record.royalty
   nftOperationRecord.collectionId = record.collectionId
   nftOperationRecord.from = oldOwner
   nftOperationRecord.timestamp = commonEventData.timestamp
@@ -30,19 +31,6 @@ export const nftOperationEntityHandler = async (
     case "undelegate":
       nftOperationRecord.to = record.delegatee
       break
-    case "setRoyalty":
-      nftOperationRecord.royalty = record.royalty
-      break
-    case "sell":
-      nftOperationRecord.to = record.owner
-      nftOperationRecord.marketplaceId = args[0]
-      nftOperationRecord.price = args[1]
-      nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
-      nftOperationRecord.marketplaceCut = args[2]
-      nftOperationRecord.marketplaceCutRounded = roundPrice(nftOperationRecord.marketplaceCut)
-      nftOperationRecord.royaltyCut = args[3]
-      nftOperationRecord.royaltyCutRounded = roundPrice(nftOperationRecord.royaltyCut)
-      break
     case "list":
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = record.price
@@ -54,7 +42,26 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.listingFee = args[4]
       nftOperationRecord.listingFeeRounded = args[5]
       break
-    case "unlist":
+    case "sell":
+    case "completeAuction":
+    case "buyItNowAuction":
+      nftOperationRecord.to = record.owner
+      nftOperationRecord.marketplaceId = args[0]
+      nftOperationRecord.price = args[1]
+      nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
+      nftOperationRecord.marketplaceCut = args[2]
+      nftOperationRecord.marketplaceCutRounded = roundPrice(nftOperationRecord.marketplaceCut)
+      nftOperationRecord.royaltyCut = args[3]
+      nftOperationRecord.royaltyCutRounded = roundPrice(nftOperationRecord.royaltyCut)
+      break
+    case "createAuction":
+      nftOperationRecord.marketplaceId = args[0]
+      break
+    case "addBid":
+    case "removeBid":
+      nftOperationRecord.marketplaceId = record.marketplaceId
+      nftOperationRecord.price = args[0]
+      nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
       break
   }
   await nftOperationRecord.save()

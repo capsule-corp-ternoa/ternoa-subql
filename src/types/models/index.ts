@@ -12,6 +12,8 @@ export {NftOperationEntity} from "./NftOperationEntity"
 
 export {MarketplaceEntity} from "./MarketplaceEntity"
 
+export {AuctionEntity} from "./AuctionEntity"
+
 export {AccountEntity} from "./AccountEntity"
 
 export {AggregateResultEntity} from "./AggregateResultEntity"
