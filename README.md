@@ -1,156 +1,122 @@
-# SubQuery - Starter Package
+# ⛓ Ternoa Indexer
 
+Ternoa Indexer scans through each block and their events to see what happened on the Ternoa chain. It then parses all that data into custom entities and store them inside a queryable GraphQL database. Allowing users and developers to query specific filtered in a simplified manner data for various implementations.
 
-The Starter Package is an example that you can use as a starting point for developing your SubQuery project.
-A SubQuery package defines which data The SubQuery will index from the Substrate blockchain, and how it will store it. 
+Ternoa deploys its own indexer for the Mainnet network [here](https://indexer-mainnet.ternoa.dev/).
 
-## Preparation
+> Since Ternoa Incexer is based on the **[SubQuery Framework](https://doc.subquery.network/)**, you can get more information on the **[SubQuery official documentation](https://doc.subquery.network/faqs/faqs.html)**.
 
-#### Environment
+**Table of Contents :**
 
-- [Typescript](https://www.typescriptlang.org/) are required to compile project and define types.  
+- [Introduction](#introduction)
+  - [Error-Reporting](#error-reporting)
+- [Installation](#installation)
+- [Code Architecture](#code-architecture)
 
-- Both SubQuery CLI and generated Project have dependencies and require [Node](https://nodejs.org/en/).
-     
+## Introduction
 
-#### Install the SubQuery CLI
+**Ternoa is a Decentralised, Open source, NFT-centric Layer 1 blockchain that is multi-chain by design and aims to provide a technical stack to build scalable and secure NFTs with native support for advanced features.**
 
-Install SubQuery CLI globally on your terminal by using NPM:
+#### For Builders By Builders
 
-```
-npm install -g @subql/cli
-```
+NFTs native to our chain can be minted using High-level programming languages and doesn't require smart contract functionality.
 
-Run help to see available commands and usage provide by CLI
-```
-subql help
-```
+#### Native support for Advanced Features
 
-## Initialize the starter package
+With native support for Secret NFTs, Delegating and Lending, Transaction Batching and much more, you might want to give it a try.
 
-Inside the directory in which you want to create the SubQuery project, simply replace `project-name` with your project name and run the command:
-```
-subql init --starter project-name
-```
-Then you should see a folder with your project name has been created inside the directory, you can use this as the start point of your project. And the files should be identical as in the [Directory Structure](https://doc.subquery.network/directory_structure.html).
+### Error Reporting
 
-Last, under the project directory, run following command to install all the dependency.
-```
+If you encounter any errors along the way, technical or otherwise. Let us know and we'll deal with it swiftly.
+It'll help us further improve the overall experience for our users.
+
+- Open a discussion of type `General` in the [Discussions section](https://github.com/capsule-corp-ternoa/ternoa-subql/discussions) if you encounter any unexpected behaviour.
+- Open a Bug report using the [bug template](https://github.com/capsule-corp-ternoa/ternoa-subql/issues/new) if the bug persists.
+- If you can, suggest a fix in a pull request to resolve that issue.
+
+## Installation
+
+> #### Pre requisites
+>
+> Have **yarn** installed, **docker** and **docker-compose** installed and running on your machine.
+
+If you check **[our repository](https://github.com/capsule-corp-ternoa/ternoa-subql)**, you will see that we have many branches.
+Each branch correspond to a chain spec version and a chain network:
+
+- **mainnet** for the Mainnet Network
+- **alphanet** for the Alphanet Network
+- **dev** for the Developement Networks
+- others refers to the old Testnet Network (soon deprecated))
+
+### Run an indexer
+
+The example below use the Alphanet Network:
+
+```bash
+git clone https://github.com/capsule-corp-ternoa/ternoa-subql.git
+cd ternoa-subql
+git checkout alphanet
 yarn install
-```
-
-
-## Configure your project
-
-In the starter package, we have provided a simple example of project configuration. You will be mainly working on the following files:
-
-- The Manifest in `project.yaml`
-- The GraphQL Schema in `schema.graphql`
-- The Mapping functions in `src/mappings/` directory
-
-For more information on how to write the SubQuery, 
-check out our doc section on [Define the SubQuery](https://doc.subquery.network/define_a_subquery.html) 
-
-#### Code generation
-
-In order to index your SubQuery project, it is mandatory to build your project first.
-Run this command under the project directory.
-
-````
 yarn codegen
-````
-
-## Build the project
-
-In order to deploy your SubQuery project to our hosted service, it is mandatory to pack your configuration before upload.
-Run pack command from root directory of your project will automatically generate a `your-project-name.tgz` file.
-
-```
 yarn build
 ```
 
-## Indexing and Query
-
-Recommended way is to do it without Docker.
-
-### Indexer (subql/node)
-
-Be sure that your postgresql database is installed, and export the configuration
+Every time the graphQl Schema change, you need to run the yarn codegen command.
+Every time the code change, you need to build it again with the yarn build command.
+Now everything is built, you can launch it on with docker.
 
 ```bash
-export DB_USER=postgres
-export DB_PASS=postgres
-export DB_DATABASE=ternoa
-export DB_HOST=postgres
-export DB_PORT=5432
-```
-
-Then,
-
-```bash
-npm install -g @subql/node
-yarn
-yarn build
-subql-node -f . --db-schema=subql_ternoa --network-endpoint wss://dev.chaos.ternoa.com
-```
-
-On the last line, you can Obviously switch from dev.chaos, to any other network endpoint.
-
-### Running a Query Service (subql/query)
-
-Same as the previous step, be sure that your postgresql database is installed, and export the configuration
-
-```bash
-export DB_USER=postgres
-export DB_PASS=postgres
-export DB_DATABASE=ternoa
-export DB_HOST=postgres
-export DB_PORT=5432
-```
-
-Then,
-
-```bash
-npm install -g @subql/query
-yarn
-yarn build
-subql-query --name subql_ternoa --playground
-```
-
-#### Run required systems in docker
-
-First open `docker-compose.yml`, in the `graphql-engine` section and make sure the project name is identical to you have provided previously .
-````yaml
-command:
-  - '--name'
-  - 'subql-starter' #Same as your project name
-  - '--playground'
-````
-
-Then, under the project directory run following command:
-
-```
+docker-compose pull
 docker-compose up
 ```
 
-#### Query the project
+docker-compose pull need to be run to pull the last version and does not need to be ran again, unless you change any docker image.
 
-Open your browser and head to `http://localhost:3000`.
+> After a few seconds, the indexing starts. You can see in the shell every blocks indexed. To check the blockchain data stored, run a query in your local graphql playground in a browser (default **[localhost:3000](http://localhost:3000)**).
+> More documentation on basic queries is available [here](https://docs.ternoa.network/for-developers/indexer/queries/basic-queries).
 
-Finally, you should see a GraphQL playground is showing in the explorer and the schemas that ready to query.
+### Deployment
 
-For the `subql-starter` project, you can try to query with the following code to get a taste of how it works.
+Documentation on how to deploy Indexer is available [here](https://docs.ternoa.network/for-developers/indexer/deployment).
 
-````graphql
-{
-  query{
-    starterEntities(first:10){
-      nodes{
-        field1,
-        field2,
-        field3
-      }
-    }
-  }
-}
-````
+### Dictionary
+
+Ternoa Dictionary records all the native substrate on-chain data of the Ternoa blockchain: blocks, extrinsics, and events. It is a glossary of data that pre-indexes chain events, drastically improving the overall indexing performance. Unlike the Indexer, no data relating to the Ternoa pallets is covered by the Dictionary.
+
+Ternoa deploys its own indexer [here](https://dictionary-mainnet.ternoa.dev/) on which you can submit GraphQL queries to retrieve on-chain data.
+More information on Dictionary is available [here](https://docs.ternoa.network/for-developers/indexer/dictionary/).
+
+#### Add the dictionary to indexer
+
+You can couple a dictionnary to the indexer inside the [project.yaml](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/project.yaml) file, in the network section. In the example below we use the Mainnet network Ternoa Dictionary available [here](https://dictionary-mainnet.ternoa.dev/).
+
+```yaml
+###
+schema:
+  file: ./schema.graphql
+network:
+  genesisHash: "0x6859c81ca95ef624c9dfe4dc6e3381c33e5d6509e35e147092bfbc780f777c4e"
+  endpoint: wss://mainnet.ternoa.network
+  dictionary: https://dictionary-mainnet.ternoa.dev/
+###
+```
+
+## Code Architecture
+
+Ternoa Indexer integrates the main features from the Ternoa pallets. The most important concepts are:
+
+### Setup
+
+Configuration is setup in the [project.yaml](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/project.yaml) file. It constains chain wss endpoint, the genesis hash, the types file, and the different filter to get only the specific events / extrinsics needed. We can also filter on the success status of the event / extrinsic (More details on the **[subquery documentation](https://doc.subquery.network/build/manifest/polkadot.html)**).
+
+### Schema
+
+The parsed data is structured in GraphQL entities specified in the [schema.graphql](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/schema.graphql) file. These entities contain the form of the data stored in the database.
+
+### Mappings
+
+[mappingHandlers](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/src/mappings/mappingHandlers.ts) will map listened events with the corresponding handlers to parse on-chain data according to the specified GraphQL entities (More info in the **[subquery documentation](https://academy.subquery.network/build/mapping/polkadot.html)**).
+
+### Events handlers
+
+[eventHandlers](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/src/eventHandlers) folder contains the handlers sorted by pallets.
