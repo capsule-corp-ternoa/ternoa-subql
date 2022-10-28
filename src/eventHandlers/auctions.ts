@@ -6,7 +6,7 @@ import { getCommonEventData, getLastAuction, roundPrice } from "../helpers"
 import { NftEntity, AuctionEntity, Bidder } from "../types"
 
 import { TypeOfListing } from "./nfts"
-import { nftOperationEntityHandler } from "./nftTransfer"
+import { nftOperationEntityHandler } from "./nftOperations"
 
 export enum TypeOfSale {
   AuctionEnd = "auctionEnd",

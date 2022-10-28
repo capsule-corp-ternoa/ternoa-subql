@@ -66,3 +66,15 @@ export const nftOperationEntityHandler = async (
   }
   await nftOperationRecord.save()
 }
+
+export enum NFTOperation {
+  Create = "Create",
+  Burn = "Burn",
+  Transfer = "Transfer",
+  Delegate = "Delegate",
+  undelegate = "undelegate",
+  SetRoyalty = "SetRoyalty",
+  Sell = "Sell",
+  List = "List",
+  Unlist = "Unlist",
+}

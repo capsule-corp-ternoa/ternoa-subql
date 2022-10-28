@@ -3,19 +3,10 @@ import { bnToBn } from "@polkadot/util/bn"
 import { formatString, getCommonEventData, roundPrice } from "../helpers"
 import { genericTransferHandler } from "./balances"
 import { MarketplaceEntity, NftEntity } from "../types"
-import { nftOperationEntityHandler } from "./nftTransfer"
+import { nftOperationEntityHandler } from "./nftOperations"
 import { TypeOfListing } from "./nfts"
 
 // type CommissionType = "flat" | "percentage"
-// type MarketplaceDataType = {
-//   owner: string
-//   kind: string
-//   commissionFee: { [type in CommissionType]: string; }
-//   listingFee: { [type in CommissionType]: string; }
-//   accountList: [string]
-//   offchainData: string
-// }
-
 export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace created error, extrinsic isSuccess : false")
