@@ -182,5 +182,5 @@ export const nftAddedToCollectionHandler = async (event: SubstrateEvent): Promis
   if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
   await collectionRecord.save()
   await nftRecord.save()
-  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, "addToCollection")
+  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, NFTOperation.AddToCollection)
 }

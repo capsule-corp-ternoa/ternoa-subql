@@ -83,7 +83,7 @@ export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<vo
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, "cancelAuction")
+  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CancelAuction)
 }
 
 export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<void> => {

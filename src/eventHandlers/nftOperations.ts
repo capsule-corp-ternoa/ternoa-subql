@@ -82,4 +82,6 @@ export enum NFTOperation {
   CreateAuction = "createAuction",
   AddBid = "addBid",
   RemoveBid = "removeBid",
+  CancelAuction = "cancelAuction",
+  AddToCollection = "addToCollection",
 }
