@@ -6,7 +6,7 @@ import { getCommonEventData, getLastAuction, roundPrice } from "../helpers"
 import { NftEntity, AuctionEntity, Bidder } from "../types"
 
 import { TypeOfListing } from "./nfts"
-import { nftOperationEntityHandler } from "./nftOperations"
+import { nftOperationEntityHandler, NFTOperation } from "./nftOperations"
 
 export enum TypeOfSale {
   AuctionEnd = "auctionEnd",
@@ -54,7 +54,7 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, "createAuction", [record.marketplaceId])
+  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CreateAuction, [record.marketplaceId])
 }
 
 export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -120,7 +120,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
     nftRecord,
     seller,
     commonEventData,
-    isBuyItNow ? "buyItNowAuction" : "completeAuction",
+    isBuyItNow ? NFTOperation.BuyItNowAuction : NFTOperation.CompleteAuction,
     [marketplaceId, amount.toString(), marketplaceCut.toString(), royaltyCut.toString()],
   )
 }
@@ -169,7 +169,7 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
 
   // Side Effects on NftOperationEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, "addBid", [amount.toString()])
+  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.AddBid, [amount.toString()])
 }
 
 export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -207,5 +207,5 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
 
   // Side Effects on NftOperationEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, "removeBid", [amount.toString()])
+  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.RemoveBid, [amount.toString()])
 }

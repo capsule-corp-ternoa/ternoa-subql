@@ -1,7 +1,7 @@
 import { SubstrateEvent } from "@subql/types"
 import { getCommonEventData, formatString, roundPrice } from "../helpers"
 import { CollectionEntity, NftEntity } from "../types"
-import { genericTransferHandler, nftOperationEntityHandler } from "."
+import { genericTransferHandler, nftOperationEntityHandler, NFTOperation } from "."
 
 export enum TypeOfListing {
   Auction = "auction",
@@ -42,7 +42,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
       if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
-    await nftOperationEntityHandler(record, null, commonEventData, "create")
+    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Create)
     await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
   }
 }
@@ -70,7 +70,7 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.collectionId = null
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, oldOwner, commonEventData, "burn")
+  await nftOperationEntityHandler(record, oldOwner, commonEventData, NFTOperation.Burn)
 }
 
 export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -83,7 +83,7 @@ export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> =
   record.owner = to.toString()
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, from.toString(), commonEventData, "transfer")
+  await nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transfer)
 }
 
 export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -111,7 +111,7 @@ export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void>
   record.royalty = Number(royalty.toString()) / 10000
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, "setRoyalty")
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.SetRoyalty)
 }
 
 export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promise<void> => {

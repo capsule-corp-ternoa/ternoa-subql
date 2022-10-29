@@ -18,20 +18,20 @@ export const nftOperationEntityHandler = async (
   nftOperationRecord.timestamp = commonEventData.timestamp
   nftOperationRecord.typeOfTransaction = typeOfTransaction
   switch (typeOfTransaction) {
-    case "create":
+    case NFTOperation.Create:
       nftOperationRecord.to = record.owner
       break
-    case "burn":
+    case NFTOperation.Burn:
       nftOperationRecord.to = null
       break
-    case "transfer":
+    case NFTOperation.Transfer:
       nftOperationRecord.to = record.owner
       break
-    case "delegate":
+    case NFTOperation.Delegate:
     case "undelegate":
       nftOperationRecord.to = record.delegatee
       break
-    case "list":
+    case NFTOperation.List:
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = record.price
       nftOperationRecord.priceRounded = record.priceRounded
@@ -42,9 +42,9 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.listingFee = args[4]
       nftOperationRecord.listingFeeRounded = args[5]
       break
-    case "sell":
-    case "completeAuction":
-    case "buyItNowAuction":
+    case NFTOperation.Sell:
+    case NFTOperation.CompleteAuction:
+    case NFTOperation.BuyItNowAuction:
       nftOperationRecord.to = record.owner
       nftOperationRecord.marketplaceId = args[0]
       nftOperationRecord.price = args[1]
@@ -54,11 +54,11 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.royaltyCut = args[3]
       nftOperationRecord.royaltyCutRounded = roundPrice(nftOperationRecord.royaltyCut)
       break
-    case "createAuction":
+    case NFTOperation.CreateAuction:
       nftOperationRecord.marketplaceId = args[0]
       break
-    case "addBid":
-    case "removeBid":
+    case NFTOperation.AddBid:
+    case NFTOperation.RemoveBid:
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = args[0]
       nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
@@ -68,13 +68,18 @@ export const nftOperationEntityHandler = async (
 }
 
 export enum NFTOperation {
-  Create = "Create",
-  Burn = "Burn",
-  Transfer = "Transfer",
-  Delegate = "Delegate",
-  undelegate = "undelegate",
-  SetRoyalty = "SetRoyalty",
-  Sell = "Sell",
-  List = "List",
-  Unlist = "Unlist",
+  Create = "create",
+  Burn = "burn",
+  Transfer = "transfer",
+  Delegate = "delegate",
+  Undelegate = "undelegate",
+  SetRoyalty = "setRoyalty",
+  Sell = "sell",
+  List = "list",
+  Unlist = "unlist",
+  CompleteAuction = "completeAuction",
+  BuyItNowAuction = "buyItNowAuction",
+  CreateAuction = "createAuction",
+  AddBid = "addBid",
+  RemoveBid = "removeBid",
 }

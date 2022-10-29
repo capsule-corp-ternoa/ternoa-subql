@@ -3,7 +3,7 @@ import { bnToBn } from "@polkadot/util/bn"
 import { formatString, getCommonEventData, roundPrice } from "../helpers"
 import { genericTransferHandler } from "./balances"
 import { MarketplaceEntity, NftEntity } from "../types"
-import { nftOperationEntityHandler } from "./nftOperations"
+import { nftOperationEntityHandler, NFTOperation  } from "./nftOperations"
 import { TypeOfListing } from "./nfts"
 
 // type CommissionType = "flat" | "percentage"
@@ -169,7 +169,7 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.timestampList = commonEventData.timestamp
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, "list", [
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.List, [
     marketplaceCommissionFeeType,
     marketplaceCommissionFee,
     marketplaceCommissionFeeRounded,
@@ -194,7 +194,7 @@ export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> =
   record.timestampList = null
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, "unlist")
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Unlist)
 }
 
 export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -214,7 +214,7 @@ export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   record.timestampList = null
   record.updatedAt = date
   await record.save()
-  await nftOperationEntityHandler(record, seller, commonEventData, "sell", [
+  await nftOperationEntityHandler(record, seller, commonEventData, NFTOperation.Sell, [
     marketplaceId.toString(),
     listedPrice.toString(),
     marketplaceCut.toString(),
