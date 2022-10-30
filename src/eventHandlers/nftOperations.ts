@@ -5,7 +5,7 @@ export const nftOperationEntityHandler = async (
   record: NftEntity,
   oldOwner: string,
   commonEventData: CommonEventData,
-  typeOfTransaction: string,
+  typeOfTransaction: NFTOperation,
   args?: any[],
 ): Promise<void> => {
   const nftOperationRecord = new NftOperationEntity(commonEventData.blockHash + "-" + commonEventData.eventId)

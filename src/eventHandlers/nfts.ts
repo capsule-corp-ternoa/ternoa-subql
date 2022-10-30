@@ -97,7 +97,7 @@ export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> 
   record.isDelegated = record.delegatee ? true : false
   record.updatedAt = date
   await record.save()
-  const typeOfTransaction = record.delegatee ? "delegate" : "undelegate"
+  const typeOfTransaction = record.delegatee ? NFTOperation.Delegate : NFTOperation.Undelegate
   await nftOperationEntityHandler(record, record.owner, commonEventData, typeOfTransaction)
 }
 
