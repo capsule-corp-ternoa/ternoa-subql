@@ -3,7 +3,7 @@ import { bnToBn } from "@polkadot/util/bn"
 import { formatString, getCommonEventData, roundPrice } from "../helpers"
 import { genericTransferHandler } from "./balances"
 import { MarketplaceEntity, NftEntity } from "../types"
-import { nftOperationEntityHandler, NFTOperation  } from "./nftOperations"
+import { nftOperationEntityHandler, NFTOperation } from "./nftOperations"
 import { TypeOfListing } from "./nfts"
 
 // type CommissionType = "flat" | "percentage"

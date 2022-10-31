@@ -54,7 +54,9 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CreateAuction, [record.marketplaceId])
+  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CreateAuction, [
+    record.marketplaceId,
+  ])
 }
 
 export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -169,7 +171,9 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
 
   // Side Effects on NftOperationEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.AddBid, [amount.toString()])
+  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.AddBid, [
+    amount.toString(),
+  ])
 }
 
 export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -207,5 +211,7 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
 
   // Side Effects on NftOperationEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.RemoveBid, [amount.toString()])
+  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.RemoveBid, [
+    amount.toString(),
+  ])
 }
