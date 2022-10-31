@@ -76,9 +76,6 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "auction.BidRemoved":
         await eventHandlers.auctionBidRemovedHandler(event)
         break
-      // case 'associatedAccounts.UserAccountAdded': // not tested, need to add any account key first from root account
-      //     await eventHandlers.usernameChangedHandler(event)
-      //     break;
       default:
         break
     }
