@@ -1,7 +1,7 @@
 {
   "name": "subql_ternoa",
-  "version": "0.2.0",
-  "description": "ternoa indexer : Indexes main events triggered by ternoa blockchain",
+  "version": "1.0",
+  "description": "Ternoa Indexer: Indexes main events triggered by the Ternoa blockchain",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -b",
@@ -11,14 +11,25 @@
     "codegen": "./node_modules/.bin/subql codegen",
     "start": "bash run.sh"
   },
-  "homepage": "https://github.com/subquery/subql-starter",
-  "repository": "github:subquery/subql-starter",
+  "homepage": "https://github.com/capsule-corp-ternoa/ternoa-subql",
+  "repository": "github:capsule-corp-ternoa/ternoa-subql",
   "files": [
     "dist",
     "schema.graphql",
     "project.yaml"
   ],
   "author": "ternoa",
+  "contributors": [
+    {
+      "name": "Ghali Leouarz"
+    },
+    {
+      "name": "Igor Papandinas"
+    },
+    {
+      "name": "Victor Salomon"
+    }
+  ],
   "license": "MIT",
   "devDependencies": {
     "prettier": "2.7.x",
