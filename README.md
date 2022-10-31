@@ -1,10 +1,10 @@
 # ⛓ Ternoa Indexer
 
-Ternoa Indexer scans through each block and their events to see what happened on the Ternoa chain. It then parses all that data into custom entities and store them inside a queryable GraphQL database. Allowing users and developers to query specific filtered in a simplified manner data for various implementations.
+Ternoa Indexer scans through each block and their events to see what happened on the Ternoa chain. It then parses all that data into custom entities and store them inside a queryable GraphQL database. Allowing users and developers to query specific filtered data in a simplified manner for various implementations.
 
 Ternoa deploys its own indexer for the Mainnet network [here](https://indexer-mainnet.ternoa.dev/).
 
-> Since Ternoa Incexer is based on the **[SubQuery Framework](https://doc.subquery.network/)**, you can get more information on the **[SubQuery official documentation](https://doc.subquery.network/faqs/faqs.html)**.
+> Since Ternoa Indexer is based on the **[SubQuery Framework](https://doc.subquery.network/)**, you can get more information on the **[SubQuery official documentation](https://doc.subquery.network/faqs/faqs.html)**.
 
 **Table of Contents :**
 
