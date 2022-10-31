@@ -28,7 +28,7 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.to = record.owner
       break
     case NFTOperation.Delegate:
-    case "undelegate":
+    case NFTOperation.Undelegate:
       nftOperationRecord.to = record.delegatee
       break
     case NFTOperation.List:
