@@ -120,7 +120,7 @@ type RentEntity @entity {
   rentFeeRounded: Float!
   rentOffers: [String]
   nbRentOffers: Int
-  totalRentOffersRecieived: Int
+  totalRentOffersReceived: Int
   renterCancellationFeeType: String
   renterCancellationFee: String
   renterCancellationFeeRounded: Float

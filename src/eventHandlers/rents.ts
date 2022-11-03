@@ -177,7 +177,7 @@ export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Pr
   if (record.rentOffers) record.rentOffers.push(rentee.toString())
   else record.rentOffers = [rentee.toString()]
   record.nbRentOffers = record.nbRentOffers + 1
-  record.totalRentOffersRecieived = record.totalRentOffersRecieived + 1
+  record.totalRentOffersReceived = record.totalRentOffersReceived + 1
   record.timestampLastOffer = commonEventData.timestamp
   await record.save()
 }

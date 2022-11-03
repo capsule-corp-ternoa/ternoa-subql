@@ -66,7 +66,7 @@ export class RentEntity implements Entity {
 
     public nbRentOffers?: number;
 
-    public totalRentOffersRecieived?: number;
+    public totalRentOffersReceived?: number;
 
     public renterCancellationFeeType?: string;
 
