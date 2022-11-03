@@ -10,10 +10,6 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "balances.Transfer":
         await eventHandlers.transferHandler(event)
         break
-      case "bridge.DepositMade":
-        const signer = getSigner(event)
-        await updateAccount(signer)
-        break
       case "nft.NFTCreated":
         await eventHandlers.nftCreatedHandler(event)
         break
@@ -97,10 +93,22 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         break
       case "marketplace.NFTSold":
         await eventHandlers.nftSoldHandler(event)
-        break    
-      // case 'associatedAccounts.UserAccountAdded': // not tested, need to add any account key first from root account
-      //     await eventHandlers.usernameChangedHandler(event)
-      //     break;
+        break
+      case "auction.AuctionCreated":
+        await eventHandlers.auctionCreatedHandler(event)
+        break
+      case "auction.AuctionCancelled":
+        await eventHandlers.auctionCancelledHandler(event)
+        break
+      case "auction.AuctionCompleted":
+        await eventHandlers.auctionCompletedHandler(event)
+        break
+      case "auction.BidAdded":
+        await eventHandlers.auctionBidAddedHandler(event)
+        break
+      case "auction.BidRemoved":
+        await eventHandlers.auctionBidRemovedHandler(event)
+        break
       default:
         break
     }

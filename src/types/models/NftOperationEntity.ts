@@ -64,11 +64,11 @@ export class NftOperationEntity implements Entity {
 
     public rentalContractMaxSubscriptionBlockDuration?: number;
 
+    public rentalContractFeeType?: string;
+
     public rentalContractFee?: string;
 
-    public rentalContractFeeValue?: string;
-
-    public rentalContractFeeValueRounded?: number;
+    public rentalContractFeeRounded?: number;
 
     public timestamp: Date;
 
@@ -120,6 +120,13 @@ export class NftOperationEntity implements Entity {
     static async getByCollectionId(collectionId: string): Promise<NftOperationEntity[] | undefined>{
       
       const records = await store.getByField('NftOperationEntity', 'collectionId', collectionId);
+      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
+      
+    }
+
+    static async getByMarketplaceId(marketplaceId: string): Promise<NftOperationEntity[] | undefined>{
+      
+      const records = await store.getByField('NftOperationEntity', 'marketplaceId', marketplaceId);
       return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
       
     }

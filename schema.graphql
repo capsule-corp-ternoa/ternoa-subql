@@ -31,6 +31,7 @@ type CollectionEntity @entity {
 type NftEntity @entity {
   id: ID!
   nftId: String!
+  auction: AuctionEntity
   collection: CollectionEntity
   owner: String @index
   creator: String! @index
@@ -43,13 +44,14 @@ type NftEntity @entity {
   delegatee: String @index
   isDelegated: Boolean!
   isSoulbound: Boolean!
-  listedForSale: Boolean!
+  isListed: Boolean!
+  typeOfListing: String
   isRented: Boolean!
   rentee:String
   rentalContract: RentEntity
   price: String
   priceRounded: Float
-  marketplaceId: String
+  marketplace: MarketplaceEntity
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index
@@ -76,16 +78,16 @@ type NftOperationEntity @entity {
   royalty: Float
   royaltyCut: String
   royaltyCutRounded: Float
-  marketplaceId: String
+  marketplaceId: String @index
   marketplaceCut: String
   marketplaceCutRounded: Float
   rentalContractStartBlock: Int
   rentalContractDuration: String
   rentalContractBlockDuration: Int
   rentalContractMaxSubscriptionBlockDuration: Int 
+  rentalContractFeeType: String
   rentalContractFee: String
-  rentalContractFeeValue: String
-  rentalContractFeeValueRounded:Float
+  rentalContractFeeRounded:Float
   timestamp: Date! @index
   typeOfTransaction: String!
 }
@@ -143,7 +145,7 @@ type MarketplaceEntity @entity {
   kind: String!
   commissionFeeType: String
   commissionFee: String
-  commissionFeeRounded: Float 
+  commissionFeeRounded: Float
   listingFeeType: String
   listingFee: String
   listingFeeRounded: Float
@@ -152,6 +154,41 @@ type MarketplaceEntity @entity {
   collectionList: [Int]
   createdAt: Date!
   updatedAt: Date!
+  timestampCreate: Date! @index
+}
+
+type Bidder @jsonField {
+  bidder: String!
+  amount: String!
+  amountRounded: Float!
+  timestampBid: Date
+}
+
+type AuctionEntity @entity {
+  id: ID!
+  nftId: String! @index
+  marketplaceId: String
+  creator: String! @index
+  startPrice: String
+  startPriceRounded: Float
+  buyItPrice: String
+  buyItPriceRounded: Float
+  startBlockId: String
+  endBlockId: String
+  isCompleted: Boolean!
+  isCancelled: Boolean!
+  isEndingPeriod: Boolean!
+  isGracePeriod: Boolean!
+  isExtendedPeriod: Boolean!
+  bidders: [Bidder]!
+  nbBidders: Int
+  topBidAmount: String
+  topBidAmountRounded: Float
+  typeOfSale: String
+  timestampCreate: Date! @index
+  timestampEnd: Date
+  timestampLastBid: Date @index
+  timestampCancelled: Date
 }
 
 type AccountEntity @entity {

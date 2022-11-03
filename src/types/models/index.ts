@@ -14,6 +14,8 @@ export {RentEntity} from "./RentEntity"
 
 export {MarketplaceEntity} from "./MarketplaceEntity"
 
+export {AuctionEntity} from "./AuctionEntity"
+
 export {AccountEntity} from "./AccountEntity"
 
 export {AggregateResultEntity} from "./AggregateResultEntity"

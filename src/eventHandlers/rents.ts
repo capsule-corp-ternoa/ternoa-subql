@@ -2,7 +2,8 @@ import { SubstrateEvent } from "@subql/types"
 import { bnToBn } from "@polkadot/util/bn"
 import { AcceptanceAction, CancellationFeeAction, DurationAction, RentFeeAction } from "ternoa-js/rent/enum"
 
-import { nftOperationEntityHandler } from "./nftTransfer"
+import { nftOperationEntityHandler, NFTOperation } from "./nftOperations"
+
 import { getCommonEventData, roundPrice } from "../helpers"
 import { NftEntity, RentEntity } from "../types"
 import { getLastRentContract } from "../helpers/rent"
@@ -127,7 +128,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCreated", [
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.RentalContractCreated, [
     record.durationType,
   ])
 }
@@ -156,7 +157,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractStarted", [
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.RentalContractStarted, [
     record.startBlockId,
     record.durationType,
     record.blockDuration,
@@ -240,7 +241,7 @@ export const rentContractCanceledHandler = async (event: SubstrateEvent): Promis
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, "rentalContractCanceled")
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.RentalContractCanceled)
 }
 
 export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -263,7 +264,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "rentalContractRevoked")
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.RentalContractRevoked)
 }
 
 // [Root Events] - Automatic events :
@@ -288,7 +289,7 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, "rentalContractEnded")
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.RentalContractEnded)
 }
 
 export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -310,7 +311,7 @@ export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, null, commonEventData, "rentalContractExpired")
+  await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.RentalContractExpired)
 }
 
 export const rentContractSubscriptionPeriodStartedHandler = async (event: SubstrateEvent): Promise<void> => {
