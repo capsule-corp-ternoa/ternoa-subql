@@ -177,9 +177,6 @@ type AuctionEntity @entity {
   endBlockId: String
   isCompleted: Boolean!
   isCancelled: Boolean!
-  isEndingPeriod: Boolean!
-  isGracePeriod: Boolean!
-  isExtendedPeriod: Boolean!
   bidders: [Bidder]!
   nbBidders: Int
   topBidAmount: String

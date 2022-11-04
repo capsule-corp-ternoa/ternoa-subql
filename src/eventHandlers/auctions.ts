@@ -30,9 +30,6 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.endBlockId = endBlockId.toString()
   record.isCompleted = false
   record.isCancelled = false
-  record.isEndingPeriod = false
-  record.isGracePeriod = false
-  record.isExtendedPeriod = false
   record.bidders = []
   record.nbBidders = 0
   record.topBidAmount = null
@@ -134,16 +131,12 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const endingPeriod = api.consts.auction.auctionEndingPeriod
-  if (endingPeriod === undefined) throw new Error("Cannot retrieve constant: auctionEndingPeriod")
   const gracePeriod = api.consts.auction.auctionGracePeriod
   if (gracePeriod === undefined) throw new Error("Cannot retrieve constant: auctionGracePeriod")
   const currentBlockId = new BN(commonEventData.blockId)
   const endBlockId = new BN(record.endBlockId)
-  const isExtendedPeriod = record.isExtendedPeriod || currentBlockId.gt(endBlockId)
-  const isEndingPeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(endingPeriod.toString()))
+  const isExtendedPeriod = currentBlockId.gt(endBlockId)
   const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
-
   const hasAlreadyBid = record.bidders.some((x) => x.bidder === bidder.toString())
   const newBidders = record.bidders
   const newNbBidders = hasAlreadyBid ? record.nbBidders : record.nbBidders + 1
@@ -156,9 +149,6 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   }
   newBidders.push(newBidder)
 
-  record.isEndingPeriod = isEndingPeriod
-  record.isGracePeriod = isGracePeriod
-  record.isExtendedPeriod = isExtendedPeriod
   record.endBlockId = isGracePeriod
     ? String(Number(commonEventData.blockId) + Number(gracePeriod.toString()))
     : record.endBlockId
@@ -183,23 +173,16 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const endingPeriod = api.consts.auction.auctionEndingPeriod
-  if (endingPeriod === undefined) throw new Error("Cannot retrieve constant: auctionEndingPeriod")
   const gracePeriod = api.consts.auction.auctionGracePeriod
   if (gracePeriod === undefined) throw new Error("Cannot retrieve constant: auctionGracePeriod")
   const currentBlockId = new BN(commonEventData.blockId)
   const endBlockId = new BN(record.endBlockId)
-  const isExtendedPeriod = record.isExtendedPeriod || currentBlockId.gt(endBlockId)
-  const isEndingPeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(endingPeriod.toString()))
+  const isExtendedPeriod = currentBlockId.gt(endBlockId)
   const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
-
   const newBidders = record.bidders.filter((x) => x.bidder !== bidder.toString())
   const newTopBid = newBidders[newBidders.length - 1].amount
   const newNbBidders = record.nbBidders - 1
 
-  record.isEndingPeriod = isEndingPeriod
-  record.isGracePeriod = isGracePeriod
-  record.isExtendedPeriod = isExtendedPeriod
   record.endBlockId = isGracePeriod
     ? String(Number(commonEventData.blockId) + Number(gracePeriod.toString()))
     : record.endBlockId

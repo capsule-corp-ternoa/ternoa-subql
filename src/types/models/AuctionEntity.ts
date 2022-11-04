@@ -42,12 +42,6 @@ export class AuctionEntity implements Entity {
 
     public isCancelled: boolean;
 
-    public isEndingPeriod: boolean;
-
-    public isGracePeriod: boolean;
-
-    public isExtendedPeriod: boolean;
-
     public bidders: Bidder[];
 
     public nbBidders?: number;
