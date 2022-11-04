@@ -29,9 +29,9 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   const parsedRentFee = JSON.parse(rentFee.toString())
   const isRentFeeToken = RentFeeAction.Tokens in parsedRentFee
   const parsedRenterCancellationFee =
-    renterCancellationFee.toString() !== "None" && JSON.parse(renterCancellationFee.toString()) // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+    renterCancellationFee.toString() !== CancellationFeeAction.None && JSON.parse(renterCancellationFee.toString())
   const parsedRenteeCancellationFee =
-    renteeCancellationFee.toString() !== "None" && JSON.parse(renteeCancellationFee.toString()) // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+    renteeCancellationFee.toString() !== CancellationFeeAction.None && JSON.parse(renteeCancellationFee.toString())
 
   let record = new RentEntity(`${commonEventData.extrinsicId}-${nftId.toString()}`)
   record.nftId = nftId.toString()
@@ -64,10 +64,10 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
 
   if (isRentFeeToken) {
     record.rentFeeType = RentFeeAction.Tokens
-    record.rentFee = bnToBn(parsedRentFee.tokens).toString() 
+    record.rentFee = bnToBn(parsedRentFee.tokens).toString()
     record.rentFeeRounded = roundPrice(record.rentFee)
   } else {
-    record.rentFee = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+    record.rentFee = CancellationFeeAction.NFT
     record.rentFee = parsedRentFee.nft.toString()
     record.rentFeeRounded = Number.parseInt(record.rentFee)
   }
@@ -83,13 +83,13 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
       record.renterCancellationFee = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
       record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
       break
-    case parsedRenterCancellationFee && "nft" in parsedRenterCancellationFee: // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-      record.renterCancellationFeeType = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+    case parsedRenterCancellationFee && CancellationFeeAction.NFT in parsedRenterCancellationFee:
+      record.renterCancellationFeeType = CancellationFeeAction.NFT
       record.renterCancellationFee = parsedRenterCancellationFee.nft.toString()
       record.renterCancellationFeeRounded = Number(record.renterCancellationFee)
       break
     default:
-      record.renterCancellationFee = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+      record.renterCancellationFee = CancellationFeeAction.None
       record.renterCancellationFee = null
       record.renterCancellationFeeRounded = null
       break
@@ -106,13 +106,13 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
       record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
       record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
       break
-    case parsedRenteeCancellationFee && "nft" in parsedRenteeCancellationFee: // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
-      record.renteeCancellationFeeType = "nft" // to be updated with last ternoa sdk version : replace "nft" by CancellationFeeAction.NFT
+    case parsedRenteeCancellationFee && CancellationFeeAction.NFT in parsedRenteeCancellationFee:
+      record.renteeCancellationFeeType = CancellationFeeAction.NFT
       record.renteeCancellationFee = parsedRenteeCancellationFee.nft.toString()
       record.renteeCancellationFeeRounded = Number(record.renteeCancellationFee)
       break
     default:
-      record.renteeCancellationFeeType = "None" // to be updated with last ternoa sdk version : replace "None" by CancellationFeeAction.None
+      record.renteeCancellationFeeType = CancellationFeeAction.None
       record.renteeCancellationFee = null
       record.renteeCancellationFeeRounded = null
       break
@@ -323,7 +323,8 @@ export const rentContractSubscriptionPeriodStartedHandler = async (event: Substr
   if (record === undefined) throw new Error("Rental contract not found in db")
   const nextBlockRenewal = record.blockDuration + +commonEventData.blockId
   const lastBlockRenewal = record.startBlockId + record.maxSubscriptionBlockDuration
-  record.nbSubscriptionRenewal = lastBlockRenewal >= nextBlockRenewal ? record.nbSubscriptionRenewal + 1 : record.nbSubscriptionRenewal
+  record.nbSubscriptionRenewal =
+    lastBlockRenewal >= nextBlockRenewal ? record.nbSubscriptionRenewal + 1 : record.nbSubscriptionRenewal
   record.nextSubscriptionRenewalBlockId = lastBlockRenewal >= nextBlockRenewal ? nextBlockRenewal : lastBlockRenewal
   record.timestampLastSubscriptionRenewal = commonEventData.timestamp
   await record.save()
