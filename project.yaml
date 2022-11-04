@@ -6,9 +6,9 @@ repository: ""
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: "0xb830bd7275da92f5064e9fead7605a63d2a8c6841267b96f57122867ac9a3abc"
-  endpoint: wss://dev-1.ternoa.network/
-  # dictionary: https://dictionary-alphanet.ternoa.dev/
+  genesisHash: "0xc89c1df76b3dec656009f2b5b8607e2a34509ef722cda1c3bbe6ae7040961b64"
+  endpoint: wss://betanet.ternoa.network
+  dictionary: https://dictionary-betanet.ternoa.dev/
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
