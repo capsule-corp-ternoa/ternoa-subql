@@ -45,6 +45,6 @@
     "ternoa-js": "1.4.0-alpha0"
   },
   "engines": {
-    "node": "16.14.0"
+    "node": ">=16.14.0"
   }
 }
