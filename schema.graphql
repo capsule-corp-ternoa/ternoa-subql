@@ -151,7 +151,7 @@ type MarketplaceEntity @entity {
   listingFeeRounded: Float
   accountList: [String]
   offchainData: String
-  collectionList: [Int]
+  collectionList: [String]
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index

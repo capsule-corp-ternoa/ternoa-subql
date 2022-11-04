@@ -38,7 +38,7 @@ export class MarketplaceEntity implements Entity {
 
     public offchainData?: string;
 
-    public collectionList?: number[];
+    public collectionList?: string[];
 
     public createdAt: Date;
 

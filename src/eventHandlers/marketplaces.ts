@@ -93,7 +93,7 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   if (isCollectionListSet) {
     record.collectionList = []
     const parsedDatas = JSON.parse(collectionList.toString())
-    parsedDatas.set.map((collection: number) => record.collectionList?.push(collection))
+    parsedDatas.set.map((collection: number) => record.collectionList?.push(collection.toString()))
   } else if (isCollectionListRemoved) {
     record.collectionList = []
   }
