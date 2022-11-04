@@ -48,6 +48,12 @@ export class NftEntity implements Entity {
 
     public typeOfListing?: string;
 
+    public isRented: boolean;
+
+    public rentee?: string;
+
+    public rentalContractId?: string;
+
     public price?: string;
 
     public priceRounded?: number;
@@ -117,6 +123,13 @@ export class NftEntity implements Entity {
     static async getByDelegatee(delegatee: string): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'delegatee', delegatee);
+      return records.map(record => NftEntity.create(record as NftEntityProps));
+      
+    }
+
+    static async getByRentalContractId(rentalContractId: string): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'rentalContractId', rentalContractId);
       return records.map(record => NftEntity.create(record as NftEntityProps));
       
     }

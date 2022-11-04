@@ -46,6 +46,9 @@ type NftEntity @entity {
   isSoulbound: Boolean!
   isListed: Boolean!
   typeOfListing: String
+  isRented: Boolean!
+  rentee:String
+  rentalContract: RentEntity
   price: String
   priceRounded: Float
   marketplace: MarketplaceEntity
@@ -78,8 +81,61 @@ type NftOperationEntity @entity {
   marketplaceId: String @index
   marketplaceCut: String
   marketplaceCutRounded: Float
+  rentalContractStartBlock: Int
+  rentalContractDuration: String
+  rentalContractBlockDuration: Int
+  rentalContractMaxSubscriptionBlockDuration: Int 
+  rentalContractFeeType: String
+  rentalContractFee: String
+  rentalContractFeeRounded:Float
   timestamp: Date! @index
   typeOfTransaction: String!
+}
+
+
+type RentEntity @entity {
+  id: ID!
+  nftId: String! @index
+  hasStarted: Boolean!
+  hasEnded: Boolean!
+  hasBeenCanceled: Boolean!
+  isExpired: Boolean!
+  renter: String! @index
+  rentee: String @index
+  startBlockId: Int
+  durationType: String!
+  blockDuration: Int
+  maxSubscriptionBlockDuration: Int
+  isSubscriptionChangeable: Boolean
+  nextSubscriptionRenewalBlockId: Int
+  nbSubscriptionRenewal: Int
+  newTermsAvailable: Boolean
+  nbTermsUpdate: Int
+  acceptanceType: String!
+  acceptanceList: [String]
+  renterCanRevoke: Boolean!
+  revokedBy: String
+  rentFeeType: String!
+  rentFee: String!
+  rentFeeRounded: Float!
+  rentOffers: [String]
+  nbRentOffers: Int
+  totalRentOffersReceived: Int
+  renterCancellationFeeType: String
+  renterCancellationFee: String
+  renterCancellationFeeRounded: Float
+  renteeCancellationFeeType: String
+  renteeCancellationFee: String
+  renteeCancellationFeeRounded: Float
+  timestampCreate: Date! @index
+  timestampStart: Date @index
+  timestampLastSubscriptionRenewal: Date
+  timestampLastTermsUpdate: Date
+  timestampLastOffer: Date
+  timestampEnd: Date
+  timestampCancel: Date
+  timestampRevoke: Date
+  timestampExpire: Date
 }
 
 type MarketplaceEntity @entity {
@@ -95,6 +151,7 @@ type MarketplaceEntity @entity {
   listingFeeRounded: Float
   accountList: [String]
   offchainData: String
+  collectionList: [String]
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date! @index
@@ -120,9 +177,6 @@ type AuctionEntity @entity {
   endBlockId: String
   isCompleted: Boolean!
   isCancelled: Boolean!
-  isEndingPeriod: Boolean!
-  isGracePeriod: Boolean!
-  isExtendedPeriod: Boolean!
   bidders: [Bidder]!
   nbBidders: Int
   topBidAmount: String

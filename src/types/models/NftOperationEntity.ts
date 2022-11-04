@@ -56,6 +56,20 @@ export class NftOperationEntity implements Entity {
 
     public marketplaceCutRounded?: number;
 
+    public rentalContractStartBlock?: number;
+
+    public rentalContractDuration?: string;
+
+    public rentalContractBlockDuration?: number;
+
+    public rentalContractMaxSubscriptionBlockDuration?: number;
+
+    public rentalContractFeeType?: string;
+
+    public rentalContractFee?: string;
+
+    public rentalContractFeeRounded?: number;
+
     public timestamp: Date;
 
     public typeOfTransaction: string;

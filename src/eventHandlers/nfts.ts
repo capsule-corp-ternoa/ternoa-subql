@@ -28,6 +28,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.isListed = false
     record.typeOfListing = null
     record.isSecret = false
+    record.isRented = false
     record.isDelegated = false
     record.isSoulbound = isSoulbound.toString() === "true"
     record.createdAt = date

@@ -63,6 +63,19 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.price = args[0]
       nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
       break
+    case NFTOperation.RentalContractCreated:
+      nftOperationRecord.rentalContractDuration = args[0]
+      break
+    case NFTOperation.RentalContractStarted:
+      nftOperationRecord.to = record.rentee
+      nftOperationRecord.rentalContractStartBlock = args[0]
+      nftOperationRecord.rentalContractDuration = args[1]
+      nftOperationRecord.rentalContractBlockDuration = args[2]
+      nftOperationRecord.rentalContractMaxSubscriptionBlockDuration = args[3]
+      nftOperationRecord.rentalContractFeeType = args[4]
+      nftOperationRecord.rentalContractFee = args[5]
+      nftOperationRecord.rentalContractFeeRounded = args[6]
+      break
   }
   await nftOperationRecord.save()
 }
@@ -84,4 +97,10 @@ export enum NFTOperation {
   RemoveBid = "removeBid",
   CancelAuction = "cancelAuction",
   AddToCollection = "addToCollection",
+  RentalContractCreated = "rentalContractCreated",
+  RentalContractStarted = "rentalContractStarted",
+  RentalContractCanceled = "rentalContractCanceled",
+  RentalContractRevoked = "rentalContractRevoked",
+  RentalContractEnded = "rentalContractEnded",
+  RentalContractExpired = "rentalContractExpired",
 }
