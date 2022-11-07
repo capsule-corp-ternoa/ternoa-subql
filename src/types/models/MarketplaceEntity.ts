@@ -36,9 +36,13 @@ export class MarketplaceEntity implements Entity {
 
     public offchainData?: string;
 
+    public collectionList?: string[];
+
     public createdAt: Date;
 
     public updatedAt: Date;
+
+    public timestampCreate: Date;
 
 
     async save(): Promise<void>{
@@ -73,6 +77,13 @@ export class MarketplaceEntity implements Entity {
       
       const records = await store.getByField('MarketplaceEntity', 'owner', owner);
       return records.map(record => MarketplaceEntity.create(record));
+      
+    }
+
+    static async getByTimestampCreate(timestampCreate: Date): Promise<MarketplaceEntity[] | undefined>{
+      
+      const records = await store.getByField('MarketplaceEntity', 'timestampCreate', timestampCreate);
+      return records.map(record => MarketplaceEntity.create(record as MarketplaceEntityProps));
       
     }
 

@@ -23,6 +23,11 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
+            module: balances
+            method: Deposit
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
             module: bridge
             method: DepositMade
 
@@ -79,6 +84,61 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
+            module: rent
+            method: ContractCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractCanceled
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractStarted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractRevoked
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractOfferCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractOfferRetracted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractSubscriptionTermsChanged
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractSubscriptionTermsAccepted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractEnded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractSubscriptionPeriodStarted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: rent
+            method: ContractExpired
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
             module: marketplace
             method: MarketplaceCreated
         - handler: handleEvent
@@ -116,6 +176,36 @@ dataSources:
           filter:
             module: marketplace
             method: NFTSold
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: AuctionCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: AuctionCancelled
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: AuctionCompleted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: BidAdded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: BidRemoved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: auction
+            method: BalanceClaimed
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
