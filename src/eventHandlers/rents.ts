@@ -67,7 +67,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
     record.rentFee = bnToBn(parsedRentFee.tokens).toString()
     record.rentFeeRounded = roundPrice(record.rentFee)
   } else {
-    record.rentFee = CancellationFeeAction.NFT
+    record.rentFeeType = CancellationFeeAction.NFT
     record.rentFee = parsedRentFee.nft.toString()
     record.rentFeeRounded = Number.parseInt(record.rentFee)
   }
@@ -75,12 +75,12 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   switch (true) {
     case parsedRenterCancellationFee && CancellationFeeAction.FixedTokens in parsedRenterCancellationFee:
       record.renterCancellationFeeType = CancellationFeeAction.FixedTokens
-      record.renterCancellationFee = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
+      record.renterCancellationFee = bnToBn(parsedRenterCancellationFee.fixedTokens).toString()
       record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
       break
     case parsedRenterCancellationFee && CancellationFeeAction.FlexibleTokens in parsedRenterCancellationFee:
       record.renterCancellationFeeType = CancellationFeeAction.FlexibleTokens
-      record.renterCancellationFee = bnToBn(parsedRenterCancellationFee[record.renterCancellationFee]).toString()
+      record.renterCancellationFee = bnToBn(parsedRenterCancellationFee.flexibleTokens).toString()
       record.renterCancellationFeeRounded = roundPrice(record.renterCancellationFee)
       break
     case parsedRenterCancellationFee && CancellationFeeAction.NFT in parsedRenterCancellationFee:
@@ -89,7 +89,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
       record.renterCancellationFeeRounded = Number(record.renterCancellationFee)
       break
     default:
-      record.renterCancellationFee = CancellationFeeAction.None
+      record.renterCancellationFeeType = CancellationFeeAction.None
       record.renterCancellationFee = null
       record.renterCancellationFeeRounded = null
       break
@@ -98,12 +98,12 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   switch (true) {
     case parsedRenteeCancellationFee && CancellationFeeAction.FixedTokens in parsedRenteeCancellationFee:
       record.renteeCancellationFeeType = CancellationFeeAction.FixedTokens
-      record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
+      record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee.fixedTokens).toString()
       record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
       break
     case parsedRenteeCancellationFee && CancellationFeeAction.FlexibleTokens in parsedRenteeCancellationFee:
       record.renteeCancellationFeeType = CancellationFeeAction.FlexibleTokens
-      record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee[record.renteeCancellationFee]).toString()
+      record.renteeCancellationFee = bnToBn(parsedRenteeCancellationFee.flexibleTokens).toString()
       record.renteeCancellationFeeRounded = roundPrice(record.renteeCancellationFee)
       break
     case parsedRenteeCancellationFee && CancellationFeeAction.NFT in parsedRenteeCancellationFee:
