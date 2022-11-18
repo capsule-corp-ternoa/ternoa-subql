@@ -67,7 +67,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
     record.rentFee = bnToBn(parsedRentFee.tokens).toString()
     record.rentFeeRounded = roundPrice(record.rentFee)
   } else {
-    record.rentFeeType = CancellationFeeAction.NFT
+    record.rentFeeType = RentFeeAction.NFT
     record.rentFee = parsedRentFee.nft.toString()
     record.rentFeeRounded = Number.parseInt(record.rentFee)
   }
