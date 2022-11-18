@@ -180,7 +180,7 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   const isExtendedPeriod = currentBlockId.gt(endBlockId)
   const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
   const newBidders = record.bidders.filter((x) => x.bidder !== bidder.toString())
-  const newTopBid = newBidders[newBidders.length - 1].amount
+  const newTopBid = newBidders.length > 0 ? newBidders[newBidders.length - 1].amount : null
   const newNbBidders = record.nbBidders - 1
 
   record.endBlockId = isGracePeriod
@@ -189,7 +189,7 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   record.bidders = newBidders
   record.nbBidders = newNbBidders
   record.topBidAmount = newTopBid
-  record.topBidAmountRounded = roundPrice(record.topBidAmount)
+  record.topBidAmountRounded = newTopBid && roundPrice(record.topBidAmount)
   await record.save()
 
   // Side Effects on NftOperationEntity
