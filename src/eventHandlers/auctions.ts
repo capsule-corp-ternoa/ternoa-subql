@@ -94,12 +94,10 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const marketplaceId = record.marketplaceId
   const buyItPrice = new BN(record.buyItPrice)
   const isBuyItNow = buyItPrice.cmp(bnToBn(amount.toString())) === 0
 
   record.isCompleted = true
-  record.marketplaceId = null
   record.topBidAmount = bnToBn(amount.toString()).toString()
   record.topBidAmountRounded = roundPrice(record.topBidAmount)
   record.typeOfSale = isBuyItNow ? TypeOfSale.Direct : TypeOfSale.AuctionEnd
@@ -123,7 +121,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
     seller,
     commonEventData,
     isBuyItNow ? NFTOperation.BuyItNowAuction : NFTOperation.CompleteAuction,
-    [marketplaceId, amount.toString(), marketplaceCut.toString(), royaltyCut.toString()],
+    [record.marketplaceId, amount.toString(), marketplaceCut.toString(), royaltyCut.toString()],
   )
 }
 
