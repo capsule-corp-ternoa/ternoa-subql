@@ -47,7 +47,7 @@ type NftEntity @entity {
   isListed: Boolean!
   typeOfListing: String
   isRented: Boolean!
-  rentee:String
+  rentee: String
   rentalContract: RentEntity
   price: String
   priceRounded: Float
@@ -81,17 +81,20 @@ type NftOperationEntity @entity {
   marketplaceId: String @index
   marketplaceCut: String
   marketplaceCutRounded: Float
+  auctionStartPrice: String
+  auctionStartPriceRounded: Float
+  auctionBuyItNowPrice: String
+  auctionBuyItNowPriceRounded: Float
   rentalContractStartBlock: Int
   rentalContractDuration: String
   rentalContractBlockDuration: Int
-  rentalContractMaxSubscriptionBlockDuration: Int 
+  rentalContractMaxSubscriptionBlockDuration: Int
   rentalContractFeeType: String
   rentalContractFee: String
-  rentalContractFeeRounded:Float
+  rentalContractFeeRounded: Float
   timestamp: Date! @index
   typeOfTransaction: String!
 }
-
 
 type RentEntity @entity {
   id: ID!
@@ -171,8 +174,8 @@ type AuctionEntity @entity {
   creator: String! @index
   startPrice: String
   startPriceRounded: Float
-  buyItPrice: String
-  buyItPriceRounded: Float
+  buyItNowPrice: String
+  buyItNowPriceRounded: Float
   startBlockId: String
   endBlockId: String
   isCompleted: Boolean!

@@ -24,8 +24,8 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.creator = creator.toString()
   record.startPrice = bnToBn(startPrice.toString()).toString()
   record.startPriceRounded = roundPrice(record.startPrice)
-  record.buyItPrice = buyItPrice && bnToBn(buyItPrice.toString()).toString()
-  record.buyItPriceRounded = record.buyItPrice && roundPrice(record.buyItPrice)
+  record.buyItNowPrice = buyItPrice && bnToBn(buyItPrice.toString()).toString()
+  record.buyItNowPriceRounded = record.buyItNowPrice && roundPrice(record.buyItNowPrice)
   record.startBlockId = startBlockId.toString()
   record.endBlockId = endBlockId.toString()
   record.isCompleted = false
@@ -48,11 +48,14 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   nftRecord.isListed = true
   nftRecord.typeOfListing = TypeOfListing.Auction
   nftRecord.auctionId = `${commonEventData.extrinsicId}-${nftId.toString()}`
+  nftRecord.marketplaceId = record.marketplaceId
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CreateAuction, [
     record.marketplaceId,
+    record.startPrice,
+    record.buyItNowPrice,
   ])
 }
 
@@ -66,8 +69,8 @@ export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<vo
   record.marketplaceId = null
   record.startPrice = null
   record.startPriceRounded = null
-  record.buyItPrice = null
-  record.buyItPriceRounded = null
+  record.buyItNowPrice = null
+  record.buyItNowPriceRounded = null
   record.startBlockId = null
   record.endBlockId = null
   record.timestampCancelled = commonEventData.timestamp
@@ -79,6 +82,7 @@ export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<vo
   nftRecord.isListed = false
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
+  nftRecord.marketplaceId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -92,12 +96,10 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const marketplaceId = record.marketplaceId
-  const buyItPrice = new BN(record.buyItPrice)
-  const isBuyItNow = buyItPrice.cmp(bnToBn(amount.toString())) === 0
+  const buyItNowPrice = new BN(record.buyItNowPrice)
+  const isBuyItNow = buyItNowPrice.cmp(bnToBn(amount.toString())) === 0
 
   record.isCompleted = true
-  record.marketplaceId = null
   record.topBidAmount = bnToBn(amount.toString()).toString()
   record.topBidAmountRounded = roundPrice(record.topBidAmount)
   record.typeOfSale = isBuyItNow ? TypeOfSale.Direct : TypeOfSale.AuctionEnd
@@ -112,6 +114,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   nftRecord.isListed = false
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
+  nftRecord.marketplaceId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -120,7 +123,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
     seller,
     commonEventData,
     isBuyItNow ? NFTOperation.BuyItNowAuction : NFTOperation.CompleteAuction,
-    [marketplaceId, amount.toString(), marketplaceCut.toString(), royaltyCut.toString()],
+    [record.marketplaceId, amount.toString(), marketplaceCut.toString(), royaltyCut.toString()],
   )
 }
 
