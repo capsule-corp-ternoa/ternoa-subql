@@ -24,8 +24,8 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.creator = creator.toString()
   record.startPrice = bnToBn(startPrice.toString()).toString()
   record.startPriceRounded = roundPrice(record.startPrice)
-  record.buyItPrice = buyItPrice && bnToBn(buyItPrice.toString()).toString()
-  record.buyItPriceRounded = record.buyItPrice && roundPrice(record.buyItPrice)
+  record.buyItNowPrice = buyItPrice && bnToBn(buyItPrice.toString()).toString()
+  record.buyItNowPriceRounded = record.buyItNowPrice && roundPrice(record.buyItNowPrice)
   record.startBlockId = startBlockId.toString()
   record.endBlockId = endBlockId.toString()
   record.isCompleted = false
@@ -67,8 +67,8 @@ export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<vo
   record.marketplaceId = null
   record.startPrice = null
   record.startPriceRounded = null
-  record.buyItPrice = null
-  record.buyItPriceRounded = null
+  record.buyItNowPrice = null
+  record.buyItNowPriceRounded = null
   record.startBlockId = null
   record.endBlockId = null
   record.timestampCancelled = commonEventData.timestamp
@@ -94,8 +94,8 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const buyItPrice = new BN(record.buyItPrice)
-  const isBuyItNow = buyItPrice.cmp(bnToBn(amount.toString())) === 0
+  const buyItNowPrice = new BN(record.buyItNowPrice)
+  const isBuyItNow = buyItNowPrice.cmp(bnToBn(amount.toString())) === 0
 
   record.isCompleted = true
   record.topBidAmount = bnToBn(amount.toString()).toString()
