@@ -54,6 +54,8 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CreateAuction, [
     record.marketplaceId,
+    record.startPrice,
+    record.buyItNowPrice,
   ])
 }
 

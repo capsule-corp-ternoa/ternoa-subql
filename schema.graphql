@@ -81,6 +81,10 @@ type NftOperationEntity @entity {
   marketplaceId: String @index
   marketplaceCut: String
   marketplaceCutRounded: Float
+  auctionStartPrice: String
+  auctionStartPriceRounded: Float
+  auctionBuyItNowPrice: String
+  auctionBuyItNowPriceRounded: Float
   rentalContractStartBlock: Int
   rentalContractDuration: String
   rentalContractBlockDuration: Int
