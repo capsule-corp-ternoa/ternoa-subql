@@ -48,6 +48,7 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   nftRecord.isListed = true
   nftRecord.typeOfListing = TypeOfListing.Auction
   nftRecord.auctionId = `${commonEventData.extrinsicId}-${nftId.toString()}`
+  nftRecord.marketplaceId = record.marketplaceId
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -79,6 +80,7 @@ export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<vo
   nftRecord.isListed = false
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
+  nftRecord.marketplaceId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -112,6 +114,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   nftRecord.isListed = false
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
+  nftRecord.marketplaceId = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
