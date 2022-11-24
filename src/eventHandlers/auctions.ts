@@ -30,6 +30,7 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.endBlockId = Number.parseInt(endBlockId.toString())
   record.isCompleted = false
   record.isCancelled = false
+  record.isExtendedPeriod = false
   record.bidders = []
   record.nbBidders = 0
   record.topBidAmount = null
@@ -181,7 +182,9 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   if (gracePeriod === undefined) throw new Error("Cannot retrieve constant: auctionGracePeriod")
   const currentBlockId = new BN(commonEventData.blockId)
   const endBlockId = new BN(record.endBlockId)
-  const isExtendedPeriod = currentBlockId.gt(endBlockId)
+  const gradePeriodBlocks = new BN(gracePeriod.toString())
+  const extendPeriodStartBlockId = currentBlockId.add(gradePeriodBlocks)
+  const isExtendedPeriod = record.isExtendedPeriod || extendPeriodStartBlockId.gt(endBlockId)
   const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
   const newBidders = record.bidders.filter((x) => x.bidder !== bidder.toString())
   const newTopBid = newBidders.length > 0 ? newBidders[newBidders.length - 1].amount : null
