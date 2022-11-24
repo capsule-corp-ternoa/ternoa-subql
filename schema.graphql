@@ -47,7 +47,7 @@ type NftEntity @entity {
   isListed: Boolean!
   typeOfListing: String
   isRented: Boolean!
-  rentee:String
+  rentee: String
   rentalContract: RentEntity
   price: String
   priceRounded: Float
@@ -57,6 +57,7 @@ type NftEntity @entity {
   timestampCreate: Date! @index
   timestampBurn: Date @index
   timestampList: Date @index
+  timestampRented: Date @index
 }
 
 type NftOperationEntity @entity {
@@ -81,17 +82,20 @@ type NftOperationEntity @entity {
   marketplaceId: String @index
   marketplaceCut: String
   marketplaceCutRounded: Float
+  auctionStartPrice: String
+  auctionStartPriceRounded: Float
+  auctionBuyItNowPrice: String
+  auctionBuyItNowPriceRounded: Float
   rentalContractStartBlock: Int
   rentalContractDuration: String
   rentalContractBlockDuration: Int
-  rentalContractMaxSubscriptionBlockDuration: Int 
+  rentalContractMaxSubscriptionBlockDuration: Int
   rentalContractFeeType: String
   rentalContractFee: String
-  rentalContractFeeRounded:Float
+  rentalContractFeeRounded: Float
   timestamp: Date! @index
   typeOfTransaction: String!
 }
-
 
 type RentEntity @entity {
   id: ID!
@@ -171,12 +175,13 @@ type AuctionEntity @entity {
   creator: String! @index
   startPrice: String
   startPriceRounded: Float
-  buyItPrice: String
-  buyItPriceRounded: Float
-  startBlockId: String
-  endBlockId: String
+  buyItNowPrice: String
+  buyItNowPriceRounded: Float
+  startBlockId: Int
+  endBlockId: Int
   isCompleted: Boolean!
   isCancelled: Boolean!
+  isExtendedPeriod: Boolean!
   bidders: [Bidder]!
   nbBidders: Int
   topBidAmount: String

@@ -56,6 +56,11 @@ export const nftOperationEntityHandler = async (
       break
     case NFTOperation.CreateAuction:
       nftOperationRecord.marketplaceId = args[0]
+      nftOperationRecord.auctionStartPrice = args[1]
+      nftOperationRecord.auctionStartPriceRounded = roundPrice(nftOperationRecord.auctionStartPrice)
+      nftOperationRecord.auctionBuyItNowPrice = args[2]
+      nftOperationRecord.auctionBuyItNowPriceRounded =
+        nftOperationRecord.auctionBuyItNowPrice && roundPrice(nftOperationRecord.auctionBuyItNowPrice)
       break
     case NFTOperation.AddBid:
     case NFTOperation.RemoveBid:
