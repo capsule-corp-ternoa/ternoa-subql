@@ -49,6 +49,7 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   nftRecord.typeOfListing = TypeOfListing.Auction
   nftRecord.auctionId = `${commonEventData.extrinsicId}-${nftId.toString()}`
   nftRecord.marketplaceId = record.marketplaceId
+  nftRecord.timestampList = record.timestampCreate
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
