@@ -34,9 +34,9 @@ export class AuctionEntity implements Entity {
 
     public buyItNowPriceRounded?: number;
 
-    public startBlockId?: string;
+    public startBlockId?: number;
 
-    public endBlockId?: string;
+    public endBlockId?: number;
 
     public isCompleted: boolean;
 

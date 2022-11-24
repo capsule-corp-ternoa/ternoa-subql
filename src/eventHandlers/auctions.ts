@@ -26,8 +26,8 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.startPriceRounded = roundPrice(record.startPrice)
   record.buyItNowPrice = buyItPrice && bnToBn(buyItPrice.toString()).toString()
   record.buyItNowPriceRounded = record.buyItNowPrice && roundPrice(record.buyItNowPrice)
-  record.startBlockId = startBlockId.toString()
-  record.endBlockId = endBlockId.toString()
+  record.startBlockId = Number.parseInt(startBlockId.toString())
+  record.endBlockId = Number.parseInt(endBlockId.toString())
   record.isCompleted = false
   record.isCancelled = false
   record.bidders = []
@@ -154,7 +154,7 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   newBidders.push(newBidder)
 
   record.endBlockId = isGracePeriod
-    ? String(Number(commonEventData.blockId) + Number(gracePeriod.toString()))
+    ? Number.parseInt(String(Number(commonEventData.blockId) + Number(gracePeriod.toString())))
     : record.endBlockId
   record.bidders = newBidders
   record.nbBidders = newNbBidders
@@ -188,7 +188,7 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   const newNbBidders = record.nbBidders - 1
 
   record.endBlockId = isGracePeriod
-    ? String(Number(commonEventData.blockId) + Number(gracePeriod.toString()))
+    ? Number.parseInt(String(Number(commonEventData.blockId) + Number(gracePeriod.toString())))
     : record.endBlockId
   record.bidders = newBidders
   record.nbBidders = newNbBidders

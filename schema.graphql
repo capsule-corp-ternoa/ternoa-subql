@@ -176,8 +176,8 @@ type AuctionEntity @entity {
   startPriceRounded: Float
   buyItNowPrice: String
   buyItNowPriceRounded: Float
-  startBlockId: String
-  endBlockId: String
+  startBlockId: Int
+  endBlockId: Int
   isCompleted: Boolean!
   isCancelled: Boolean!
   bidders: [Bidder]!
