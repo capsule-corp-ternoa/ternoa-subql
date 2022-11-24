@@ -22,10 +22,10 @@ set -x
 env | grep DB_
 
 # ----Installing Subql-Query----
-npm install -g @subql/query
+npm install -g @subql/query@1.6.0
 
 # ----Installing Subql-Node----
-npm install -g @subql/node@1.5.1
+npm install -g @subql/node@1.9.2
 
 # ----Installing dependencies----
 npm install
