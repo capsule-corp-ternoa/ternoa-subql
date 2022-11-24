@@ -125,6 +125,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when creating rental contract")
   nftRecord.isRented = true
   nftRecord.rentalContractId = `${commonEventData.extrinsicId}-${nftId.toString()}`
+  nftRecord.timestampRented = record.timestampCreate
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -238,6 +239,7 @@ export const rentContractCanceledHandler = async (event: SubstrateEvent): Promis
   nftRecord.isRented = false
   nftRecord.rentee = null
   nftRecord.rentalContractId = null
+  nftRecord.timestampRented = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -261,6 +263,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   nftRecord.isRented = false
   nftRecord.rentee = null
   nftRecord.rentalContractId = null
+  nftRecord.timestampRented = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -286,6 +289,7 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   nftRecord.isRented = false
   nftRecord.rentee = null
   nftRecord.rentalContractId = null
+  nftRecord.timestampRented = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -308,6 +312,7 @@ export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise
   nftRecord.isRented = false
   nftRecord.rentee = null
   nftRecord.rentalContractId = null
+  nftRecord.timestampRented = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity

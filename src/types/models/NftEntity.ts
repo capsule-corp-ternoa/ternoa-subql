@@ -70,6 +70,8 @@ export class NftEntity implements Entity {
 
     public timestampList?: Date;
 
+    public timestampRented?: Date;
+
 
     async save(): Promise<void>{
         let id = this.id;
@@ -158,6 +160,13 @@ export class NftEntity implements Entity {
     static async getByTimestampList(timestampList: Date): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'timestampList', timestampList);
+      return records.map(record => NftEntity.create(record as NftEntityProps));
+      
+    }
+
+    static async getByTimestampRented(timestampRented: Date): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'timestampRented', timestampRented);
       return records.map(record => NftEntity.create(record as NftEntityProps));
       
     }
