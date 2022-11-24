@@ -4,7 +4,7 @@ type TransferEntity @entity {
   blockHash: String!
   extrinsicId: String!
   isSuccess: Boolean!
-  timestamp: Date! @index
+  timestamp: Date!
   from: String!
   to: String!
   currency: String!
@@ -22,10 +22,10 @@ type CollectionEntity @entity {
   limit: Int
   hasReachedLimit: Boolean!
   isClosed: Boolean!
-  timestampCreate: Date! @index
-  timestampBurn: Date @index
-  timestampClose: Date @index
-  timestampLimit: Date @index
+  timestampCreate: Date!
+  timestampBurn: Date
+  timestampClose: Date
+  timestampLimit: Date
 }
 
 type NftEntity @entity {
@@ -54,10 +54,10 @@ type NftEntity @entity {
   marketplace: MarketplaceEntity
   createdAt: Date!
   updatedAt: Date!
-  timestampCreate: Date! @index
-  timestampBurn: Date @index
-  timestampList: Date @index
-  timestampRented: Date @index
+  timestampCreate: Date!
+  timestampBurn: Date
+  timestampList: Date
+  timestampRented: Date
 }
 
 type NftOperationEntity @entity {
@@ -93,7 +93,7 @@ type NftOperationEntity @entity {
   rentalContractFeeType: String
   rentalContractFee: String
   rentalContractFeeRounded: Float
-  timestamp: Date! @index
+  timestamp: Date!
   typeOfTransaction: String!
 }
 
@@ -131,8 +131,8 @@ type RentEntity @entity {
   renteeCancellationFeeType: String
   renteeCancellationFee: String
   renteeCancellationFeeRounded: Float
-  timestampCreate: Date! @index
-  timestampStart: Date @index
+  timestampCreate: Date!
+  timestampStart: Date
   timestampLastSubscriptionRenewal: Date
   timestampLastTermsUpdate: Date
   timestampLastOffer: Date
@@ -158,7 +158,7 @@ type MarketplaceEntity @entity {
   collectionList: [String]
   createdAt: Date!
   updatedAt: Date!
-  timestampCreate: Date! @index
+  timestampCreate: Date!
 }
 
 type Bidder @jsonField {
@@ -187,9 +187,9 @@ type AuctionEntity @entity {
   topBidAmount: String
   topBidAmountRounded: Float
   typeOfSale: String
-  timestampCreate: Date! @index
+  timestampCreate: Date!
   timestampEnd: Date
-  timestampLastBid: Date @index
+  timestampLastBid: Date
   timestampCancelled: Date
 }
 
