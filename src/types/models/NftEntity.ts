@@ -28,6 +28,8 @@ export class NftEntity implements Entity {
 
     public offchainData: string;
 
+    public secretOffchainData?: string;
+
     public royalty: number;
 
     public mintFee: string;
