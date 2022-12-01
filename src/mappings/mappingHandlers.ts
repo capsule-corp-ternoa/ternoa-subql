@@ -13,6 +13,9 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.NFTCreated":
         await eventHandlers.nftCreatedHandler(event)
         break
+      case "nft.SecretAddedToNFT":
+        await eventHandlers.secretAddedToNFTHandler(event)
+        break
       case "nft.NFTBurned":
         await eventHandlers.nftBurnedHandler(event)
         break

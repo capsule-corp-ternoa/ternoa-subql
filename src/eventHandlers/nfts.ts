@@ -48,6 +48,21 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
   }
 }
 
+export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Secret added to NFT error, extrinsic isSuccess : false")
+
+  const [nftId, offchainData] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+
+  if (record) {
+    const date = new Date()
+    record.secretOffchainData = formatString(offchainData.toString())
+    record.updatedAt = date
+    await record.save()
+  }
+}
+
 export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT burned error, extrinsic isSuccess : false")

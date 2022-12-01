@@ -37,12 +37,16 @@ dataSources:
           filter:
             module: bridge
             method: DepositMade
-
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: nft
             method: NFTCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretAddedToNFT
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
