@@ -98,20 +98,6 @@ export class AuctionEntity implements Entity {
       
     }
 
-    static async getByTimestampCreate(timestampCreate: Date): Promise<AuctionEntity[] | undefined>{
-      
-      const records = await store.getByField('AuctionEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => AuctionEntity.create(record as AuctionEntityProps));
-      
-    }
-
-    static async getByTimestampLastBid(timestampLastBid: Date): Promise<AuctionEntity[] | undefined>{
-      
-      const records = await store.getByField('AuctionEntity', 'timestampLastBid', timestampLastBid);
-      return records.map(record => AuctionEntity.create(record as AuctionEntityProps));
-      
-    }
-
 
     static create(record: AuctionEntityProps): AuctionEntity {
         assert(typeof record.id === 'string', "id must be provided");

@@ -145,7 +145,8 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   const isExtendedPeriod = currentBlockId.gt(endBlockId)
   const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
   const hasAlreadyBid = record.bidders.some((x) => x.bidder === bidder.toString())
-  const newBidders = record.bidders
+  const filtredBidders = hasAlreadyBid ? record.bidders.filter((x) => x.bidder !== bidder.toString()) : record.bidders
+  const newBidders = filtredBidders
   const newNbBidders = hasAlreadyBid ? record.nbBidders : record.nbBidders + 1
   const bidAmount = bnToBn(amount.toString()).toString()
   const newBidder: Bidder = {

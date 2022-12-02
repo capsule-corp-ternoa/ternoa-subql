@@ -5,6 +5,8 @@ import assert from 'assert';
 
 
 
+type AggregateResultEntityProps = Omit<AggregateResultEntity, NonNullable<FunctionPropertyNames<AggregateResultEntity>>>;
+
 export class AggregateResultEntity implements Entity {
 
     constructor(id: string) {
@@ -31,7 +33,7 @@ export class AggregateResultEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get AggregateResultEntity entity without an ID");
         const record = await store.get('AggregateResultEntity', id.toString());
         if (record){
-            return AggregateResultEntity.create(record);
+            return AggregateResultEntity.create(record as AggregateResultEntityProps);
         }else{
             return;
         }
@@ -39,7 +41,7 @@ export class AggregateResultEntity implements Entity {
 
 
 
-    static create(record: Partial<Omit<AggregateResultEntity, FunctionPropertyNames<AggregateResultEntity>>> & Entity): AggregateResultEntity {
+    static create(record: AggregateResultEntityProps): AggregateResultEntity {
         assert(typeof record.id === 'string', "id must be provided");
         let entity = new AggregateResultEntity(record.id);
         Object.assign(entity,record);
