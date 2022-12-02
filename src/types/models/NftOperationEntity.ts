@@ -139,13 +139,6 @@ export class NftOperationEntity implements Entity {
       
     }
 
-    static async getByTimestamp(timestamp: Date): Promise<NftOperationEntity[] | undefined>{
-      
-      const records = await store.getByField('NftOperationEntity', 'timestamp', timestamp);
-      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
-      
-    }
-
 
     static create(record: NftOperationEntityProps): NftOperationEntity {
         assert(typeof record.id === 'string', "id must be provided");

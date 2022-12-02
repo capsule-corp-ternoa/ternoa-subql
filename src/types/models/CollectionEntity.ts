@@ -69,34 +69,6 @@ export class CollectionEntity implements Entity {
       
     }
 
-    static async getByTimestampCreate(timestampCreate: Date): Promise<CollectionEntity[] | undefined>{
-      
-      const records = await store.getByField('CollectionEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
-      
-    }
-
-    static async getByTimestampBurn(timestampBurn: Date): Promise<CollectionEntity[] | undefined>{
-      
-      const records = await store.getByField('CollectionEntity', 'timestampBurn', timestampBurn);
-      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
-      
-    }
-
-    static async getByTimestampClose(timestampClose: Date): Promise<CollectionEntity[] | undefined>{
-      
-      const records = await store.getByField('CollectionEntity', 'timestampClose', timestampClose);
-      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
-      
-    }
-
-    static async getByTimestampLimit(timestampLimit: Date): Promise<CollectionEntity[] | undefined>{
-      
-      const records = await store.getByField('CollectionEntity', 'timestampLimit', timestampLimit);
-      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
-      
-    }
-
 
     static create(record: CollectionEntityProps): CollectionEntity {
         assert(typeof record.id === 'string', "id must be provided");

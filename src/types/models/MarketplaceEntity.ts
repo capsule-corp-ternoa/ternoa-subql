@@ -82,13 +82,6 @@ export class MarketplaceEntity implements Entity {
       
     }
 
-    static async getByTimestampCreate(timestampCreate: Date): Promise<MarketplaceEntity[] | undefined>{
-      
-      const records = await store.getByField('MarketplaceEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => MarketplaceEntity.create(record as MarketplaceEntityProps));
-      
-    }
-
 
     static create(record: MarketplaceEntityProps): MarketplaceEntity {
         assert(typeof record.id === 'string', "id must be provided");

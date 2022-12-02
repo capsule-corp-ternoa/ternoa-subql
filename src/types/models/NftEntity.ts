@@ -143,34 +143,6 @@ export class NftEntity implements Entity {
       
     }
 
-    static async getByTimestampCreate(timestampCreate: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => NftEntity.create(record as NftEntityProps));
-      
-    }
-
-    static async getByTimestampBurn(timestampBurn: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampBurn', timestampBurn);
-      return records.map(record => NftEntity.create(record as NftEntityProps));
-      
-    }
-
-    static async getByTimestampList(timestampList: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampList', timestampList);
-      return records.map(record => NftEntity.create(record as NftEntityProps));
-      
-    }
-
-    static async getByTimestampRented(timestampRented: Date): Promise<NftEntity[] | undefined>{
-      
-      const records = await store.getByField('NftEntity', 'timestampRented', timestampRented);
-      return records.map(record => NftEntity.create(record as NftEntityProps));
-      
-    }
-
 
     static create(record: NftEntityProps): NftEntity {
         assert(typeof record.id === 'string', "id must be provided");

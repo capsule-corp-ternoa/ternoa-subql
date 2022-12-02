@@ -58,13 +58,6 @@ export class TransferEntity implements Entity {
     }
 
 
-    static async getByTimestamp(timestamp: Date): Promise<TransferEntity[] | undefined>{
-      
-      const records = await store.getByField('TransferEntity', 'timestamp', timestamp);
-      return records.map(record => TransferEntity.create(record as TransferEntityProps));
-      
-    }
-
 
     static create(record: TransferEntityProps): TransferEntity {
         assert(typeof record.id === 'string', "id must be provided");
