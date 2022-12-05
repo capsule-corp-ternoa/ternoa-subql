@@ -6,7 +6,7 @@ repository: ""
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: "0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace"
+  genesisHash: "0xc89c1df76b3dec656009f2b5b8607e2a34509ef722cda1c3bbe6ae7040961b64"
   endpoint: wss://betanet.ternoa.network
   dictionary: https://dictionary-betanet.ternoa.dev/
 dataSources:
