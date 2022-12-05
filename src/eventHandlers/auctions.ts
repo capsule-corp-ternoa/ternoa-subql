@@ -142,8 +142,9 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   if (gracePeriod === undefined) throw new Error("Cannot retrieve constant: auctionGracePeriod")
   const currentBlockId = new BN(commonEventData.blockId)
   const endBlockId = new BN(record.endBlockId)
-  const isExtendedPeriod = currentBlockId.gt(endBlockId)
-  const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
+  const gracePeriodBlocks = new BN(gracePeriod.toString())
+  const isExtendedPeriod = record.isExtendedPeriod || currentBlockId.add(gracePeriodBlocks).gt(endBlockId)
+  const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(gracePeriodBlocks)
   const hasAlreadyBid = record.bidders.some((x) => x.bidder === bidder.toString())
   const newBidders = hasAlreadyBid ? record.bidders.filter((x) => x.bidder !== bidder.toString()) : record.bidders
   const newNbBidders = hasAlreadyBid ? record.nbBidders : record.nbBidders + 1
@@ -184,10 +185,9 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   if (gracePeriod === undefined) throw new Error("Cannot retrieve constant: auctionGracePeriod")
   const currentBlockId = new BN(commonEventData.blockId)
   const endBlockId = new BN(record.endBlockId)
-  const gradePeriodBlocks = new BN(gracePeriod.toString())
-  const extendPeriodStartBlockId = currentBlockId.add(gradePeriodBlocks)
-  const isExtendedPeriod = record.isExtendedPeriod || extendPeriodStartBlockId.gt(endBlockId)
-  const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(bnToBn(gracePeriod.toString()))
+  const gracePeriodBlocks = new BN(gracePeriod.toString())
+  const isExtendedPeriod = record.isExtendedPeriod || currentBlockId.add(gracePeriodBlocks).gt(endBlockId)
+  const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(gracePeriodBlocks)
   const newBidders = record.bidders.filter((x) => x.bidder !== bidder.toString())
   const newTopBid = newBidders.length > 0 ? newBidders[newBidders.length - 1].amount : null
   const newNbBidders = record.nbBidders - 1
