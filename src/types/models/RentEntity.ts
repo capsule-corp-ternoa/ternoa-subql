@@ -141,20 +141,6 @@ export class RentEntity implements Entity {
       
     }
 
-    static async getByTimestampCreate(timestampCreate: Date): Promise<RentEntity[] | undefined>{
-      
-      const records = await store.getByField('RentEntity', 'timestampCreate', timestampCreate);
-      return records.map(record => RentEntity.create(record as RentEntityProps));
-      
-    }
-
-    static async getByTimestampStart(timestampStart: Date): Promise<RentEntity[] | undefined>{
-      
-      const records = await store.getByField('RentEntity', 'timestampStart', timestampStart);
-      return records.map(record => RentEntity.create(record as RentEntityProps));
-      
-    }
-
 
     static create(record: RentEntityProps): RentEntity {
         assert(typeof record.id === 'string', "id must be provided");
