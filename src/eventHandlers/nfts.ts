@@ -57,9 +57,12 @@ export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<vo
 
   if (record) {
     const date = new Date()
+    record.isSecret = true
     record.secretOffchainData = formatString(offchainData.toString())
+    record.timestampSecretAdd = commonEventData.timestamp
     record.updatedAt = date
     await record.save()
+    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.AddSecret)
   }
 }
 
