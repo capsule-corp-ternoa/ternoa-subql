@@ -59,6 +59,7 @@ type NftEntity @entity {
   timestampBurn: Date
   timestampList: Date
   timestampRented: Date
+  timestampSecretAdd: Date
 }
 
 type NftOperationEntity @entity {
