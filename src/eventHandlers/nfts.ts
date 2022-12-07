@@ -31,6 +31,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.isRented = false
     record.isDelegated = false
     record.isSoulbound = isSoulbound.toString() === "true"
+    record.isSecretSynced = false
     record.createdAt = date
     record.updatedAt = date
     record.timestampCreate = commonEventData.timestamp
@@ -64,6 +65,23 @@ export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<vo
     await record.save()
     await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.AddSecret)
   }
+}
+
+export const secretNFTSyncedHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Secret NFT sync error, extrinsic isSuccess : false")
+  
+  const [nftId] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+
+  if (record) {
+    const date = new Date()
+    record.isSecretSynced = true
+    record.updatedAt = date
+    await record.save()
+    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.SecretSynced)
+  }
+
 }
 
 export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => {
