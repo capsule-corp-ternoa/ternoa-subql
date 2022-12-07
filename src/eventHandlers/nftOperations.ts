@@ -89,6 +89,7 @@ export const nftOperationEntityHandler = async (
 export enum NFTOperation {
   Create = "create",
   AddSecret = "addSecret",
+  SecretSynced = "secretSynced",
   Burn = "burn",
   Transfer = "transfer",
   Delegate = "delegate",

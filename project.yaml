@@ -44,6 +44,11 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: nft
+            method: SecretNFTSynced
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
             method: NFTBurned
         - handler: handleEvent
           kind: substrate/EventHandler

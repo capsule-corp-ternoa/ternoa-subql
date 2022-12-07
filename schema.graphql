@@ -42,6 +42,7 @@ type NftEntity @entity {
   mintFeeRounded: Float
   isCapsule: Boolean!
   isSecret: Boolean!
+  isSecretSynced: Boolean!
   delegatee: String @index
   isDelegated: Boolean!
   isSoulbound: Boolean!
