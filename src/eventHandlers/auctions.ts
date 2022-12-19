@@ -113,7 +113,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   const nftRecord = await NftEntity.get(nftId.toString())
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when completing auction")
   const seller = nftRecord.owner
-  nftRecord.owner = newOwner.toString()
+  nftRecord.owner = newOwner.toString() || seller
   nftRecord.isListed = false
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
