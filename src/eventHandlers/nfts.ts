@@ -129,7 +129,7 @@ export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promis
     record.nbNfts = 0
     record.hasReachedLimit = false
     record.isClosed = false
-    record.limit = Number.isFinite(Number(limit?.toString())) ? null : Number(limit?.toString())
+    record.limit = limit?.toString() ? Number(limit?.toString()) : null
     record.timestampCreate = commonEventData.timestamp
     await record.save()
   }

@@ -113,7 +113,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   const nftRecord = await NftEntity.get(nftId.toString())
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when completing auction")
   const seller = nftRecord.owner
-  nftRecord.owner = newOwner.toString()
+  nftRecord.owner = newOwner.toString() || seller
   nftRecord.isListed = false
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
@@ -143,8 +143,7 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   const currentBlockId = new BN(commonEventData.blockId)
   const endBlockId = new BN(record.endBlockId)
   const gracePeriodBlocks = new BN(gracePeriod.toString())
-  const isExtendedPeriod = record.isExtendedPeriod || currentBlockId.add(gracePeriodBlocks).gt(endBlockId)
-  const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(gracePeriodBlocks)
+  const isGracePeriod = endBlockId.sub(currentBlockId).lt(gracePeriodBlocks)
   const hasAlreadyBid = record.bidders.some((x) => x.bidder === bidder.toString())
   const newBidders = hasAlreadyBid ? record.bidders.filter((x) => x.bidder !== bidder.toString()) : record.bidders
   const newNbBidders = hasAlreadyBid ? record.nbBidders : record.nbBidders + 1
@@ -158,9 +157,10 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
   newBidders.push(newBidder)
 
   record.endBlockId = isGracePeriod
-    ? Number.parseInt(String(Number(commonEventData.blockId) + Number(gracePeriod.toString())))
+    ? Number.parseInt(currentBlockId.add(gracePeriodBlocks).toString())
     : record.endBlockId
   record.bidders = newBidders
+  record.isExtendedPeriod = isGracePeriod
   record.nbBidders = newNbBidders
   record.topBidAmount = bnToBn(amount.toString()).toString()
   record.topBidAmountRounded = roundPrice(record.topBidAmount)
@@ -181,20 +181,10 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const gracePeriod = api.consts.auction.auctionGracePeriod
-  if (gracePeriod === undefined) throw new Error("Cannot retrieve constant: auctionGracePeriod")
-  const currentBlockId = new BN(commonEventData.blockId)
-  const endBlockId = new BN(record.endBlockId)
-  const gracePeriodBlocks = new BN(gracePeriod.toString())
-  const isExtendedPeriod = record.isExtendedPeriod || currentBlockId.add(gracePeriodBlocks).gt(endBlockId)
-  const isGracePeriod = isExtendedPeriod || endBlockId.sub(currentBlockId).lte(gracePeriodBlocks)
   const newBidders = record.bidders.filter((x) => x.bidder !== bidder.toString())
   const newTopBid = newBidders.length > 0 ? newBidders[newBidders.length - 1].amount : null
   const newNbBidders = record.nbBidders - 1
 
-  record.endBlockId = isGracePeriod
-    ? Number.parseInt(String(Number(commonEventData.blockId) + Number(gracePeriod.toString())))
-    : record.endBlockId
   record.bidders = newBidders
   record.nbBidders = newNbBidders
   record.topBidAmount = newTopBid
