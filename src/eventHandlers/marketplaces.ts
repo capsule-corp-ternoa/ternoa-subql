@@ -42,8 +42,12 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   const isAccountListRemoved = accountList.toString() === "Remove"
   const isOffchainDataSet = offchainData.toString() !== "Noop" && offchainData.toString() !== "Remove"
   const isOffchainDataRemoved = offchainData.toString() === "Remove"
-  const isCollectionListSet = collectionList.toString() !== "Noop" && collectionList.toString() !== "Remove"
-  const isCollectionListRemoved = collectionList.toString() === "Remove"
+  let isCollectionListSet: boolean = false
+  let isCollectionListRemoved: boolean = false
+  if (collectionList?.toString() !== undefined) {
+    isCollectionListSet = collectionList?.toString() !== "Noop" && collectionList?.toString() !== "Remove"
+    isCollectionListRemoved = collectionList?.toString() === "Remove"
+  }
 
   if (isCommissionFeeSet) {
     const parsedDatas = JSON.parse(commissionFee.toString())
