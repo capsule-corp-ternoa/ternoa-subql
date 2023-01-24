@@ -100,7 +100,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   if (record === undefined) throw new Error("Auction not found in db")
 
   const buyItNowPrice = new BN(record.buyItNowPrice)
-  const isBuyItNow = buyItNowPrice.cmp(bnToBn(amount.toString())) === 0
+  const isBuyItNow = Number(record.buyItNowPrice) > 0 && buyItNowPrice.cmp(bnToBn(amount.toString())) === 0
 
   record.isCompleted = true
   record.topBidAmount = bnToBn(amount.toString()).toString()
