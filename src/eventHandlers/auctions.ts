@@ -24,7 +24,8 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.creator = creator.toString()
   record.startPrice = bnToBn(startPrice.toString()).toString()
   record.startPriceRounded = roundPrice(record.startPrice)
-  record.buyItNowPrice = buyItPrice && bnToBn(buyItPrice.toString()).toString()
+  const buyItPriceAmount = bnToBn(buyItPrice.toString()).toString()
+  record.buyItNowPrice = buyItPriceAmount === "0" ? null : buyItPriceAmount
   record.buyItNowPriceRounded = record.buyItNowPrice && roundPrice(record.buyItNowPrice)
   record.startBlockId = Number.parseInt(startBlockId.toString())
   record.endBlockId = Number.parseInt(endBlockId.toString())
@@ -99,8 +100,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   let record = await getLastAuction(nftId.toString())
   if (record === undefined) throw new Error("Auction not found in db")
 
-  const buyItNowPrice = new BN(record.buyItNowPrice)
-  const isBuyItNow = buyItNowPrice.cmp(bnToBn(amount.toString())) === 0
+  const isBuyItNow = record.buyItNowPrice !== null && new BN(record.buyItNowPrice).cmp(bnToBn(amount.toString())) === 0
 
   record.isCompleted = true
   record.topBidAmount = bnToBn(amount.toString()).toString()
