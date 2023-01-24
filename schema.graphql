@@ -36,11 +36,13 @@ type NftEntity @entity {
   owner: String @index
   creator: String! @index
   offchainData: String!
+  secretOffchainData: String
   royalty: Float!
   mintFee: String!
   mintFeeRounded: Float
   isCapsule: Boolean!
   isSecret: Boolean!
+  isSecretSynced: Boolean!
   delegatee: String @index
   isDelegated: Boolean!
   isSoulbound: Boolean!
@@ -58,6 +60,7 @@ type NftEntity @entity {
   timestampBurn: Date
   timestampList: Date
   timestampRented: Date
+  timestampSecretAdd: Date
 }
 
 type NftOperationEntity @entity {

@@ -31,6 +31,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.isRented = false
     record.isDelegated = false
     record.isSoulbound = isSoulbound.toString() === "true"
+    record.isSecretSynced = false
     record.createdAt = date
     record.updatedAt = date
     record.timestampCreate = commonEventData.timestamp
@@ -46,6 +47,34 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Create)
     await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
   }
+}
+
+export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Secret added to NFT error, extrinsic isSuccess : false")
+  const [nftId, offchainData] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("NFT to add secret not found in db")
+  const date = new Date()
+  record.isSecret = true
+  record.secretOffchainData = formatString(offchainData.toString())
+  record.timestampSecretAdd = commonEventData.timestamp
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.AddSecret)
+}
+
+export const secretNFTSyncedHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Secret NFT sync error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("NFT to synced not found in db")
+  const date = new Date()
+  record.isSecretSynced = true
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.SecretSynced)
 }
 
 export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => {

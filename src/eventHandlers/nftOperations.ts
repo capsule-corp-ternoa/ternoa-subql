@@ -82,11 +82,14 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.rentalContractFeeRounded = args[6]
       break
   }
+
   await nftOperationRecord.save()
 }
 
 export enum NFTOperation {
   Create = "create",
+  AddSecret = "addSecret",
+  SecretSynced = "secretSynced",
   Burn = "burn",
   Transfer = "transfer",
   Delegate = "delegate",
