@@ -1,4 +1,4 @@
-specVersion: 1.0.0
+specVersion: 0.2.0
 name: subql_ternoa
 version: 1.0.0
 description: Ternoa data indexer
