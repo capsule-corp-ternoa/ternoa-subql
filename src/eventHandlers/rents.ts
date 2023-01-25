@@ -167,6 +167,25 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
     record.rentFee,
     record.rentFeeRounded,
   ])
+
+  // Ownership change for NFT as rent fee
+  const isNftRentFee = record.rentFeeType === RentFeeAction.NFT
+  if (isNftRentFee) {
+    const nftRentFeeRecord = await NftEntity.get(record.rentFee)
+    if (nftRentFeeRecord === undefined)
+      throw new Error("NFT record not found in db for when rental contract started with NFT as rent fee")
+    nftRentFeeRecord.owner = record.renter
+    nftRentFeeRecord.updatedAt = commonEventData.timestamp
+    await nftRentFeeRecord.save()
+
+    // Side Effects on NftOperationEntity
+    await nftOperationEntityHandler(
+      nftRentFeeRecord,
+      record.rentee,
+      commonEventData,
+      NFTOperation.RentalContractNftOwnershipChange,
+    )
+  }
 }
 
 export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -268,6 +287,32 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
 
   // Side Effects on NftOperationEntity
   await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.RentalContractRevoked)
+
+  // Ownership change for NFT as cancellation fee
+  const isNftCancellationFee =
+    record.renterCancellationFeeType === CancellationFeeAction.NFT ||
+    record.renteeCancellationFeeType === CancellationFeeAction.NFT
+  if (isNftCancellationFee) {
+    const isRevokedByRenter = record.renter === record.revokedBy
+    const oldOwner = isRevokedByRenter ? record.renter : record.rentee
+    const newOwner = isRevokedByRenter ? record.rentee : record.renter
+
+    const nftCancellationFee = isRevokedByRenter ? record.renterCancellationFee : record.renteeCancellationFee
+    const nftCancellationFeeRecord = await NftEntity.get(nftCancellationFee)
+    if (nftCancellationFeeRecord === undefined)
+      throw new Error("NFT record not found in db for when revoking rental contract with NFT as cancellation fee")
+    nftCancellationFeeRecord.owner = newOwner
+    nftCancellationFeeRecord.updatedAt = commonEventData.timestamp
+    await nftCancellationFeeRecord.save()
+
+    // Side Effects on NftOperationEntity
+    await nftOperationEntityHandler(
+      nftCancellationFeeRecord,
+      oldOwner,
+      commonEventData,
+      NFTOperation.RentalContractNftOwnershipChange,
+    )
+  }
 }
 
 // [Root Events] - Automatic events :
