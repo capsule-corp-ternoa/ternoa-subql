@@ -8,14 +8,15 @@ export const nftOperationEntityHandler = async (
   typeOfTransaction: NFTOperation,
   args?: any[],
 ): Promise<void> => {
-  const nftOperationRecord = new NftOperationEntity(commonEventData.blockHash + "-" + commonEventData.eventId)
-  nftOperationRecord.blockId = commonEventData.blockId
-  nftOperationRecord.extrinsicId = commonEventData.extrinsicId
+  const { blockHash, blockId, eventId, extrinsicId, timestamp } = commonEventData
+  const nftOperationRecord = new NftOperationEntity(blockHash + "-" + eventId + "-" + typeOfTransaction)
+  nftOperationRecord.blockId = blockId
+  nftOperationRecord.extrinsicId = extrinsicId
   nftOperationRecord.nftId = record.id
   nftOperationRecord.royalty = record.royalty
   nftOperationRecord.collectionId = record.collectionId
   nftOperationRecord.from = oldOwner
-  nftOperationRecord.timestamp = commonEventData.timestamp
+  nftOperationRecord.timestamp = timestamp
   nftOperationRecord.typeOfTransaction = typeOfTransaction
   switch (typeOfTransaction) {
     case NFTOperation.Create:
@@ -25,6 +26,7 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.to = null
       break
     case NFTOperation.Transfer:
+    case NFTOperation.RentalContractNftOwnershipChange:
       nftOperationRecord.to = record.owner
       break
     case NFTOperation.Delegate:
@@ -106,6 +108,7 @@ export enum NFTOperation {
   RentalContractStarted = "rentalContractStarted",
   RentalContractCanceled = "rentalContractCanceled",
   RentalContractRevoked = "rentalContractRevoked",
+  RentalContractNftOwnershipChange = "rentalContractNftOwnershipChange",
   RentalContractEnded = "rentalContractEnded",
   RentalContractExpired = "rentalContractExpired",
 }
