@@ -32,6 +32,8 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.isDelegated = false
     record.isSoulbound = isSoulbound.toString() === "true"
     record.isSecretSynced = false
+    record.isCapsuleSynced = false
+    record.isTransmission = false
     record.createdAt = date
     record.updatedAt = date
     record.timestampCreate = commonEventData.timestamp
@@ -69,7 +71,7 @@ export const secretNFTSyncedHandler = async (event: SubstrateEvent): Promise<voi
   if (!commonEventData.isSuccess) throw new Error("Secret NFT sync error, extrinsic isSuccess : false")
   const [nftId] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
-  if (record === undefined) throw new Error("NFT to synced not found in db")
+  if (record === undefined) throw new Error("NFT to sync not found in db")
   const date = new Date()
   record.isSecretSynced = true
   record.updatedAt = date
@@ -213,4 +215,73 @@ export const nftAddedToCollectionHandler = async (event: SubstrateEvent): Promis
   await collectionRecord.save()
   await nftRecord.save()
   await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, NFTOperation.AddToCollection)
+}
+
+export const nftConvertedToCapsuleHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("NFT converted to capsule error, extrinsic isSuccess : false")
+  const [nftId, offchainData] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("NFT to convert to capsule not found in db")
+  const date = new Date()
+  record.isCapsule = true
+  record.capsuleOffchainData = formatString(offchainData.toString())
+  record.timestampConvertedToCapsule = commonEventData.timestamp
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.ConvertedToCapsule)
+}
+
+export const capsuleSyncedHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Capsule sync error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("Capsule not found in db")
+  const date = new Date()
+  record.isCapsuleSynced = true
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleSynced)
+}
+
+export const capsuleOffchainDataSetHandler = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Capsule offchain data set error, extrinsic isSuccess : false")
+  const [nftId, offchainData] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("Capsule not found in db")
+  const date = new Date()
+  record.capsuleOffchainData = formatString(offchainData.toString())
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleOffchainDataSet)
+}
+
+export const capsuleReverted = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Capsule reverted error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("Capsule not found in db")
+  const date = new Date()
+  record.isCapsule = false
+  record.capsuleOffchainData = null
+  record.timestampConvertedToCapsule = null
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleReverted)
+}
+
+export const capsuleKeyUpdateNotified = async (event: SubstrateEvent): Promise<void> => {
+  const commonEventData = getCommonEventData(event)
+  if (!commonEventData.isSuccess) throw new Error("Capsule key update notified error, extrinsic isSuccess : false")
+  const [nftId] = event.event.data
+  let record = await NftEntity.get(formatString(nftId.toString()))
+  if (record === undefined) throw new Error("Capsule not found in db")
+  const date = new Date()
+  record.isCapsuleSynced = false
+  record.updatedAt = date
+  await record.save()
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleKeyUpdateNotified)
 }

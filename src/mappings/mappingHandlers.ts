@@ -46,6 +46,21 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.NFTAddedToCollection":
         await eventHandlers.nftAddedToCollectionHandler(event)
         break
+      case "nft.NFTConvertedToCapsule":
+        await eventHandlers.nftConvertedToCapsuleHandler(event)
+        break
+      case "nft.CapsuleOffchainDataSet":
+        await eventHandlers.capsuleOffchainDataSetHandler(event)
+        break
+      case "nft.CapsuleSynced":
+        await eventHandlers.capsuleSyncedHandler(event)
+        break
+      case "nft.CapsuleReverted":
+        await eventHandlers.capsuleReverted(event)
+        break
+      case "nft.CapsuleKeyUpdateNotified":
+        await eventHandlers.capsuleKeyUpdateNotified(event)
+        break
       case "rent.ContractCreated":
         await eventHandlers.rentContractCreatedHandler(event)
         break

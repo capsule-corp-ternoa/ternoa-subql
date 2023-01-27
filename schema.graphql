@@ -37,10 +37,12 @@ type NftEntity @entity {
   creator: String! @index
   offchainData: String!
   secretOffchainData: String
+  capsuleOffchainData: String
   royalty: Float!
   mintFee: String!
   mintFeeRounded: Float
   isCapsule: Boolean!
+  isCapsuleSynced: Boolean!
   isSecret: Boolean!
   isSecretSynced: Boolean!
   delegatee: String @index
@@ -54,6 +56,9 @@ type NftEntity @entity {
   price: String
   priceRounded: Float
   marketplace: MarketplaceEntity
+  isTransmission: Boolean!
+  transmissionRecipient: String
+  tranmissionData: TransmissionEntity
   createdAt: Date!
   updatedAt: Date!
   timestampCreate: Date!
@@ -61,6 +66,7 @@ type NftEntity @entity {
   timestampList: Date
   timestampRented: Date
   timestampSecretAdd: Date
+  timestampConvertedToCapsule: Date
 }
 
 type NftOperationEntity @entity {
@@ -96,6 +102,10 @@ type NftOperationEntity @entity {
   rentalContractFeeType: String
   rentalContractFee: String
   rentalContractFeeRounded: Float
+  transmissionKind: String
+  transmissionEndBlock: String
+  transmissionCancellationKind: String
+  transmissionCancellationBlock: Int
   timestamp: Date!
   typeOfTransaction: String!
 }
@@ -211,4 +221,22 @@ type AccountEntity @entity {
 type AggregateResultEntity @entity {
   id: ID!
   occurences: Int!
+}
+
+type TransmissionEntity @entity {
+  id: ID!
+  nftId: String! @index
+  from: String!
+  to: String!
+  isActive: Boolean!
+  kind: String!
+  endBlock: Int
+  consentList: [String]
+  currentConsent: [String]
+  threshold: Int
+  createdAt: Date!
+  updatedAt: Date!
+  timestampCreate: Date!
+  timestampUpdated: Date!
+  timestampTransmitted: Date!
 }

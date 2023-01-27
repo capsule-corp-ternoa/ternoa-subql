@@ -78,6 +78,14 @@ export class NftOperationEntity implements Entity {
 
     public rentalContractFeeRounded?: number;
 
+    public transmissionKind?: string;
+
+    public transmissionEndBlock?: string;
+
+    public transmissionCancellationKind?: string;
+
+    public transmissionCancellationBlock?: number;
+
     public timestamp: Date;
 
     public typeOfTransaction: string;
