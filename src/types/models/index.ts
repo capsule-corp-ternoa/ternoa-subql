@@ -20,3 +20,5 @@ export {AccountEntity} from "./AccountEntity"
 
 export {AggregateResultEntity} from "./AggregateResultEntity"
 
+export {TransmissionEntity} from "./TransmissionEntity"
+

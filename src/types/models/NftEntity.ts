@@ -30,6 +30,8 @@ export class NftEntity implements Entity {
 
     public secretOffchainData?: string;
 
+    public capsuleOffchainData?: string;
+
     public royalty: number;
 
     public mintFee: string;
@@ -37,6 +39,8 @@ export class NftEntity implements Entity {
     public mintFeeRounded?: number;
 
     public isCapsule: boolean;
+
+    public isCapsuleSynced: boolean;
 
     public isSecret: boolean;
 
@@ -64,6 +68,12 @@ export class NftEntity implements Entity {
 
     public marketplaceId?: string;
 
+    public isTransmission: boolean;
+
+    public transmissionRecipient?: string;
+
+    public tranmissionDataId?: string;
+
     public createdAt: Date;
 
     public updatedAt: Date;
@@ -77,6 +87,8 @@ export class NftEntity implements Entity {
     public timestampRented?: Date;
 
     public timestampSecretAdd?: Date;
+
+    public timestampConvertedToCapsule?: Date;
 
 
     async save(): Promise<void>{
@@ -145,6 +157,13 @@ export class NftEntity implements Entity {
     static async getByMarketplaceId(marketplaceId: string): Promise<NftEntity[] | undefined>{
       
       const records = await store.getByField('NftEntity', 'marketplaceId', marketplaceId);
+      return records.map(record => this.create(record as NftEntityProps));
+      
+    }
+
+    static async getByTranmissionDataId(tranmissionDataId: string): Promise<NftEntity[] | undefined>{
+      
+      const records = await store.getByField('NftEntity', 'tranmissionDataId', tranmissionDataId);
       return records.map(record => this.create(record as NftEntityProps));
       
     }

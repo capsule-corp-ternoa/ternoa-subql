@@ -114,4 +114,9 @@ export enum NFTOperation {
   RentalContractNftOwnershipChange = "rentalContractNftOwnershipChange",
   RentalContractEnded = "rentalContractEnded",
   RentalContractExpired = "rentalContractExpired",
+  ConvertedToCapsule = "convertedToCapsule",
+  CapsuleSynced = "capsuleSynced",
+  CapsuleOffchainDataSet = "capsuleOffChainDataSet",
+  CapsuleReverted = "capsuleReverted",
+  CapsuleKeyUpdateNotified = "capsuleKeyUpdatedNotified",
 }

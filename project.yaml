@@ -96,6 +96,32 @@ dataSources:
           filter:
             module: nft
             method: NFTAddedToCollection
+
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTConvertedToCapsule
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleOffchainDataSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleSynced
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleReverted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleKeyUpdateNotified
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
