@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   postgres:
@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: postgres
 
   subquery-node:
-    image: onfinality/subql-node:v1.5.1
+    image: onfinality/subql-node:latest
     depends_on:
       - "postgres"
     restart: always
@@ -25,11 +25,10 @@ services:
     volumes:
       - ./:/app
     command:
-      - '-f'
-      - '/app'
-      - '--db-schema=subql_ternoa'
-      - '--timeout'
-      - '270'
+      - -f=/app
+      - --disable-historical=true
+      - --db-schema=subql_ternoa
+      - --timeout=270
 
   graphql-engine:
     image: onfinality/subql-query:latest
@@ -46,7 +45,5 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
     command:
-      - '--name'
-      - 'subql_ternoa' #Same as your project name
-      - '--playground'
-      - --indexer=http://subquery-node:3000
+      - --name=subql_ternoa
+      - --playground

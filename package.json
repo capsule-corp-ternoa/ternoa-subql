@@ -9,7 +9,8 @@
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "codegen": "./node_modules/.bin/subql codegen",
-    "start": "bash run.sh"
+    "start": "bash run.sh",
+    "start:docker": "docker-compose pull && docker-compose up --remove-orphans"
   },
   "homepage": "https://github.com/capsule-corp-ternoa/ternoa-subql",
   "repository": "github:capsule-corp-ternoa/ternoa-subql",

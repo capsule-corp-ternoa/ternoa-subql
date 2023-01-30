@@ -1,5 +1,5 @@
 specVersion: 1.0.0
-name: Ternoa Indexer
+name: Ternoa Dictionary
 version: 1.0.0
 runner:
   node:
@@ -8,8 +8,9 @@ runner:
   query:
     name: "@subql/query"
     version: "*"
-description: Ternoa SubQuery Indexer project
-repository: "https://github.com/capsule-corp-ternoa/ternoa-subql"
+description: >-
+  Ternoa SubQuery Dictionary project
+repository: "https://github.com/capsule-corp-ternoa/ternoa-subql-dictionary"
 schema:
   file: ./schema.graphql
 network:
@@ -37,12 +38,21 @@ dataSources:
           filter:
             module: bridge
             method: DepositMade
-
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: nft
             method: NFTCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretAddedToNFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretNFTSynced
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
