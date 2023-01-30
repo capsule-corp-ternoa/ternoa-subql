@@ -1,5 +1,5 @@
 specVersion: 1.0.0
-name: subql_ternoa
+name: Ternoa Indexer
 version: 1.0.0
 runner:
   node:
