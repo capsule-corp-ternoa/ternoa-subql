@@ -31,18 +31,18 @@
     }
   ],
   "license": "MIT",
-  "devDependencies": {
-    "prettier": "2.7.x",
-    "typescript": "4.8.x"
-  },
   "dependencies": {
-    "@polkadot/api": "9.6.1",
-    "@subql/cli": "1.7.0",
-    "@subql/common": "1.4.2",
-    "@subql/types": "1.6.0",
     "bn.js": "5.2.1",
     "node-fetch": "2.6.x",
-    "ternoa-js": "1.4.0-alpha0"
+    "ternoa-js": "1.4.2-alpha1"
+  },
+  "devDependencies": {
+    "@polkadot/api": "9.13.x",
+    "@subql/cli": "1.10.x",
+    "@subql/common": "1.5.x",
+    "@subql/types": "1.7.x",
+    "prettier": "2.8.x",
+    "typescript": "4.9.x"
   },
   "engines": {
     "node": ">=16.14.0"
