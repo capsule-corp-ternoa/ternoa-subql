@@ -5,7 +5,7 @@ import assert from 'assert';
 
 
 
-type NftOperationEntityProps = Omit<NftOperationEntity, NonNullable<FunctionPropertyNames<NftOperationEntity>>>;
+export type NftOperationEntityProps = Omit<NftOperationEntity, NonNullable<FunctionPropertyNames<NftOperationEntity>>>;
 
 export class NftOperationEntity implements Entity {
 
@@ -97,7 +97,7 @@ export class NftOperationEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get NftOperationEntity entity without an ID");
         const record = await store.get('NftOperationEntity', id.toString());
         if (record){
-            return NftOperationEntity.create(record as NftOperationEntityProps);
+            return this.create(record as NftOperationEntityProps);
         }else{
             return;
         }
@@ -107,42 +107,42 @@ export class NftOperationEntity implements Entity {
     static async getByNftId(nftId: string): Promise<NftOperationEntity[] | undefined>{
       
       const records = await store.getByField('NftOperationEntity', 'nftId', nftId);
-      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
+      return records.map(record => this.create(record as NftOperationEntityProps));
       
     }
 
     static async getByFrom(from: string): Promise<NftOperationEntity[] | undefined>{
       
       const records = await store.getByField('NftOperationEntity', 'from', from);
-      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
+      return records.map(record => this.create(record as NftOperationEntityProps));
       
     }
 
     static async getByTo(to: string): Promise<NftOperationEntity[] | undefined>{
       
       const records = await store.getByField('NftOperationEntity', 'to', to);
-      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
+      return records.map(record => this.create(record as NftOperationEntityProps));
       
     }
 
     static async getByCollectionId(collectionId: string): Promise<NftOperationEntity[] | undefined>{
       
       const records = await store.getByField('NftOperationEntity', 'collectionId', collectionId);
-      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
+      return records.map(record => this.create(record as NftOperationEntityProps));
       
     }
 
     static async getByMarketplaceId(marketplaceId: string): Promise<NftOperationEntity[] | undefined>{
       
       const records = await store.getByField('NftOperationEntity', 'marketplaceId', marketplaceId);
-      return records.map(record => NftOperationEntity.create(record as NftOperationEntityProps));
+      return records.map(record => this.create(record as NftOperationEntityProps));
       
     }
 
 
     static create(record: NftOperationEntityProps): NftOperationEntity {
         assert(typeof record.id === 'string', "id must be provided");
-        let entity = new NftOperationEntity(record.id);
+        let entity = new this(record.id);
         Object.assign(entity,record);
         return entity;
     }

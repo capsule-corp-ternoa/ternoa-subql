@@ -1,14 +1,20 @@
 specVersion: 1.0.0
-name: subql_ternoa
+name: Ternoa Indexer
 version: 1.0.0
-description: Ternoa data indexer
-repository: ""
+runner:
+  node:
+    name: "@subql/node"
+    version: "*"
+  query:
+    name: "@subql/query"
+    version: "*"
+description: Ternoa SubQuery Indexer project
+repository: "https://github.com/capsule-corp-ternoa/ternoa-subql"
 schema:
   file: ./schema.graphql
 network:
-  genesisHash: "0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace"
-  endpoint: wss://alphanet.ternoa.com
-  dictionary: https://dictionary-alphanet.ternoa.dev/
+  chainId: "0xb4cee653b8b087316d19233c994a0ca850fd165bc849897140bbf1353f984b1a"
+  endpoint: wss://dev-0.ternoa.network/
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
