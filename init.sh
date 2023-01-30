@@ -21,11 +21,17 @@ set -x
 
 env | grep DB_
 
-# ----Installing Subql-Query----
-npm install -g @subql/query@1.6.0
+if [ -z $1 ]; then
+    echo "Provide a network name (e.g. 'betanet', 'alphanet' or 'mainnet')"
+    exit 1
+fi
+
+sh ./scripts/prepare_folders.sh
+
+cd ./networks/$1
 
 # ----Installing Subql-Node----
-npm install -g @subql/node@1.9.2
+npm install -g @subql/node@1.18.0
 
 # ----Installing dependencies----
 npm install
@@ -36,4 +42,4 @@ npm run codegen
 # ----Building Ternoa-Subql----
 npm run build
 
-subql-node -f . --db-schema=subql_ternoa --timeout $TIMEOUT
+subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout $TIMEOUT
