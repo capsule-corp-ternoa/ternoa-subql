@@ -21,7 +21,7 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
-        # Balances
+        # Balance
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -120,16 +120,6 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: nft
-            method: SecretAddedToNFT
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: SecretNFTSynced
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
             method: NFTBurned
         - handler: handleEvent
           kind: substrate/EventHandler
@@ -146,6 +136,60 @@ dataSources:
           filter:
             module: nft
             method: NFTRoyaltySet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTListed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTUnlisted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTSold
+
+        # Secret NFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretAddedToNFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretNFTSynced
+
+        # Capsule NFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTConvertedToCapsule
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleOffchainDataSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleSynced
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleReverted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleKeyUpdateNotified
 
         # Collection
         - handler: handleEvent
@@ -173,47 +217,6 @@ dataSources:
           filter:
             module: nft
             method: NFTAddedToCollection
-
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: NFTConvertedToCapsule
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: CapsuleOffchainDataSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: CapsuleSynced
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: CapsuleReverted
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: CapsuleKeyUpdateNotified
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTListed
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTUnlisted
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTSold
 
         # Marketplace
         - handler: handleEvent
