@@ -21,6 +21,7 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
+        # Balances
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -66,11 +67,15 @@ dataSources:
           filter:
             module: balances
             method: Withdraw
+
+        # Bridge
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: bridge
             method: DepositMade
+
+        # NFT
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -106,6 +111,8 @@ dataSources:
           filter:
             module: nft
             method: NFTRoyaltySet
+
+        # Collection
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -157,6 +164,50 @@ dataSources:
           filter:
             module: nft
             method: CapsuleKeyUpdateNotified
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTListed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTUnlisted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTSold
+
+        # Marketplace
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceOwnerSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceKindSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceConfigSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceMintFeeSet
+
+        # Rent
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -212,46 +263,8 @@ dataSources:
           filter:
             module: rent
             method: ContractExpired
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceCreated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceOwnerSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceKindSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceConfigSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceMintFeeSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTListed
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTUnlisted
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTSold
+
+        # Auction
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -282,6 +295,8 @@ dataSources:
           filter:
             module: auction
             method: BalanceClaimed
+
+        # Misc
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
