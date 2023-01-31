@@ -6,16 +6,17 @@ export const updateAccount = async (user: string) => {
     const res: any = await api.query.system.account(user)
     const balance = res.data
     if (balance) {
+      const { feeFrozen, free, miscFrozen, reserved } = balance
       const date = new Date()
       let record = await AccountEntity.get(user)
       if (record === undefined) {
         record = new AccountEntity(user)
         record.createdAt = date
       }
-      const balanceFrozenFee = balance.feeFrozen.toBigInt()
-      const balanceFrozenMisc = balance.miscFrozen.toBigInt()
-      const balanceReserved = balance.reserved.toBigInt()
-      const balanceFree = balance.free.toBigInt()
+      const balanceFrozenFee = feeFrozen.toBigInt()
+      const balanceFrozenMisc = miscFrozen.toBigInt()
+      const balanceReserved = reserved.toBigInt()
+      const balanceFree = free.toBigInt()
       const frozen = balanceFrozenFee > balanceFrozenMisc ? balanceFrozenMisc : balanceFrozenMisc
       const total = balanceFree + balanceReserved
       const transferable = balanceFree - frozen

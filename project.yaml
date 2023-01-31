@@ -25,12 +25,47 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: balances
-            method: Transfer
+            method: BalanceSet
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: balances
             method: Deposit
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: DustLost
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Endowed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Reserved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Slashed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Transfer
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Unreserved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Withdraw
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

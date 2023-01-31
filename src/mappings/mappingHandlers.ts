@@ -134,8 +134,11 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         break
     }
     try {
-      const signer = getSigner(event)
-      await updateAccount(signer)
+      const method = event.extrinsic.extrinsic.method.method.toString()
+      if (method !== "transfer" && method !== "transferKeepAlive" && method !== "transferAll") {
+        const signer = getSigner(event)
+        await updateAccount(signer)
+      }
     } catch {
       // No account to update
     }
