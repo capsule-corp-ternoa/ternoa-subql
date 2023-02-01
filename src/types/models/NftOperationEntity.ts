@@ -80,7 +80,7 @@ export class NftOperationEntity implements Entity {
 
     public transmissionKind?: string;
 
-    public transmissionEndBlock?: string;
+    public transmissionEndBlock?: number;
 
     public transmissionCancellationKind?: string;
 
