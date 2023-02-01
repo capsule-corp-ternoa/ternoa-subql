@@ -21,8 +21,6 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.creator = owner.toString()
     record.offchainData = formatString(offchainData.toString())
     record.royalty = Number(royalty.toString()) / 10000
-    record.mintFee = mintFee.toString()
-    record.mintFeeRounded = roundPrice(record.mintFee)
     record.isCapsule = false
     record.isListed = false
     record.typeOfListing = null
@@ -45,7 +43,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
       if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
-    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Create)
+    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Create, [mintFee.toString()])
     await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
   }
 }

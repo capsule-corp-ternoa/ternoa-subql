@@ -34,10 +34,6 @@ export class NftEntity implements Entity {
 
     public royalty: number;
 
-    public mintFee: string;
-
-    public mintFeeRounded?: number;
-
     public isCapsule: boolean;
 
     public isCapsuleSynced: boolean;
