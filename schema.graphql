@@ -39,8 +39,6 @@ type NftEntity @entity {
   secretOffchainData: String
   capsuleOffchainData: String
   royalty: Float!
-  mintFee: String!
-  mintFeeRounded: Float
   isCapsule: Boolean!
   isCapsuleSynced: Boolean!
   isSecret: Boolean!

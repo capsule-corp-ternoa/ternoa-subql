@@ -21,6 +21,8 @@ export const nftOperationEntityHandler = async (
   switch (typeOfTransaction) {
     case NFTOperation.Create:
       nftOperationRecord.to = record.owner
+      nftOperationRecord.price = args[0]
+      nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
       break
     case NFTOperation.Burn:
       nftOperationRecord.to = null
