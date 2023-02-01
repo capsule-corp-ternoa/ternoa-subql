@@ -24,7 +24,7 @@ export class TransmissionEntity implements Entity {
 
     public isActive: boolean;
 
-    public kind: string;
+    public protocol: string;
 
     public endBlock?: number;
 
@@ -34,15 +34,21 @@ export class TransmissionEntity implements Entity {
 
     public threshold?: number;
 
+    public cancellation?: string;
+
+    public cancellationBlock?: number;
+
     public createdAt: Date;
 
     public updatedAt: Date;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampUpdated: Date;
+    public timestampCancelled?: Date;
 
-    public timestampTransmitted: Date;
+    public timestampUpdated?: Date;
+
+    public timestampTransmitted?: Date;
 
 
     async save(): Promise<void>{
