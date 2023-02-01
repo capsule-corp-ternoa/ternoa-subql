@@ -15,7 +15,6 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
   let record = await NftEntity.get(nftId.toString())
   if (record === undefined) {
     record = new NftEntity(nftId.toString())
-    const date = new Date()
     record.nftId = nftId.toString()
     record.collectionId = collectionId?.toString() || null
     record.owner = owner.toString()
@@ -34,8 +33,8 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.isSecretSynced = false
     record.isCapsuleSynced = false
     record.isTransmission = false
-    record.createdAt = date
-    record.updatedAt = date
+    record.createdAt = commonEventData.timestamp
+    record.updatedAt = commonEventData.timestamp
     record.timestampCreate = commonEventData.timestamp
     await record.save()
     if (record.collectionId) {
@@ -57,11 +56,10 @@ export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<vo
   const [nftId, offchainData] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("NFT to add secret not found in db")
-  const date = new Date()
   record.isSecret = true
   record.secretOffchainData = formatString(offchainData.toString())
   record.timestampSecretAdd = commonEventData.timestamp
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.AddSecret)
 }
@@ -72,9 +70,8 @@ export const secretNFTSyncedHandler = async (event: SubstrateEvent): Promise<voi
   const [nftId] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("NFT to sync not found in db")
-  const date = new Date()
   record.isSecretSynced = true
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.SecretSynced)
 }
@@ -83,7 +80,6 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT burned error, extrinsic isSuccess : false")
   const [nftId] = event.event.data
-  const date = new Date()
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT to burn not found in db")
   const oldOwner = record.owner
@@ -100,7 +96,7 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
     await collectionRecord.save()
   }
   record.collectionId = null
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, oldOwner, commonEventData, NFTOperation.Burn)
 }
@@ -122,12 +118,11 @@ export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> 
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT delegated error, extrinsic isSuccess : false")
   const [id, recipient] = event.event.data
-  const date = new Date()
   let record = await NftEntity.get(id.toString())
   if (record === undefined) throw new Error("NFT to delegate not found in db")
   record.delegatee = recipient?.toString() || null
   record.isDelegated = record.delegatee ? true : false
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   const typeOfTransaction = record.delegatee ? NFTOperation.Delegate : NFTOperation.Undelegate
   await nftOperationEntityHandler(record, record.owner, commonEventData, typeOfTransaction)
@@ -137,11 +132,10 @@ export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void>
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT royalty set error, extrinsic isSuccess : false")
   const [id, royalty] = event.event.data
-  const date = new Date()
   let record = await NftEntity.get(id.toString())
   if (record === undefined) throw new Error("NFT to set royalty not found in db")
   record.royalty = Number(royalty.toString()) / 10000
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.SetRoyalty)
 }
@@ -223,11 +217,10 @@ export const nftConvertedToCapsuleHandler = async (event: SubstrateEvent): Promi
   const [nftId, offchainData] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("NFT to convert to capsule not found in db")
-  const date = new Date()
   record.isCapsule = true
   record.capsuleOffchainData = formatString(offchainData.toString())
   record.timestampConvertedToCapsule = commonEventData.timestamp
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.ConvertedToCapsule)
 }
@@ -238,9 +231,8 @@ export const capsuleSyncedHandler = async (event: SubstrateEvent): Promise<void>
   const [nftId] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("Capsule not found in db")
-  const date = new Date()
   record.isCapsuleSynced = true
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleSynced)
 }
@@ -251,9 +243,8 @@ export const capsuleOffchainDataSetHandler = async (event: SubstrateEvent): Prom
   const [nftId, offchainData] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("Capsule not found in db")
-  const date = new Date()
   record.capsuleOffchainData = formatString(offchainData.toString())
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleOffchainDataSet)
 }
@@ -264,11 +255,10 @@ export const capsuleReverted = async (event: SubstrateEvent): Promise<void> => {
   const [nftId] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("Capsule not found in db")
-  const date = new Date()
   record.isCapsule = false
   record.capsuleOffchainData = null
   record.timestampConvertedToCapsule = null
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleReverted)
 }
@@ -279,9 +269,8 @@ export const capsuleKeyUpdateNotified = async (event: SubstrateEvent): Promise<v
   const [nftId] = event.event.data
   let record = await NftEntity.get(formatString(nftId.toString()))
   if (record === undefined) throw new Error("Capsule not found in db")
-  const date = new Date()
   record.isCapsuleSynced = false
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleKeyUpdateNotified)
 }
