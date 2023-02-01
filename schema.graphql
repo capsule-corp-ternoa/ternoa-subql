@@ -103,7 +103,7 @@ type NftOperationEntity @entity {
   rentalContractFee: String
   rentalContractFeeRounded: Float
   transmissionKind: String
-  transmissionEndBlock: String
+  transmissionEndBlock: Int
   transmissionCancellationKind: String
   transmissionCancellationBlock: Int
   timestamp: Date!
