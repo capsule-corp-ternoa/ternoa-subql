@@ -156,6 +156,38 @@ dataSources:
             module: nft
             method: CapsuleKeyUpdateNotified
 
+        # Transmission Protocols
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ProtocolSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ProtocolRemoved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: TimerReset
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ConsentAdded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ThresholdReached
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: Transmitted
+
         # Collection
         - handler: handleEvent
           kind: substrate/EventHandler

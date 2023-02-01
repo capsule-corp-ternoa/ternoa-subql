@@ -61,6 +61,24 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.CapsuleKeyUpdateNotified":
         await eventHandlers.capsuleKeyUpdateNotified(event)
         break
+      case "transmissionProtocols.ProtocolSet":
+        await eventHandlers.protocolSetHandler(event)
+        break
+      case "transmissionProtocols.ProtocolRemoved":
+        await eventHandlers.protocolRemovedHandler(event)
+        break
+      case "transmissionProtocols.TimerReset":
+        await eventHandlers.timerResetHandler(event)
+        break
+      case "transmissionProtocols.ConsentAdded":
+        await eventHandlers.consentAddedHandler(event)
+        break
+      case "transmissionProtocols.ThresholdReached":
+        await eventHandlers.thresholdReachedHandler(event)
+        break
+      case "transmissionProtocols.Transmitted":
+        await eventHandlers.capsuleTransmittedHandler(event)
+        break
       case "rent.ContractCreated":
         await eventHandlers.rentContractCreatedHandler(event)
         break

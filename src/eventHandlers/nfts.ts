@@ -103,11 +103,10 @@ export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> =
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT transfered error, extrinsic isSuccess : false")
   const [nftId, from, to] = event.event.data
-  const date = new Date()
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT to transfer not found in db")
   record.owner = to.toString()
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
   await nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transfer)
 }

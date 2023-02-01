@@ -3,7 +3,7 @@ import { CommonEventData, roundPrice } from "../helpers"
 
 export const nftOperationEntityHandler = async (
   record: NftEntity,
-  oldOwner: string,
+  oldOwner: string | null,
   commonEventData: CommonEventData,
   typeOfTransaction: NFTOperation,
   args?: any[],
@@ -30,6 +30,10 @@ export const nftOperationEntityHandler = async (
     case NFTOperation.Transfer:
     case NFTOperation.RentalContractNftOwnershipChange:
       nftOperationRecord.to = record.owner
+      break
+    case NFTOperation.Transmit:
+      nftOperationRecord.to = record.owner
+      nftOperationRecord.transmissionProtocol = args[0]
       break
     case NFTOperation.Delegate:
     case NFTOperation.Undelegate:
@@ -85,6 +89,13 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.rentalContractFee = args[5]
       nftOperationRecord.rentalContractFeeRounded = args[6]
       break
+    case NFTOperation.TransmissionProtocolSet:
+    case NFTOperation.TransmissionTimerReset:
+    case NFTOperation.TransmissionConsentAdded:
+    case NFTOperation.TransmissionThresholdReach:
+      nftOperationRecord.transmissionProtocol = args[0]
+      nftOperationRecord.transmissionEndBlock = args[1]
+      break
   }
 
   await nftOperationRecord.save()
@@ -121,4 +132,10 @@ export enum NFTOperation {
   CapsuleOffchainDataSet = "capsuleOffChainDataSet",
   CapsuleReverted = "capsuleReverted",
   CapsuleKeyUpdateNotified = "capsuleKeyUpdatedNotified",
+  Transmit = "transmit",
+  TransmissionProtocolSet = "transmissionProtocolSet",
+  TransmissionProtocolRemoved = "transmissionProtocolRemoved",
+  TransmissionConsentAdded = "transmissionConsentAdded",
+  TransmissionTimerReset = "transmissionTimerReset",
+  TransmissionThresholdReach = "transmissionThresholdReach",
 }
