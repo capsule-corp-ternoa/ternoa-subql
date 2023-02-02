@@ -9,7 +9,7 @@ import {
 
 
 
-type AuctionEntityProps = Omit<AuctionEntity, NonNullable<FunctionPropertyNames<AuctionEntity>>>;
+export type AuctionEntityProps = Omit<AuctionEntity, NonNullable<FunctionPropertyNames<AuctionEntity>>>;
 
 export class AuctionEntity implements Entity {
 
@@ -54,9 +54,9 @@ export class AuctionEntity implements Entity {
 
     public typeOfSale?: string;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampEnd?: Date;
+    public timestampEnded?: Date;
 
     public timestampLastBid?: Date;
 
@@ -77,7 +77,7 @@ export class AuctionEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get AuctionEntity entity without an ID");
         const record = await store.get('AuctionEntity', id.toString());
         if (record){
-            return AuctionEntity.create(record as AuctionEntityProps);
+            return this.create(record as AuctionEntityProps);
         }else{
             return;
         }
@@ -87,21 +87,21 @@ export class AuctionEntity implements Entity {
     static async getByNftId(nftId: string): Promise<AuctionEntity[] | undefined>{
       
       const records = await store.getByField('AuctionEntity', 'nftId', nftId);
-      return records.map(record => AuctionEntity.create(record as AuctionEntityProps));
+      return records.map(record => this.create(record as AuctionEntityProps));
       
     }
 
     static async getByCreator(creator: string): Promise<AuctionEntity[] | undefined>{
       
       const records = await store.getByField('AuctionEntity', 'creator', creator);
-      return records.map(record => AuctionEntity.create(record as AuctionEntityProps));
+      return records.map(record => this.create(record as AuctionEntityProps));
       
     }
 
 
     static create(record: AuctionEntityProps): AuctionEntity {
         assert(typeof record.id === 'string', "id must be provided");
-        let entity = new AuctionEntity(record.id);
+        let entity = new this(record.id);
         Object.assign(entity,record);
         return entity;
     }

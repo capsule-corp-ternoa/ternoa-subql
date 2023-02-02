@@ -22,10 +22,10 @@ type CollectionEntity @entity {
   limit: Int
   hasReachedLimit: Boolean!
   isClosed: Boolean!
-  timestampCreate: Date!
-  timestampBurn: Date
-  timestampClose: Date
-  timestampLimit: Date
+  timestampCreated: Date!
+  timestampBurned: Date
+  timestampClosed: Date
+  timestampLimited: Date
 }
 
 type NftEntity @entity {
@@ -36,11 +36,13 @@ type NftEntity @entity {
   owner: String @index
   creator: String! @index
   offchainData: String!
+  secretOffchainData: String
+  capsuleOffchainData: String
   royalty: Float!
-  mintFee: String!
-  mintFeeRounded: Float
   isCapsule: Boolean!
+  isCapsuleSynced: Boolean!
   isSecret: Boolean!
+  isSecretSynced: Boolean!
   delegatee: String @index
   isDelegated: Boolean!
   isSoulbound: Boolean!
@@ -52,12 +54,17 @@ type NftEntity @entity {
   price: String
   priceRounded: Float
   marketplace: MarketplaceEntity
+  isTransmission: Boolean!
+  transmissionRecipient: String
+  tranmissionData: TransmissionEntity
   createdAt: Date!
   updatedAt: Date!
-  timestampCreate: Date!
-  timestampBurn: Date
-  timestampList: Date
+  timestampCreated: Date!
+  timestampBurned: Date
+  timestampListed: Date
   timestampRented: Date
+  timestampSecretAdded: Date
+  timestampConvertedToCapsule: Date
 }
 
 type NftOperationEntity @entity {
@@ -93,6 +100,8 @@ type NftOperationEntity @entity {
   rentalContractFeeType: String
   rentalContractFee: String
   rentalContractFeeRounded: Float
+  transmissionProtocol: String
+  transmissionEndBlock: Int
   timestamp: Date!
   typeOfTransaction: String!
 }
@@ -137,9 +146,9 @@ type RentEntity @entity {
   timestampLastTermsUpdate: Date
   timestampLastOffer: Date
   timestampEnd: Date
-  timestampCancel: Date
-  timestampRevoke: Date
-  timestampExpire: Date
+  timestampCancelled: Date
+  timestampRevoked: Date
+  timestampExpired: Date
 }
 
 type MarketplaceEntity @entity {
@@ -158,7 +167,7 @@ type MarketplaceEntity @entity {
   collectionList: [String]
   createdAt: Date!
   updatedAt: Date!
-  timestampCreate: Date!
+  timestampCreated: Date!
 }
 
 type Bidder @jsonField {
@@ -187,8 +196,8 @@ type AuctionEntity @entity {
   topBidAmount: String
   topBidAmountRounded: Float
   typeOfSale: String
-  timestampCreate: Date!
-  timestampEnd: Date
+  timestampCreated: Date!
+  timestampEnded: Date
   timestampLastBid: Date
   timestampCancelled: Date
 }
@@ -208,4 +217,25 @@ type AccountEntity @entity {
 type AggregateResultEntity @entity {
   id: ID!
   occurences: Int!
+}
+
+type TransmissionEntity @entity {
+  id: ID!
+  nftId: String! @index
+  from: String!
+  to: String!
+  isActive: Boolean!
+  protocol: String!
+  endBlock: Int
+  consentList: [String]
+  currentConsent: [String]
+  threshold: Int
+  cancellation: String
+  cancellationBlock: Int
+  createdAt: Date!
+  updatedAt: Date!
+  timestampCreated: Date!
+  timestampRemoved: Date
+  timestampUpdated: Date
+  timestampTransmitted: Date
 }

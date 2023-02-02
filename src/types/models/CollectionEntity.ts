@@ -5,7 +5,7 @@ import assert from 'assert';
 
 
 
-type CollectionEntityProps = Omit<CollectionEntity, NonNullable<FunctionPropertyNames<CollectionEntity>>>;
+export type CollectionEntityProps = Omit<CollectionEntity, NonNullable<FunctionPropertyNames<CollectionEntity>>>;
 
 export class CollectionEntity implements Entity {
 
@@ -32,13 +32,13 @@ export class CollectionEntity implements Entity {
 
     public isClosed: boolean;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampBurn?: Date;
+    public timestampBurned?: Date;
 
-    public timestampClose?: Date;
+    public timestampClosed?: Date;
 
-    public timestampLimit?: Date;
+    public timestampLimited?: Date;
 
 
     async save(): Promise<void>{
@@ -55,7 +55,7 @@ export class CollectionEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get CollectionEntity entity without an ID");
         const record = await store.get('CollectionEntity', id.toString());
         if (record){
-            return CollectionEntity.create(record as CollectionEntityProps);
+            return this.create(record as CollectionEntityProps);
         }else{
             return;
         }
@@ -65,14 +65,14 @@ export class CollectionEntity implements Entity {
     static async getByOwner(owner: string): Promise<CollectionEntity[] | undefined>{
       
       const records = await store.getByField('CollectionEntity', 'owner', owner);
-      return records.map(record => CollectionEntity.create(record as CollectionEntityProps));
+      return records.map(record => this.create(record as CollectionEntityProps));
       
     }
 
 
     static create(record: CollectionEntityProps): CollectionEntity {
         assert(typeof record.id === 'string', "id must be provided");
-        let entity = new CollectionEntity(record.id);
+        let entity = new this(record.id);
         Object.assign(entity,record);
         return entity;
     }

@@ -5,7 +5,7 @@ import assert from 'assert';
 
 
 
-type RentEntityProps = Omit<RentEntity, NonNullable<FunctionPropertyNames<RentEntity>>>;
+export type RentEntityProps = Omit<RentEntity, NonNullable<FunctionPropertyNames<RentEntity>>>;
 
 export class RentEntity implements Entity {
 
@@ -92,11 +92,11 @@ export class RentEntity implements Entity {
 
     public timestampEnd?: Date;
 
-    public timestampCancel?: Date;
+    public timestampCancelled?: Date;
 
-    public timestampRevoke?: Date;
+    public timestampRevoked?: Date;
 
-    public timestampExpire?: Date;
+    public timestampExpired?: Date;
 
 
     async save(): Promise<void>{
@@ -113,7 +113,7 @@ export class RentEntity implements Entity {
         assert((id !== null && id !== undefined), "Cannot get RentEntity entity without an ID");
         const record = await store.get('RentEntity', id.toString());
         if (record){
-            return RentEntity.create(record as RentEntityProps);
+            return this.create(record as RentEntityProps);
         }else{
             return;
         }
@@ -123,28 +123,28 @@ export class RentEntity implements Entity {
     static async getByNftId(nftId: string): Promise<RentEntity[] | undefined>{
       
       const records = await store.getByField('RentEntity', 'nftId', nftId);
-      return records.map(record => RentEntity.create(record as RentEntityProps));
+      return records.map(record => this.create(record as RentEntityProps));
       
     }
 
     static async getByRenter(renter: string): Promise<RentEntity[] | undefined>{
       
       const records = await store.getByField('RentEntity', 'renter', renter);
-      return records.map(record => RentEntity.create(record as RentEntityProps));
+      return records.map(record => this.create(record as RentEntityProps));
       
     }
 
     static async getByRentee(rentee: string): Promise<RentEntity[] | undefined>{
       
       const records = await store.getByField('RentEntity', 'rentee', rentee);
-      return records.map(record => RentEntity.create(record as RentEntityProps));
+      return records.map(record => this.create(record as RentEntityProps));
       
     }
 
 
     static create(record: RentEntityProps): RentEntity {
         assert(typeof record.id === 'string', "id must be provided");
-        let entity = new RentEntity(record.id);
+        let entity = new this(record.id);
         Object.assign(entity,record);
         return entity;
     }

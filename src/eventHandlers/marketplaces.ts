@@ -14,14 +14,13 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
   const fee = await api.query.marketplace.marketplaceMintFee()
   let record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) {
-    const date = new Date()
     record = new MarketplaceEntity(marketplaceId.toString())
     record.marketplaceId = marketplaceId.toString()
     record.owner = owner.toString()
     record.kind = kind.toString()
-    record.createdAt = date
-    record.updatedAt = date
-    record.timestampCreate = commonEventData.timestamp
+    record.createdAt = commonEventData.timestamp
+    record.updatedAt = commonEventData.timestamp
+    record.timestampCreated = commonEventData.timestamp
     await record.save()
     await genericTransferHandler(owner, "Treasury", fee.toString(), commonEventData)
   }
@@ -31,7 +30,6 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace config set error, extrinsic isSuccess : false")
   const [marketplaceId, commissionFee, listingFee, accountList, offchainData, collectionList] = event.event.data
-  const date = new Date()
   const record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) throw new Error("Marketplace not found in db")
   const isCommissionFeeSet = commissionFee.toString() !== "Noop" && commissionFee.toString() !== "Remove"
@@ -101,7 +99,7 @@ export const marketplaceConfigSetHandler = async (event: SubstrateEvent): Promis
   } else if (isCollectionListRemoved) {
     record.collectionList = []
   }
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
 }
 
@@ -109,11 +107,10 @@ export const marketplaceOwnerSetHandler = async (event: SubstrateEvent): Promise
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace owner set error, extrinsic isSuccess : false")
   const [marketplaceId, owner] = event.event.data
-  const date = new Date()
   const record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) throw new Error("Marketplace not found in db")
   record.owner = owner.toString()
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
 }
 
@@ -121,11 +118,10 @@ export const marketplaceKindSetHandler = async (event: SubstrateEvent): Promise<
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace kind set error, extrinsic isSuccess : false")
   const [marketplaceId, kind] = event.event.data
-  const date = new Date()
   const record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) throw new Error("Marketplace not found in db")
   record.kind = kind.toString()
-  record.updatedAt = date
+  record.updatedAt = commonEventData.timestamp
   await record.save()
 }
 
@@ -133,7 +129,6 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace nft listed error, extrinsic isSuccess : false")
   const [nftId, marketplaceId, price, commissionFee] = event.event.data
-  const date = new Date()
 
   // Format commission fee to set type
   let marketplaceCommissionFeeType: string = null
@@ -180,10 +175,10 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.marketplaceId = marketplaceId.toString()
   record.price = price.toString()
   record.priceRounded = roundPrice(record.price)
-  record.timestampList = commonEventData.timestamp
-  record.updatedAt = date
+  record.timestampListed = commonEventData.timestamp
+  record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.List, [
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Listed, [
     marketplaceCommissionFeeType,
     marketplaceCommissionFee,
     marketplaceCommissionFeeRounded,
@@ -197,7 +192,6 @@ export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> =
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace nft unlisted error, extrinsic isSuccess : false")
   const [nftId] = event.event.data
-  const date = new Date()
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT not found in db")
   record.isListed = false
@@ -205,17 +199,16 @@ export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> =
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
-  record.timestampList = null
-  record.updatedAt = date
+  record.timestampListed = null
+  record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Unlist)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Unlisted)
 }
 
 export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace nft listed error, extrinsic isSuccess : false")
   const [nftId, marketplaceId, buyer, listedPrice, marketplaceCut, royaltyCut] = event.event.data
-  const date = new Date()
   const record = await NftEntity.get(nftId.toString())
   if (record === undefined) throw new Error("NFT not found in db")
   const seller = record.owner
@@ -225,10 +218,10 @@ export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
-  record.timestampList = null
-  record.updatedAt = date
+  record.timestampListed = null
+  record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, seller, commonEventData, NFTOperation.Sell, [
+  await nftOperationEntityHandler(record, seller, commonEventData, NFTOperation.Sold, [
     marketplaceId.toString(),
     listedPrice.toString(),
     marketplaceCut.toString(),

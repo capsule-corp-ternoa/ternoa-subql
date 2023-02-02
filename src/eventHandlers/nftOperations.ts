@@ -3,35 +3,43 @@ import { CommonEventData, roundPrice } from "../helpers"
 
 export const nftOperationEntityHandler = async (
   record: NftEntity,
-  oldOwner: string,
+  oldOwner: string | null,
   commonEventData: CommonEventData,
   typeOfTransaction: NFTOperation,
   args?: any[],
 ): Promise<void> => {
-  const nftOperationRecord = new NftOperationEntity(commonEventData.blockHash + "-" + commonEventData.eventId)
-  nftOperationRecord.blockId = commonEventData.blockId
-  nftOperationRecord.extrinsicId = commonEventData.extrinsicId
+  const { blockHash, blockId, eventId, extrinsicId, timestamp } = commonEventData
+  const nftOperationRecord = new NftOperationEntity(blockHash + "-" + eventId + "-" + typeOfTransaction)
+  nftOperationRecord.blockId = blockId
+  nftOperationRecord.extrinsicId = extrinsicId
   nftOperationRecord.nftId = record.id
   nftOperationRecord.royalty = record.royalty
   nftOperationRecord.collectionId = record.collectionId
   nftOperationRecord.from = oldOwner
-  nftOperationRecord.timestamp = commonEventData.timestamp
+  nftOperationRecord.timestamp = timestamp
   nftOperationRecord.typeOfTransaction = typeOfTransaction
   switch (typeOfTransaction) {
-    case NFTOperation.Create:
+    case NFTOperation.Created:
       nftOperationRecord.to = record.owner
+      nftOperationRecord.price = args[0]
+      nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
       break
-    case NFTOperation.Burn:
+    case NFTOperation.Burned:
       nftOperationRecord.to = null
       break
-    case NFTOperation.Transfer:
+    case NFTOperation.Transferred:
+    case NFTOperation.ContractNftOwnershipChanged:
       nftOperationRecord.to = record.owner
       break
-    case NFTOperation.Delegate:
-    case NFTOperation.Undelegate:
+    case NFTOperation.Transmitted:
+      nftOperationRecord.to = record.owner
+      nftOperationRecord.transmissionProtocol = args[0]
+      break
+    case NFTOperation.Delegated:
+    case NFTOperation.Undelegated:
       nftOperationRecord.to = record.delegatee
       break
-    case NFTOperation.List:
+    case NFTOperation.Listed:
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = record.price
       nftOperationRecord.priceRounded = record.priceRounded
@@ -42,9 +50,9 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.listingFee = args[4]
       nftOperationRecord.listingFeeRounded = args[5]
       break
-    case NFTOperation.Sell:
-    case NFTOperation.CompleteAuction:
-    case NFTOperation.BuyItNowAuction:
+    case NFTOperation.Sold:
+    case NFTOperation.AuctionCompleted:
+    case NFTOperation.AuctionBuyItNow:
       nftOperationRecord.to = record.owner
       nftOperationRecord.marketplaceId = args[0]
       nftOperationRecord.price = args[1]
@@ -54,7 +62,7 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.royaltyCut = args[3]
       nftOperationRecord.royaltyCutRounded = roundPrice(nftOperationRecord.royaltyCut)
       break
-    case NFTOperation.CreateAuction:
+    case NFTOperation.AuctionCreated:
       nftOperationRecord.marketplaceId = args[0]
       nftOperationRecord.auctionStartPrice = args[1]
       nftOperationRecord.auctionStartPriceRounded = roundPrice(nftOperationRecord.auctionStartPrice)
@@ -62,16 +70,16 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.auctionBuyItNowPriceRounded =
         nftOperationRecord.auctionBuyItNowPrice && roundPrice(nftOperationRecord.auctionBuyItNowPrice)
       break
-    case NFTOperation.AddBid:
-    case NFTOperation.RemoveBid:
+    case NFTOperation.BidAdded:
+    case NFTOperation.BidRemoved:
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = args[0]
       nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
       break
-    case NFTOperation.RentalContractCreated:
+    case NFTOperation.ContractCreated:
       nftOperationRecord.rentalContractDuration = args[0]
       break
-    case NFTOperation.RentalContractStarted:
+    case NFTOperation.ContractStarted:
       nftOperationRecord.to = record.rentee
       nftOperationRecord.rentalContractStartBlock = args[0]
       nftOperationRecord.rentalContractDuration = args[1]
@@ -81,31 +89,53 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.rentalContractFee = args[5]
       nftOperationRecord.rentalContractFeeRounded = args[6]
       break
+    case NFTOperation.TransmissionProtocolSet:
+    case NFTOperation.TransmissionTimerReset:
+    case NFTOperation.TransmissionConsentAdded:
+    case NFTOperation.TransmissionThresholdReached:
+      nftOperationRecord.transmissionProtocol = args[0]
+      nftOperationRecord.transmissionEndBlock = args[1]
+      break
   }
+
   await nftOperationRecord.save()
 }
 
 export enum NFTOperation {
-  Create = "create",
-  Burn = "burn",
-  Transfer = "transfer",
-  Delegate = "delegate",
-  Undelegate = "undelegate",
-  SetRoyalty = "setRoyalty",
-  Sell = "sell",
-  List = "list",
-  Unlist = "unlist",
-  CompleteAuction = "completeAuction",
-  BuyItNowAuction = "buyItNowAuction",
-  CreateAuction = "createAuction",
-  AddBid = "addBid",
-  RemoveBid = "removeBid",
-  CancelAuction = "cancelAuction",
-  AddToCollection = "addToCollection",
-  RentalContractCreated = "rentalContractCreated",
-  RentalContractStarted = "rentalContractStarted",
-  RentalContractCanceled = "rentalContractCanceled",
-  RentalContractRevoked = "rentalContractRevoked",
-  RentalContractEnded = "rentalContractEnded",
-  RentalContractExpired = "rentalContractExpired",
+  Created = "created",
+  Burned = "burned",
+  Transferred = "transferred",
+  Delegated = "delegated",
+  Undelegated = "undelegated",
+  RoyaltySet = "royaltySet",
+  Sold = "sold",
+  Listed = "listed",
+  Unlisted = "unlisted",
+  AddedToCollection = "addedToCollection",
+  Transmitted = "transmitted",
+  SecretAdded = "secretAdded",
+  SecretSynced = "secretSynced",
+  ConvertedToCapsule = "convertedToCapsule",
+  CapsuleSynced = "capsuleSynced",
+  CapsuleOffchainDataSet = "capsuleOffChainDataSet",
+  CapsuleReverted = "capsuleReverted",
+  CapsuleKeyUpdateNotified = "capsuleKeyUpdatedNotified",
+  AuctionCompleted = "auctionCompleted",
+  AuctionBuyItNow = "auctionBuyItNow",
+  AuctionCreated = "auctionCreated",
+  AuctionCancelled = "auctionCancelled",
+  BidAdded = "bidAdded",
+  BidRemoved = "bidRemoved",
+  ContractCreated = "contractCreated",
+  ContractStarted = "contractStarted",
+  ContractCancelled = "contractCancelled",
+  ContractRevoked = "contractRevoked",
+  ContractNftOwnershipChanged = "contractNftOwnershipChanged",
+  ContractEnded = "contractEnded",
+  ContractExpired = "contractExpired",
+  TransmissionProtocolSet = "transmissionProtocolSet",
+  TransmissionProtocolRemoved = "transmissionProtocolRemoved",
+  TransmissionConsentAdded = "transmissionConsentAdded",
+  TransmissionTimerReset = "transmissionTimerReset",
+  TransmissionThresholdReached = "transmissionThresholdReached",
 }

@@ -13,6 +13,12 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.NFTCreated":
         await eventHandlers.nftCreatedHandler(event)
         break
+      case "nft.SecretAddedToNFT":
+        await eventHandlers.secretAddedToNFTHandler(event)
+        break
+      case "nft.SecretNFTSynced":
+        await eventHandlers.secretNFTSyncedHandler(event)
+        break
       case "nft.NFTBurned":
         await eventHandlers.nftBurnedHandler(event)
         break
@@ -40,6 +46,39 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.NFTAddedToCollection":
         await eventHandlers.nftAddedToCollectionHandler(event)
         break
+      case "nft.NFTConvertedToCapsule":
+        await eventHandlers.nftConvertedToCapsuleHandler(event)
+        break
+      case "nft.CapsuleOffchainDataSet":
+        await eventHandlers.capsuleOffchainDataSetHandler(event)
+        break
+      case "nft.CapsuleSynced":
+        await eventHandlers.capsuleSyncedHandler(event)
+        break
+      case "nft.CapsuleReverted":
+        await eventHandlers.capsuleReverted(event)
+        break
+      case "nft.CapsuleKeyUpdateNotified":
+        await eventHandlers.capsuleKeyUpdateNotified(event)
+        break
+      case "transmissionProtocols.ProtocolSet":
+        await eventHandlers.protocolSetHandler(event)
+        break
+      case "transmissionProtocols.ProtocolRemoved":
+        await eventHandlers.protocolRemovedHandler(event)
+        break
+      case "transmissionProtocols.TimerReset":
+        await eventHandlers.timerResetHandler(event)
+        break
+      case "transmissionProtocols.ConsentAdded":
+        await eventHandlers.consentAddedHandler(event)
+        break
+      case "transmissionProtocols.ThresholdReached":
+        await eventHandlers.thresholdReachedHandler(event)
+        break
+      case "transmissionProtocols.Transmitted":
+        await eventHandlers.capsuleTransmittedHandler(event)
+        break
       case "rent.ContractCreated":
         await eventHandlers.rentContractCreatedHandler(event)
         break
@@ -50,29 +89,29 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         await eventHandlers.rentContractStartedHandler(event)
         break
       case "rent.ContractRevoked":
-          await eventHandlers.rentContractRevokedHandler(event)
-          break
+        await eventHandlers.rentContractRevokedHandler(event)
+        break
       case "rent.ContractOfferCreated":
-          await eventHandlers.rentContractOfferCreatedHandler(event)
-          break
+        await eventHandlers.rentContractOfferCreatedHandler(event)
+        break
       case "rent.ContractOfferRetracted":
         await eventHandlers.rentContractOfferRetractedHandler(event)
         break
       case "rent.ContractSubscriptionTermsChanged":
-          await eventHandlers.rentContractSubscriptionTermsChangedHandler(event)
-          break
+        await eventHandlers.rentContractSubscriptionTermsChangedHandler(event)
+        break
       case "rent.ContractSubscriptionTermsAccepted":
-          await eventHandlers.rentContractSubscriptionTermsAcceptedHandler(event)
-          break
+        await eventHandlers.rentContractSubscriptionTermsAcceptedHandler(event)
+        break
       case "rent.ContractEnded":
-          await eventHandlers.rentContractEndedHandler(event)
-          break
+        await eventHandlers.rentContractEndedHandler(event)
+        break
       case "rent.ContractSubscriptionPeriodStarted":
         await eventHandlers.rentContractSubscriptionPeriodStartedHandler(event)
         break
       case "rent.ContractExpired":
-          await eventHandlers.rentContractExpiredHandler(event)
-          break
+        await eventHandlers.rentContractExpiredHandler(event)
+        break
       case "marketplace.MarketplaceCreated":
         await eventHandlers.marketplaceCreatedHandler(event)
         break
@@ -113,8 +152,11 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         break
     }
     try {
-      const signer = getSigner(event)
-      await updateAccount(signer)
+      const method = event.extrinsic.extrinsic.method.method.toString()
+      if (method !== "transfer" && method !== "transferKeepAlive" && method !== "transferAll") {
+        const signer = getSigner(event)
+        await updateAccount(signer)
+      }
     } catch {
       // No account to update
     }
