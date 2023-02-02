@@ -1,5 +1,5 @@
 import { SubstrateEvent } from "@subql/types"
-import { getCommonEventData, formatString, roundPrice } from "../helpers"
+import { getCommonEventData, formatString } from "../helpers"
 import { CollectionEntity, NftEntity } from "../types"
 import { genericTransferHandler, nftOperationEntityHandler, NFTOperation } from "."
 
@@ -59,7 +59,7 @@ export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<vo
   record.timestampSecretAdd = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.AddSecret)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.AddSecret)
 }
 
 export const secretNFTSyncedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -219,7 +219,7 @@ export const nftConvertedToCapsuleHandler = async (event: SubstrateEvent): Promi
   record.timestampConvertedToCapsule = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.ConvertedToCapsule)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.ConvertedToCapsule)
 }
 
 export const capsuleSyncedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -243,7 +243,7 @@ export const capsuleOffchainDataSetHandler = async (event: SubstrateEvent): Prom
   record.capsuleOffchainData = formatString(offchainData.toString())
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleOffchainDataSet)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.CapsuleOffchainDataSet)
 }
 
 export const capsuleReverted = async (event: SubstrateEvent): Promise<void> => {
@@ -257,7 +257,7 @@ export const capsuleReverted = async (event: SubstrateEvent): Promise<void> => {
   record.timestampConvertedToCapsule = null
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleReverted)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.CapsuleReverted)
 }
 
 export const capsuleKeyUpdateNotified = async (event: SubstrateEvent): Promise<void> => {
@@ -269,5 +269,5 @@ export const capsuleKeyUpdateNotified = async (event: SubstrateEvent): Promise<v
   record.isCapsuleSynced = false
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.CapsuleKeyUpdateNotified)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.CapsuleKeyUpdateNotified)
 }
