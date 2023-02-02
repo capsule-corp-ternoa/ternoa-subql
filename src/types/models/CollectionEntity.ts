@@ -32,13 +32,13 @@ export class CollectionEntity implements Entity {
 
     public isClosed: boolean;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampBurn?: Date;
+    public timestampBurned?: Date;
 
-    public timestampClose?: Date;
+    public timestampClosed?: Date;
 
-    public timestampLimit?: Date;
+    public timestampLimited?: Date;
 
 
     async save(): Promise<void>{

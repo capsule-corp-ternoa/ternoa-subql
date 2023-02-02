@@ -37,8 +37,8 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.topBidAmount = null
   record.topBidAmountRounded = null
   record.typeOfSale = null
-  record.timestampCreate = commonEventData.timestamp
-  record.timestampEnd = null
+  record.timestampCreated = commonEventData.timestamp
+  record.timestampEnded = null
   record.timestampLastBid = null
   record.timestampCancelled = null
 
@@ -51,11 +51,11 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   nftRecord.typeOfListing = TypeOfListing.Auction
   nftRecord.auctionId = `${commonEventData.extrinsicId}-${nftId.toString()}`
   nftRecord.marketplaceId = record.marketplaceId
-  nftRecord.timestampList = record.timestampCreate
+  nftRecord.timestampListed = record.timestampCreated
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CreateAuction, [
+  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.AuctionCreated, [
     record.marketplaceId,
     record.startPrice,
     record.buyItNowPrice,
@@ -86,11 +86,11 @@ export const auctionCancelledHandler = async (event: SubstrateEvent): Promise<vo
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
   nftRecord.marketplaceId = null
-  nftRecord.timestampList = null
+  nftRecord.timestampListed = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.CancelAuction)
+  await nftOperationEntityHandler(nftRecord, record.creator, commonEventData, NFTOperation.AuctionCancelled)
 }
 
 export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -106,7 +106,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   record.topBidAmount = bnToBn(amount.toString()).toString()
   record.topBidAmountRounded = roundPrice(record.topBidAmount)
   record.typeOfSale = isBuyItNow ? TypeOfSale.Direct : TypeOfSale.AuctionEnd
-  record.timestampEnd = commonEventData.timestamp
+  record.timestampEnded = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity
@@ -118,7 +118,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
   nftRecord.typeOfListing = null
   nftRecord.auctionId = null
   nftRecord.marketplaceId = null
-  nftRecord.timestampList = null
+  nftRecord.timestampListed = null
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -126,7 +126,7 @@ export const auctionCompletedHandler = async (event: SubstrateEvent): Promise<vo
     nftRecord,
     seller,
     commonEventData,
-    isBuyItNow ? NFTOperation.BuyItNowAuction : NFTOperation.CompleteAuction,
+    isBuyItNow ? NFTOperation.AuctionBuyItNow : NFTOperation.AuctionCompleted,
     [record.marketplaceId, amount.toString(), marketplaceCut.toString(), royaltyCut.toString()],
   )
 }
@@ -169,7 +169,7 @@ export const auctionBidAddedHandler = async (event: SubstrateEvent): Promise<voi
 
   // Side Effects on NftOperationEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.AddBid, [
+  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.BidAdded, [
     amount.toString(),
   ])
 }
@@ -193,7 +193,7 @@ export const auctionBidRemovedHandler = async (event: SubstrateEvent): Promise<v
 
   // Side Effects on NftOperationEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.RemoveBid, [
+  await nftOperationEntityHandler(nftRecord, bidder.toString(), commonEventData, NFTOperation.BidRemoved, [
     amount.toString(),
   ])
 }

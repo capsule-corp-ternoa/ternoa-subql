@@ -70,7 +70,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   record.createdAt = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   record.timestampCreated = commonEventData.timestamp
-  record.timestampCancelled = null
+  record.timestampRemoved = null
   record.timestampUpdated = null
   record.timestampTransmitted = null
 
@@ -101,7 +101,7 @@ export const protocolRemovedHandler = async (event: SubstrateEvent): Promise<voi
   if (record === undefined) throw new Error("Transmission not found in db")
   record.isActive = false
   record.updatedAt = commonEventData.timestamp
-  record.timestampCancelled = commonEventData.timestamp
+  record.timestampRemoved = commonEventData.timestamp
   record.timestampUpdated = commonEventData.timestamp
 
   await record.save()
@@ -177,7 +177,7 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
   const nftRecord = await NftEntity.get(nftId.toString())
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.TransmissionThresholdReach, [
+  await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.TransmissionThresholdReached, [
     record.protocol,
     record.endBlock,
   ])
@@ -209,5 +209,5 @@ export const capsuleTransmittedHandler = async (event: SubstrateEvent): Promise<
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.from, commonEventData, NFTOperation.Transmit, [record.protocol])
+  await nftOperationEntityHandler(nftRecord, record.from, commonEventData, NFTOperation.Transmitted, [record.protocol])
 }

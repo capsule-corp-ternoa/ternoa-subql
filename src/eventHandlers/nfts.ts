@@ -33,7 +33,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
     record.isTransmission = false
     record.createdAt = commonEventData.timestamp
     record.updatedAt = commonEventData.timestamp
-    record.timestampCreate = commonEventData.timestamp
+    record.timestampCreated = commonEventData.timestamp
     await record.save()
     if (record.collectionId) {
       let collectionRecord = await CollectionEntity.get(record.collectionId)
@@ -43,7 +43,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
       if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
-    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Create, [mintFee.toString()])
+    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()])
     await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
   }
 }
@@ -56,10 +56,10 @@ export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<vo
   if (record === undefined) throw new Error("NFT to add secret not found in db")
   record.isSecret = true
   record.secretOffchainData = formatString(offchainData.toString())
-  record.timestampSecretAdd = commonEventData.timestamp
+  record.timestampSecretAdded = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.AddSecret)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.SecretAdded)
 }
 
 export const secretNFTSyncedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -82,7 +82,7 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   if (record === undefined) throw new Error("NFT to burn not found in db")
   const oldOwner = record.owner
   record.owner = null
-  record.timestampBurn = commonEventData.timestamp
+  record.timestampBurned = commonEventData.timestamp
   if (record.collectionId) {
     let collectionRecord = await CollectionEntity.get(record.collectionId)
     if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
@@ -96,7 +96,7 @@ export const nftBurnedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.collectionId = null
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, oldOwner, commonEventData, NFTOperation.Burn)
+  await nftOperationEntityHandler(record, oldOwner, commonEventData, NFTOperation.Burned)
 }
 
 export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -108,7 +108,7 @@ export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> =
   record.owner = to.toString()
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transfer)
+  await nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transferred)
 }
 
 export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -121,7 +121,7 @@ export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> 
   record.isDelegated = record.delegatee ? true : false
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  const typeOfTransaction = record.delegatee ? NFTOperation.Delegate : NFTOperation.Undelegate
+  const typeOfTransaction = record.delegatee ? NFTOperation.Delegated : NFTOperation.Undelegated
   await nftOperationEntityHandler(record, record.owner, commonEventData, typeOfTransaction)
 }
 
@@ -134,7 +134,7 @@ export const nftRoyaltySetHandler = async (event: SubstrateEvent): Promise<void>
   record.royalty = Number(royalty.toString()) / 10000
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.SetRoyalty)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.RoyaltySet)
 }
 
 export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -152,7 +152,7 @@ export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promis
     record.hasReachedLimit = false
     record.isClosed = false
     record.limit = limit?.toString() ? Number(limit?.toString()) : null
-    record.timestampCreate = commonEventData.timestamp
+    record.timestampCreated = commonEventData.timestamp
     await record.save()
   }
 }
@@ -164,7 +164,7 @@ export const nftCollectionBurnedHandler = async (event: SubstrateEvent): Promise
   const record = await CollectionEntity.get(collectionId.toString())
   if (record === undefined) throw new Error("NFT collection to burn not found in db")
   record.owner = null
-  record.timestampBurn = commonEventData.timestamp
+  record.timestampBurned = commonEventData.timestamp
   await record.save()
 }
 
@@ -175,7 +175,7 @@ export const nftCollectionClosedHandler = async (event: SubstrateEvent): Promise
   const record = await CollectionEntity.get(collectionId.toString())
   if (record === undefined) throw new Error("NFT collection to close not found in db")
   record.isClosed = true
-  record.timestampClose = commonEventData.timestamp
+  record.timestampClosed = commonEventData.timestamp
   await record.save()
 }
 
@@ -186,7 +186,7 @@ export const nftCollectionLimitedHandler = async (event: SubstrateEvent): Promis
   const record = await CollectionEntity.get(collectionId.toString())
   if (record === undefined) throw new Error("NFT collection to set limit not found in db")
   record.limit = Number(limit.toString())
-  record.timestampLimit = commonEventData.timestamp
+  record.timestampLimited = commonEventData.timestamp
   await record.save()
 }
 
@@ -205,7 +205,7 @@ export const nftAddedToCollectionHandler = async (event: SubstrateEvent): Promis
   if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
   await collectionRecord.save()
   await nftRecord.save()
-  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, NFTOperation.AddToCollection)
+  await nftOperationEntityHandler(nftRecord, collectionRecord.owner, commonEventData, NFTOperation.AddedToCollection)
 }
 
 export const nftConvertedToCapsuleHandler = async (event: SubstrateEvent): Promise<void> => {

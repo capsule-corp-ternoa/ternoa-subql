@@ -44,7 +44,7 @@ export class TransmissionEntity implements Entity {
 
     public timestampCreated: Date;
 
-    public timestampCancelled?: Date;
+    public timestampRemoved?: Date;
 
     public timestampUpdated?: Date;
 
