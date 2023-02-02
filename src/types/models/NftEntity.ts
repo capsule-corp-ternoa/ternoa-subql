@@ -74,15 +74,15 @@ export class NftEntity implements Entity {
 
     public updatedAt: Date;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampBurn?: Date;
+    public timestampBurned?: Date;
 
-    public timestampList?: Date;
+    public timestampListed?: Date;
 
     public timestampRented?: Date;
 
-    public timestampSecretAdd?: Date;
+    public timestampSecretAdded?: Date;
 
     public timestampConvertedToCapsule?: Date;
 

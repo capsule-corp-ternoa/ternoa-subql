@@ -92,11 +92,11 @@ export class RentEntity implements Entity {
 
     public timestampEnd?: Date;
 
-    public timestampCancel?: Date;
+    public timestampCancelled?: Date;
 
-    public timestampRevoke?: Date;
+    public timestampRevoked?: Date;
 
-    public timestampExpire?: Date;
+    public timestampExpired?: Date;
 
 
     async save(): Promise<void>{

@@ -54,9 +54,9 @@ export class AuctionEntity implements Entity {
 
     public typeOfSale?: string;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampEnd?: Date;
+    public timestampEnded?: Date;
 
     public timestampLastBid?: Date;
 

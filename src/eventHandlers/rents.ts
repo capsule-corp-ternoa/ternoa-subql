@@ -129,7 +129,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.RentalContractCreated, [
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.ContractCreated, [
     record.durationType,
   ])
 }
@@ -158,7 +158,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.RentalContractStarted, [
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.ContractStarted, [
     record.startBlockId,
     record.durationType,
     record.blockDuration,
@@ -183,7 +183,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
       nftRentFeeRecord,
       record.rentee,
       commonEventData,
-      NFTOperation.RentalContractNftOwnershipChange,
+      NFTOperation.ContractNftOwnershipChanged,
     )
   }
 }
@@ -249,7 +249,7 @@ export const rentContractCanceledHandler = async (event: SubstrateEvent): Promis
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasBeenCanceled = true
-  record.timestampCancel = commonEventData.timestamp
+  record.timestampCancelled = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity
@@ -262,7 +262,7 @@ export const rentContractCanceledHandler = async (event: SubstrateEvent): Promis
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.RentalContractCanceled)
+  await nftOperationEntityHandler(nftRecord, record.renter, commonEventData, NFTOperation.ContractCancelled)
 }
 
 export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -273,7 +273,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasEnded = true
   record.revokedBy = revokedBy.toString()
-  record.timestampRevoke = commonEventData.timestamp
+  record.timestampRevoked = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity
@@ -286,7 +286,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.RentalContractRevoked)
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.ContractRevoked)
 
   // Ownership change for NFT as cancellation fee
   const isNftCancellationFee =
@@ -310,7 +310,7 @@ export const rentContractRevokedHandler = async (event: SubstrateEvent): Promise
       nftCancellationFeeRecord,
       oldOwner,
       commonEventData,
-      NFTOperation.RentalContractNftOwnershipChange,
+      NFTOperation.ContractNftOwnershipChanged,
     )
   }
 }
@@ -338,7 +338,7 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.RentalContractEnded)
+  await nftOperationEntityHandler(nftRecord, record.revokedBy, commonEventData, NFTOperation.ContractEnded)
 }
 
 export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -348,7 +348,7 @@ export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise
   let record = await getLastRentContract(nftId.toString())
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.isExpired = true
-  record.timestampExpire = commonEventData.timestamp
+  record.timestampExpired = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity
@@ -361,7 +361,7 @@ export const rentContractExpiredHandler = async (event: SubstrateEvent): Promise
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
-  await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.RentalContractExpired)
+  await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.ContractExpired)
 }
 
 export const rentContractSubscriptionPeriodStartedHandler = async (event: SubstrateEvent): Promise<void> => {

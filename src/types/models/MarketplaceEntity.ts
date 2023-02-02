@@ -44,7 +44,7 @@ export class MarketplaceEntity implements Entity {
 
     public updatedAt: Date;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
 
     async save(): Promise<void>{

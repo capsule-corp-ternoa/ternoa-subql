@@ -20,7 +20,7 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     record.kind = kind.toString()
     record.createdAt = commonEventData.timestamp
     record.updatedAt = commonEventData.timestamp
-    record.timestampCreate = commonEventData.timestamp
+    record.timestampCreated = commonEventData.timestamp
     await record.save()
     await genericTransferHandler(owner, "Treasury", fee.toString(), commonEventData)
   }
@@ -175,10 +175,10 @@ export const nftListedHandler = async (event: SubstrateEvent): Promise<void> => 
   record.marketplaceId = marketplaceId.toString()
   record.price = price.toString()
   record.priceRounded = roundPrice(record.price)
-  record.timestampList = commonEventData.timestamp
+  record.timestampListed = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.List, [
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Listed, [
     marketplaceCommissionFeeType,
     marketplaceCommissionFee,
     marketplaceCommissionFeeRounded,
@@ -199,10 +199,10 @@ export const nftUnlistedHandler = async (event: SubstrateEvent): Promise<void> =
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
-  record.timestampList = null
+  record.timestampListed = null
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Unlist)
+  await nftOperationEntityHandler(record, record.owner, commonEventData, NFTOperation.Unlisted)
 }
 
 export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -218,10 +218,10 @@ export const nftSoldHandler = async (event: SubstrateEvent): Promise<void> => {
   record.marketplaceId = null
   record.price = null
   record.priceRounded = null
-  record.timestampList = null
+  record.timestampListed = null
   record.updatedAt = commonEventData.timestamp
   await record.save()
-  await nftOperationEntityHandler(record, seller, commonEventData, NFTOperation.Sell, [
+  await nftOperationEntityHandler(record, seller, commonEventData, NFTOperation.Sold, [
     marketplaceId.toString(),
     listedPrice.toString(),
     marketplaceCut.toString(),
