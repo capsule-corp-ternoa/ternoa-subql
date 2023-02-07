@@ -73,7 +73,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
     throw new Error("NFT record not found in db for when setting a new transmission protocol")
   nftRecord.isTransmission = true
   nftRecord.transmissionRecipient = record.to
-  nftRecord.tranmissionDataId = transmissionId
+  nftRecord.transmissionProtocolId = transmissionId
   nftRecord.updatedAt = commonEventData.timestamp
   await nftRecord.save()
 
@@ -102,7 +102,7 @@ export const protocolRemovedHandler = async (event: SubstrateEvent): Promise<voi
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when removing transmission protocol")
   nftRecord.isTransmission = false
   nftRecord.transmissionRecipient = null
-  nftRecord.tranmissionDataId = null
+  nftRecord.transmissionProtocolId = null
   nftRecord.updatedAt = commonEventData.timestamp
   await nftRecord.save()
 
@@ -194,7 +194,7 @@ export const capsuleTransmittedHandler = async (event: SubstrateEvent): Promise<
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when transmitting a capsule")
   nftRecord.isTransmission = false
   nftRecord.transmissionRecipient = null
-  nftRecord.tranmissionDataId = null
+  nftRecord.transmissionProtocolId = null
   nftRecord.owner = record.to
   nftRecord.updatedAt = commonEventData.timestamp
   await nftRecord.save()
