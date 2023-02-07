@@ -66,17 +66,12 @@ export const parseFee = (rawFee: RequireOnlyOne<IFeeType>): FeeType => {
   let fee = "0"
   let feeRounded = 0
   const kind = Object.keys(rawFee)[0]
-  logger.info(kind)
   if (kind === "percentage") {
     fee = String(rawFee[kind] / 10000)
-    logger.info(fee)
     feeRounded = Number(fee)
-    logger.info(feeRounded)
   } else if (kind === "flat") {
     fee = bnToBn(rawFee[kind]).toString()
-    logger.info(fee)
     feeRounded = roundPrice(fee)
-    logger.info(feeRounded)
   }
   return { fee, feeRounded, kind }
 }
