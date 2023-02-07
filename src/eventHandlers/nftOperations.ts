@@ -43,12 +43,6 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.marketplaceId = record.marketplaceId
       nftOperationRecord.price = record.price
       nftOperationRecord.priceRounded = record.priceRounded
-      nftOperationRecord.commissionFeeType = args[0]
-      nftOperationRecord.commissionFee = args[1]
-      nftOperationRecord.commissionFeeRounded = args[2]
-      nftOperationRecord.listingFeeType = args[3]
-      nftOperationRecord.listingFee = args[4]
-      nftOperationRecord.listingFeeRounded = args[5]
       break
     case NFTOperation.Sold:
     case NFTOperation.AuctionCompleted:
