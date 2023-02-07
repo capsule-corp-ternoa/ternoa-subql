@@ -68,7 +68,7 @@ export class NftEntity implements Entity {
 
     public transmissionRecipient?: string;
 
-    public tranmissionDataId?: string;
+    public transmissionProtocolId?: string;
 
     public createdAt: Date;
 
@@ -157,9 +157,9 @@ export class NftEntity implements Entity {
       
     }
 
-    static async getByTranmissionDataId(tranmissionDataId: string): Promise<NftEntity[] | undefined>{
+    static async getByTransmissionProtocolId(transmissionProtocolId: string): Promise<NftEntity[] | undefined>{
       
-      const records = await store.getByField('NftEntity', 'tranmissionDataId', tranmissionDataId);
+      const records = await store.getByField('NftEntity', 'transmissionProtocolId', transmissionProtocolId);
       return records.map(record => this.create(record as NftEntityProps));
       
     }

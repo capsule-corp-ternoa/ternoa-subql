@@ -56,7 +56,7 @@ type NftEntity @entity {
   marketplace: MarketplaceEntity
   isTransmission: Boolean!
   transmissionRecipient: String
-  tranmissionData: TransmissionEntity
+  transmissionProtocol: TransmissionEntity
   createdAt: Date!
   updatedAt: Date!
   timestampCreated: Date!

@@ -1,7 +1,11 @@
 import { SubstrateEvent } from "@subql/types"
+import { ProtocolAction, TransmissionCancellationAction } from "ternoa-js/protocols/enums"
+import { Protocols, TransmissionCancellation } from "ternoa-js/protocols/types"
+
 import { getCommonEventData, getSigner } from "../helpers"
 import { getLastTransmission } from "../helpers/transmission"
 import { NftEntity, TransmissionEntity } from "../types"
+
 import { NFTOperation, nftOperationEntityHandler } from "./nftOperations"
 
 export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -9,24 +13,26 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   if (!commonEventData.isSuccess) throw new Error("Transmission protocol creation error, extrinsic isSuccess : false")
   const [nftId, recipient, protocolKind, cancellationKind] = event.event.data
   const signer = getSigner(event)
-  const parsedProtocol = JSON.parse(protocolKind.toString())
+  const parsedProtocol = protocolKind.toJSON() as Protocols
   const protocol = Object.keys(parsedProtocol)[0]
+  const parsedCancellation = cancellationKind.toJSON() as TransmissionCancellation
+  const cancellation = Object.keys(parsedCancellation)[0]
 
   let consentList = null
   let currentConsent = null
   let endBlock = null
   let threshold = null
   switch (protocol) {
-    case "atBlock":
-    case "atBlockWithReset":
+    case ProtocolAction.AtBlock:
+    case ProtocolAction.AtBlockWithReset:
       endBlock = parsedProtocol[protocol]
       break
-    case "onConsent":
+    case ProtocolAction.OnConsent:
       consentList = parsedProtocol[protocol]["consentList"]
       currentConsent = []
       threshold = parsedProtocol[protocol]["threshold"]
       break
-    case "onConsentAtBlock":
+    case ProtocolAction.OnConsentAtBlock:
       consentList = parsedProtocol[protocol]["consentList"]
       currentConsent = []
       endBlock = parsedProtocol[protocol]["block"]
@@ -36,22 +42,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
       break
   }
 
-  const cancellation =
-    cancellationKind.toString() === "None"
-      ? null
-      : cancellationKind.toString() === "Anytime"
-      ? "Anytime"
-      : Object.keys(JSON.parse(cancellationKind.toString()))[0]
-
-  let cancellationBlock = null
-  switch (cancellation) {
-    case "untilBlock":
-      const parsedCancellation = JSON.parse(cancellationKind.toString())
-      cancellationBlock = parsedCancellation[cancellation]
-      break
-    default:
-      break
-  }
+  const cancellationBlock = parsedCancellation[cancellation]
 
   const transmissionId = `${commonEventData.blockId}-${nftId.toString()}`
   const record = new TransmissionEntity(transmissionId)
@@ -64,8 +55,8 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   record.currentConsent = currentConsent
   record.endBlock = endBlock
   record.threshold = threshold
-  record.isActive = protocol === "onConsent" || protocol === "onConsentAtBlock" ? false : true
-  record.cancellation = cancellation
+  record.isActive = protocol === ProtocolAction.OnConsent || protocol === ProtocolAction.OnConsentAtBlock ? false : true
+  record.cancellation = cancellation === TransmissionCancellationAction.None ? null : cancellation
   record.cancellationBlock = cancellationBlock
   record.createdAt = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
@@ -82,7 +73,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
     throw new Error("NFT record not found in db for when setting a new transmission protocol")
   nftRecord.isTransmission = true
   nftRecord.transmissionRecipient = record.to
-  nftRecord.tranmissionDataId = transmissionId
+  nftRecord.transmissionProtocolId = transmissionId
   nftRecord.updatedAt = commonEventData.timestamp
   await nftRecord.save()
 
@@ -111,7 +102,7 @@ export const protocolRemovedHandler = async (event: SubstrateEvent): Promise<voi
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when removing transmission protocol")
   nftRecord.isTransmission = false
   nftRecord.transmissionRecipient = null
-  nftRecord.tranmissionDataId = null
+  nftRecord.transmissionProtocolId = null
   nftRecord.updatedAt = commonEventData.timestamp
   await nftRecord.save()
 
@@ -203,7 +194,7 @@ export const capsuleTransmittedHandler = async (event: SubstrateEvent): Promise<
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when transmitting a capsule")
   nftRecord.isTransmission = false
   nftRecord.transmissionRecipient = null
-  nftRecord.tranmissionDataId = null
+  nftRecord.transmissionProtocolId = null
   nftRecord.owner = record.to
   nftRecord.updatedAt = commonEventData.timestamp
   await nftRecord.save()
