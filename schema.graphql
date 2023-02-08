@@ -225,6 +225,7 @@ type TransmissionEntity @entity {
   from: String!
   to: String!
   isActive: Boolean!
+  isThresholdReached: Boolean!
   protocol: String!
   endBlock: Int
   consentList: [String]

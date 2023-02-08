@@ -24,6 +24,8 @@ export class TransmissionEntity implements Entity {
 
     public isActive: boolean;
 
+    public isThresholdReached: boolean;
+
     public protocol: string;
 
     public endBlock?: number;

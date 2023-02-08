@@ -56,6 +56,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   record.endBlock = endBlock
   record.threshold = threshold
   record.isActive = true
+  record.isThresholdReached = false
   record.cancellation = cancellation === TransmissionCancellationAction.None ? null : cancellation
   record.cancellationBlock = cancellationBlock
   record.createdAt = commonEventData.timestamp
@@ -164,8 +165,10 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
   const [nftId] = event.event.data
   const record = await getLastTransmission(nftId.toString())
   if (record === undefined) throw new Error("Transmission not found in db")
+  record.isThresholdReached = true
   record.updatedAt = commonEventData.timestamp
   record.timestampUpdated = commonEventData.timestamp
+  await record.save()
 
   const nftRecord = await NftEntity.get(nftId.toString())
 
@@ -175,8 +178,6 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
     record.endBlock,
     record.to,
   ])
-
-  await record.save()
 }
 
 export const capsuleTransmittedHandler = async (event: SubstrateEvent): Promise<void> => {
