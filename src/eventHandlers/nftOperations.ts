@@ -24,6 +24,7 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.price = args[0]
       nftOperationRecord.priceRounded = roundPrice(nftOperationRecord.price)
       break
+    case NFTOperation.TransmissionProtocolRemoved:
     case NFTOperation.Burned:
       nftOperationRecord.to = null
       break
@@ -89,6 +90,7 @@ export const nftOperationEntityHandler = async (
     case NFTOperation.TransmissionThresholdReached:
       nftOperationRecord.transmissionProtocol = args[0]
       nftOperationRecord.transmissionEndBlock = args[1]
+      nftOperationRecord.to = args[3]
       break
   }
 

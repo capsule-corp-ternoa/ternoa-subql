@@ -55,7 +55,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   record.currentConsent = currentConsent
   record.endBlock = endBlock
   record.threshold = threshold
-  record.isActive = protocol === ProtocolAction.OnConsent || protocol === ProtocolAction.OnConsentAtBlock ? false : true
+  record.isActive = true
   record.cancellation = cancellation === TransmissionCancellationAction.None ? null : cancellation
   record.cancellationBlock = cancellationBlock
   record.createdAt = commonEventData.timestamp
@@ -81,6 +81,7 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   await nftOperationEntityHandler(nftRecord, record.from, commonEventData, NFTOperation.TransmissionProtocolSet, [
     record.protocol,
     record.endBlock,
+    record.to,
   ])
 }
 
@@ -128,6 +129,7 @@ export const timerResetHandler = async (event: SubstrateEvent): Promise<void> =>
   await nftOperationEntityHandler(nftRecord, record.from, commonEventData, NFTOperation.TransmissionTimerReset, [
     record.protocol,
     record.endBlock,
+    record.to,
   ])
 }
 
@@ -151,6 +153,7 @@ export const consentAddedHandler = async (event: SubstrateEvent): Promise<void> 
   await nftOperationEntityHandler(nftRecord, consentFrom, commonEventData, NFTOperation.TransmissionConsentAdded, [
     record.protocol,
     record.endBlock,
+    record.to,
   ])
 }
 
@@ -161,7 +164,6 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
   const [nftId] = event.event.data
   const record = await getLastTransmission(nftId.toString())
   if (record === undefined) throw new Error("Transmission not found in db")
-  record.isActive = true
   record.updatedAt = commonEventData.timestamp
   record.timestampUpdated = commonEventData.timestamp
 
@@ -171,6 +173,7 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
   await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.TransmissionThresholdReached, [
     record.protocol,
     record.endBlock,
+    record.to,
   ])
 
   await record.save()
