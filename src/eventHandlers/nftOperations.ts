@@ -35,6 +35,7 @@ export const nftOperationEntityHandler = async (
     case NFTOperation.Transmitted:
       nftOperationRecord.to = record.owner
       nftOperationRecord.transmissionProtocol = args[0]
+      nftOperationRecord.transmissionEndBlock = args[1]
       break
     case NFTOperation.Delegated:
     case NFTOperation.Undelegated:
