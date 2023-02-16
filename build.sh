@@ -31,13 +31,13 @@ sh ./scripts/prepare_folders.sh
 cd ./networks/$1
 
 # ----Installing Subql-Query----
-npm install -g @subql/query@1.6.0
+npm install -g @subql/query@1.8.0
 
 # ----Installing Subql-Node----
-npm install -g @subql/node@1.9.2
+npm install -g @subql/node@1.16.0
 
 # ----Installing dependencies----
-npm install
+npm ci
 
 # ----Codegen Ternoa-Subql----
 npm run codegen
