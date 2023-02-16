@@ -28,7 +28,7 @@ npm install -g @subql/query@1.8.0
 npm install -g @subql/node@1.16.0
 
 # ----Installing dependencies----
-npm ci
+npm install
 
 # ----Codegen Ternoa-Subql----
 npm run codegen
