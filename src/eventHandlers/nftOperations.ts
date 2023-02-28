@@ -91,7 +91,7 @@ export const nftOperationEntityHandler = async (
     case NFTOperation.TransmissionThresholdReached:
       nftOperationRecord.transmissionProtocol = args[0]
       nftOperationRecord.transmissionEndBlock = args[1]
-      nftOperationRecord.to = args[3]
+      nftOperationRecord.to = args[2]
       break
   }
 
