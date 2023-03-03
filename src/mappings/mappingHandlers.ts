@@ -77,7 +77,7 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         await eventHandlers.thresholdReachedHandler(event)
         break
       case "transmissionProtocols.Transmitted":
-        await eventHandlers.capsuleTransmittedHandler(event)
+        await eventHandlers.transmittedHandler(event)
         break
       case "rent.ContractCreated":
         await eventHandlers.rentContractCreatedHandler(event)
