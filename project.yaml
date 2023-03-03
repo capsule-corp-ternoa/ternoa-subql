@@ -67,6 +67,11 @@ dataSources:
           filter:
             module: balances
             method: Withdraw
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transactionPayment
+            method: TransactionFeePaid
 
         # Bridge
         - handler: handleEvent

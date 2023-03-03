@@ -2,11 +2,32 @@ import { SubstrateEvent } from "@subql/types"
 import * as eventHandlers from "../eventHandlers"
 import { getSigner, updateAccount } from "../helpers"
 
+const ACCOUNT_UPDATE_IGNORED_EXTRINSIC_METHODS = [
+  "batch",
+  "batchAll",
+  "forceBatch",
+  "transfer",
+  "transferAll",
+  "transferKeepAlive",
+]
+
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
   const key = `${event.event.section}.${event.event.method}`
   logger.info(key)
   try {
     switch (key) {
+      case "balances.BalanceSet":
+      case "balances.Deposit":
+      case "balances.DustLost":
+      case "balances.Endowed":
+      case "balances.Reserved":
+      case "balances.Slashed":
+      case "balances.Unreserved":
+      case "balances.Withdraw":
+      case "transactionPayment.TransactionFeePaid":
+        const [who] = event.event.data
+        await updateAccount(who.toString())
+        break
       case "balances.Transfer":
         await eventHandlers.transferHandler(event)
         break
@@ -152,10 +173,12 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         break
     }
     try {
-      const method = event.extrinsic.extrinsic.method.method.toString()
-      if (method !== "transfer" && method !== "transferKeepAlive" && method !== "transferAll") {
-        const signer = getSigner(event)
-        await updateAccount(signer)
+      if (event.extrinsic !== undefined) {
+        const method = event.extrinsic?.extrinsic.method.method.toString()
+        if (ACCOUNT_UPDATE_IGNORED_EXTRINSIC_METHODS.includes(method) === false) {
+          const signer = getSigner(event)
+          await updateAccount(signer)
+        }
       }
     } catch {
       // No account to update
