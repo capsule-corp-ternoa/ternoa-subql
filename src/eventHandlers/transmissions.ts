@@ -130,7 +130,6 @@ export const timerResetHandler = async (event: SubstrateEvent): Promise<void> =>
   await nftOperationEntityHandler(nftRecord, record.from, commonEventData, NFTOperation.TransmissionTimerReset, [
     record.protocol,
     record.endBlock,
-    record.to,
   ])
 }
 
@@ -154,7 +153,6 @@ export const consentAddedHandler = async (event: SubstrateEvent): Promise<void> 
   await nftOperationEntityHandler(nftRecord, consentFrom, commonEventData, NFTOperation.TransmissionConsentAdded, [
     record.protocol,
     record.endBlock,
-    record.to,
   ])
 }
 
@@ -176,14 +174,13 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
   await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.TransmissionThresholdReached, [
     record.protocol,
     record.endBlock,
-    record.to,
   ])
 }
 
-export const capsuleTransmittedHandler = async (event: SubstrateEvent): Promise<void> => {
+export const transmittedHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess)
-    throw new Error("Transmission protocol capsule transmission error, extrinsic isSuccess : false")
+    throw new Error("Transmission protocol NFT transmission error, extrinsic isSuccess : false")
   const [nftId] = event.event.data
   const record = await getLastTransmission(nftId.toString())
   if (record === undefined) throw new Error("Transmission not found in db")
@@ -195,7 +192,7 @@ export const capsuleTransmittedHandler = async (event: SubstrateEvent): Promise<
 
   // Side Effects on NftEntity
   const nftRecord = await NftEntity.get(nftId.toString())
-  if (nftRecord === undefined) throw new Error("NFT record not found in db for when transmitting a capsule")
+  if (nftRecord === undefined) throw new Error("NFT record not found in db for transmittion")
   nftRecord.isTransmission = record.isActive
   nftRecord.transmissionRecipient = null
   nftRecord.transmissionProtocolId = null

@@ -4,5 +4,5 @@ export const getLastTransmission = async (nftId: string): Promise<TransmissionEn
   let records = await TransmissionEntity.getByNftId(nftId)
   records = records.filter(({ timestampRemoved }) => timestampRemoved === null)
   if (records.length === 0) return undefined
-  return records.sort((a, b) => +a.timestampCreated - +b.timestampCreated)[0]
+  return records.sort((a, b) => b.timestampCreated.getTime() - a.timestampCreated.getTime())[0]
 }
