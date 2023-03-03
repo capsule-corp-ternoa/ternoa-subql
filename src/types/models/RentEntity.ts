@@ -80,9 +80,9 @@ export class RentEntity implements Entity {
 
     public renteeCancellationFeeRounded?: number;
 
-    public timestampCreate: Date;
+    public timestampCreated: Date;
 
-    public timestampStart?: Date;
+    public timestampStarted?: Date;
 
     public timestampLastSubscriptionRenewal?: Date;
 
@@ -90,7 +90,7 @@ export class RentEntity implements Entity {
 
     public timestampLastOffer?: Date;
 
-    public timestampEnd?: Date;
+    public timestampEnded?: Date;
 
     public timestampCancelled?: Date;
 

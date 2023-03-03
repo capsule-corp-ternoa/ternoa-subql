@@ -117,7 +117,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
       record.renteeCancellationFeeRounded = null
       break
   }
-  record.timestampCreate = commonEventData.timestamp
+  record.timestampCreated = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity
@@ -125,7 +125,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   if (nftRecord === undefined) throw new Error("NFT record not found in db for when creating rental contract")
   nftRecord.isRented = true
   nftRecord.rentalContractId = `${commonEventData.extrinsicId}-${nftId.toString()}`
-  nftRecord.timestampRented = record.timestampCreate
+  nftRecord.timestampRented = record.timestampCreated
   await nftRecord.save()
 
   // Side Effects on NftOperationEntity
@@ -148,7 +148,7 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   }
   record.rentOffers = []
   record.nbRentOffers = 0
-  record.timestampStart = commonEventData.timestamp
+  record.timestampStarted = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity
@@ -325,7 +325,7 @@ export const rentContractEndedHandler = async (event: SubstrateEvent): Promise<v
   if (record === undefined) throw new Error("Rental contract not found in db")
   record.hasEnded = true
   record.revokedBy = revokedBy.toString().length > 0 ? revokedBy.toString() : null
-  record.timestampEnd = commonEventData.timestamp
+  record.timestampEnded = commonEventData.timestamp
   await record.save()
 
   // Side Effects on NftEntity

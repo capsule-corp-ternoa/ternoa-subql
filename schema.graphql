@@ -140,12 +140,12 @@ type RentEntity @entity {
   renteeCancellationFeeType: String
   renteeCancellationFee: String
   renteeCancellationFeeRounded: Float
-  timestampCreate: Date!
-  timestampStart: Date
+  timestampCreated: Date!
+  timestampStarted: Date
   timestampLastSubscriptionRenewal: Date
   timestampLastTermsUpdate: Date
   timestampLastOffer: Date
-  timestampEnd: Date
+  timestampEnded: Date
   timestampCancelled: Date
   timestampRevoked: Date
   timestampExpired: Date
