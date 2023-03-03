@@ -86,12 +86,15 @@ export const nftOperationEntityHandler = async (
       nftOperationRecord.rentalContractFeeRounded = args[6]
       break
     case NFTOperation.TransmissionProtocolSet:
+      nftOperationRecord.transmissionProtocol = args[0]
+      nftOperationRecord.transmissionEndBlock = args[1]
+      nftOperationRecord.to = args[2]
+      break
     case NFTOperation.TransmissionTimerReset:
     case NFTOperation.TransmissionConsentAdded:
     case NFTOperation.TransmissionThresholdReached:
       nftOperationRecord.transmissionProtocol = args[0]
       nftOperationRecord.transmissionEndBlock = args[1]
-      nftOperationRecord.to = args[2]
       break
   }
 

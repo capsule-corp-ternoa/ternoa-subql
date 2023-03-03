@@ -130,7 +130,6 @@ export const timerResetHandler = async (event: SubstrateEvent): Promise<void> =>
   await nftOperationEntityHandler(nftRecord, record.from, commonEventData, NFTOperation.TransmissionTimerReset, [
     record.protocol,
     record.endBlock,
-    record.to,
   ])
 }
 
@@ -154,7 +153,6 @@ export const consentAddedHandler = async (event: SubstrateEvent): Promise<void> 
   await nftOperationEntityHandler(nftRecord, consentFrom, commonEventData, NFTOperation.TransmissionConsentAdded, [
     record.protocol,
     record.endBlock,
-    record.to,
   ])
 }
 
@@ -176,7 +174,6 @@ export const thresholdReachedHandler = async (event: SubstrateEvent): Promise<vo
   await nftOperationEntityHandler(nftRecord, null, commonEventData, NFTOperation.TransmissionThresholdReached, [
     record.protocol,
     record.endBlock,
-    record.to,
   ])
 }
 
