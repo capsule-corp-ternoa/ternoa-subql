@@ -10,7 +10,6 @@ DATASOURCES=$(sed -n '/^dataSources:/,$p' project.yaml)
 for item in ${folders[*]}
 do
   CURRENT_DIRECTORY="${MAIN_DIRECTORY}/networks/${item}"
-  printf "   %s\n" $item
 
   # Replace the dataSources section in the project.yaml file with the one from the root project.yaml file
   sed -i '' '/^dataSources:/,$d' "$CURRENT_DIRECTORY/project.yaml" # delete existing dataSources section
