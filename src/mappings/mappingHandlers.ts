@@ -1,15 +1,6 @@
 import { SubstrateEvent } from "@subql/types"
 import * as eventHandlers from "../eventHandlers"
-import { getSigner, updateAccount } from "../helpers"
-
-const ACCOUNT_UPDATE_IGNORED_EXTRINSIC_METHODS = [
-  "batch",
-  "batchAll",
-  "forceBatch",
-  "transfer",
-  "transferAll",
-  "transferKeepAlive",
-]
+import { updateAccount } from "../helpers"
 
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
   const key = `${event.event.section}.${event.event.method}`
@@ -171,17 +162,6 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
         break
       default:
         break
-    }
-    try {
-      if (event.extrinsic !== undefined) {
-        const method = event.extrinsic?.extrinsic.method.method.toString()
-        if (ACCOUNT_UPDATE_IGNORED_EXTRINSIC_METHODS.includes(method) === false) {
-          const signer = getSigner(event)
-          await updateAccount(signer)
-        }
-      }
-    } catch {
-      // No account to update
     }
   } catch (err) {
     logger.error("Error in event " + key + " at block " + event.block.block.header.number.toString())
