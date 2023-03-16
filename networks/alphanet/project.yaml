@@ -23,6 +23,37 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
+        # Balance
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: BalanceSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Deposit
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: DustLost
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Endowed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Reserved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Slashed
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -32,27 +63,31 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: balances
-            method: Deposit
+            method: Unreserved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: balances
+            method: Withdraw
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transactionPayment
+            method: TransactionFeePaid
+
+        # Bridge
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: bridge
             method: DepositMade
+
+        # NFT
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
             module: nft
             method: NFTCreated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: SecretAddedToNFT
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: nft
-            method: SecretNFTSynced
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -73,6 +108,94 @@ dataSources:
           filter:
             module: nft
             method: NFTRoyaltySet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTListed
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTUnlisted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: NFTSold
+
+        # Secret NFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretAddedToNFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: SecretNFTSynced
+
+        # Capsule NFT
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTConvertedToCapsule
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleOffchainDataSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleSynced
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleReverted
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: CapsuleKeyUpdateNotified
+
+        # Transmission Protocols
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ProtocolSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ProtocolRemoved
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: TimerReset
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ConsentAdded
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: ThresholdReached
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: transmissionProtocols
+            method: Transmitted
+
+        # Collection
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -98,6 +221,35 @@ dataSources:
           filter:
             module: nft
             method: NFTAddedToCollection
+
+        # Marketplace
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceCreated
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceOwnerSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceKindSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceConfigSet
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: marketplace
+            method: MarketplaceMintFeeSet
+
+        # Rent
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -153,46 +305,8 @@ dataSources:
           filter:
             module: rent
             method: ContractExpired
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceCreated
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceOwnerSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceKindSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceConfigSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: MarketplaceMintFeeSet
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTListed
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTUnlisted
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: marketplace
-            method: NFTSold
+
+        # Auction
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -223,6 +337,8 @@ dataSources:
           filter:
             module: auction
             method: BalanceClaimed
+
+        # Misc
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
