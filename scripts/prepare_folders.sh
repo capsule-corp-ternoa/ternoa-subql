@@ -5,7 +5,7 @@ MAIN_DIRECTORY=${SCRIPT_PATH%/*}
 folders=($(ls ${MAIN_DIRECTORY}/networks))
 
 # Get dataSources value from the root project.yaml and store it in a variable
-DATASOURCES=$(sed -n '/^dataSources:/,$p' project.yaml)
+DATASOURCES=$(sed -n '/^dataSources:/,$p' "$MAIN_DIRECTORY/project.yaml")
 
 for item in ${folders[*]}
 do
@@ -14,7 +14,6 @@ do
   # Replace the dataSources section in the project.yaml file with the one from the root project.yaml file
   sed -i '' '/^dataSources:/,$d' "$CURRENT_DIRECTORY/project.yaml" # delete existing dataSources section
   echo "$DATASOURCES" >> "$CURRENT_DIRECTORY/project.yaml" # add new dataSources section
-  echo "Updated dataSources section in $CURRENT_DIRECTORY/project.yaml"
 
   scp -r ${MAIN_DIRECTORY}/src $CURRENT_DIRECTORY
   scp ${MAIN_DIRECTORY}/package.json $CURRENT_DIRECTORY
