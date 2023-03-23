@@ -1,9 +1,11 @@
+import type { AccountInfo } from "@polkadot/types/interfaces"
+
 import { AccountEntity } from "../types/models/AccountEntity"
 import { roundPrice } from "../helpers"
 
 export const updateAccount = async (user: string) => {
   try {
-    const res: any = await api.query.system.account(user)
+    const res = await api.query.system.account<AccountInfo>(user)
     const balance = res.data
     if (balance) {
       const { feeFrozen, free, miscFrozen, reserved } = balance
