@@ -37,6 +37,18 @@ export const getCommonEventData = (event: SubstrateEvent): CommonEventData => {
   }
 }
 
+export const checkIfTransfer = (extrinsic: SubstrateExtrinsic): boolean => {
+  const { section, method } = extrinsic.extrinsic.method
+  if (section === "balances" && ["transfer", "transferAll", "transferKeepAlive"].includes(method)) return true
+  return false
+}
+
+export const checkIfAnyBatch = (extrinsic: SubstrateExtrinsic): boolean => {
+  const { section, method } = extrinsic.extrinsic.method
+  if (section === "utility" && ["batch", "batchAll", "forceBatch"].includes(method)) return true
+  return false
+}
+
 const checkIfBatch = (extrinsic: SubstrateExtrinsic): boolean => {
   const { section, method } = extrinsic.extrinsic.method
   if (section === "utility" && method === "batch") return true

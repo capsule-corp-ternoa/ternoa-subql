@@ -1,6 +1,6 @@
 import { SubstrateEvent } from "@subql/types"
 import * as eventHandlers from "../eventHandlers"
-import { updateAccount } from "../helpers"
+import { checkIfAnyBatch, checkIfTransfer, updateAccount } from "../helpers"
 
 export async function handleEvent(event: SubstrateEvent): Promise<void> {
   const key = `${event.event.section}.${event.event.method}`
@@ -15,9 +15,16 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "balances.Slashed":
       case "balances.Unreserved":
       case "balances.Withdraw":
+        const isBatchCall = event.extrinsic && checkIfAnyBatch(event.extrinsic)
+        const isTransferCall = event.extrinsic && checkIfTransfer(event.extrinsic)
+        if (!isBatchCall && !isTransferCall) {
+          const [who] = event.event.data
+          await updateAccount(who.toString())
+        }
+        break
       case "transactionPayment.TransactionFeePaid":
-        const [who] = event.event.data
-        await updateAccount(who.toString())
+        const [whoPaid] = event.event.data
+        await updateAccount(whoPaid.toString())
         break
       case "balances.Transfer":
         await eventHandlers.transferHandler(event)

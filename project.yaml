@@ -22,6 +22,24 @@ dataSources:
     mapping:
       file: "./dist/index.js"
       handlers:
+        # Batch Calls
+        - handler: batchCallHandler
+          kind: substrate/CallHandler
+          filter:
+            module: utility
+            method: batchAll
+            success: true
+        - handler: batchCallHandler
+          kind: substrate/CallHandler
+          filter:
+            module: utility
+            method: batch
+        - handler: batchCallHandler
+          kind: substrate/CallHandler
+          filter:
+            module: utility
+            method: forceBatch
+
         # Balance
         - handler: handleEvent
           kind: substrate/EventHandler
