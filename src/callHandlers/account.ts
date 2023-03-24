@@ -1,9 +1,9 @@
 import { SubstrateExtrinsic } from "@subql/types"
-import { updateAccount } from "../helpers"
+import { updateAccounts } from "../helpers"
 
 const balanceMethods = ["BalanceSet", "Deposit", "DustLost", "Endowed", "Reserved", "Slashed", "Unreserved", "Withdraw"]
 
-export async function batchCallHandler(extrinsic: SubstrateExtrinsic): Promise<void> {
+export async function accountUpdateHandler(extrinsic: SubstrateExtrinsic): Promise<void> {
   if (!extrinsic.success) {
     return
   }
@@ -23,5 +23,5 @@ export async function batchCallHandler(extrinsic: SubstrateExtrinsic): Promise<v
     }
   }
 
-  await Promise.all(addressStack.map(async (address) => await updateAccount(address)))
+  await updateAccounts(addressStack)
 }

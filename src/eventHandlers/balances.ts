@@ -1,7 +1,7 @@
 import { SubstrateEvent } from "@subql/types"
 import { Codec } from "@polkadot/types/types"
 import { Balance } from "@polkadot/types/interfaces"
-import { updateAccount, getCommonEventData, roundPrice, CommonEventData, getSigner } from "../helpers"
+import { updateAccounts, getCommonEventData, roundPrice, CommonEventData, getSigner } from "../helpers"
 import { TransferEntity } from "../types"
 
 export const transferHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -9,8 +9,8 @@ export const transferHandler = async (event: SubstrateEvent): Promise<void> => {
   const signer = getSigner(event)
   const [from, to, amount] = event.event.data
   await genericTransferHandler(from, to, amount, commonEventData)
-  if (from.toString() !== signer) await updateAccount(from.toString())
-  await updateAccount(to.toString())
+  if (from.toString() !== signer) await updateAccounts([from.toString()])
+  await updateAccounts([to.toString()])
 }
 
 export const genericTransferHandler = async (
