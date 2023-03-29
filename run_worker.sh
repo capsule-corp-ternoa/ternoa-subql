@@ -24,4 +24,4 @@ env | grep DB_
 [ -z "$TIMEOUT" ] && export TIMEOUT="20000"
 
 npm install -g @subql/node@1.16.0
-subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout $TIMEOUT
+subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout $TIMEOUT --scale-batch-size
