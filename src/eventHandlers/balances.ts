@@ -6,11 +6,11 @@ import { TransferEntity } from "../types"
 
 export const transferHandler = async (event: SubstrateEvent): Promise<void> => {
   const commonEventData = getCommonEventData(event)
-  const signer = getSigner(event)
   const [from, to, amount] = event.event.data
   await genericTransferHandler(from, to, amount, commonEventData)
-  if (from.toString() !== signer) await updateAccounts([from.toString()])
   await updateAccounts([to.toString()])
+  const signer = event.extrinsic?.extrinsic.signer.toString()
+  if (from.toString() !== signer) await updateAccounts([from.toString()])
 }
 
 export const genericTransferHandler = async (
