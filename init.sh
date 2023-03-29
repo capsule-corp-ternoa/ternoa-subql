@@ -42,4 +42,4 @@ npm run codegen
 # ----Building Ternoa-Subql----
 npm run build
 
-subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout $TIMEOUT
+subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout $TIMEOUT --scale-batch-size
