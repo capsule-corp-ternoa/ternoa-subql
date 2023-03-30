@@ -94,48 +94,6 @@ dataSources:
             module: transactionPayment
             method: TransactionFeePaid
 
-        # Bridge
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: DustLost
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Endowed
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Reserved
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Slashed
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Transfer
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Unreserved
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Withdraw
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: bridge
-            method: DepositMade
-
         # NFT
         - handler: handleEvent
           kind: substrate/EventHandler
