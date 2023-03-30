@@ -42,6 +42,9 @@ npm run codegen
 # ----Building Ternoa-Subql----
 npm run build
 
-subql_args=(--disable-historical=true --db-schema=subql_ternoa --timeout "$TIMEOUT")
-subql_args+=("${@:2}") # Add any additional arguments passed in
-subql-node -f . "${subql_args[@]}"
+ADDITIONAL_FLAGS="${@:2}" # Add any additional arguments passed in
+if [ -n "$ADDITIONAL_FLAGS" ]; then
+  subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout="$TIMEOUT" "$ADDITIONAL_FLAGS"
+else
+  subql-node -f . --disable-historical=true --db-schema=subql_ternoa --timeout="$TIMEOUT"
+fi
