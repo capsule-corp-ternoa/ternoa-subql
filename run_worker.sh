@@ -35,5 +35,5 @@ cd ./networks/$1
 npm install -g @subql/node@1.16.0
 
 subql_args=(--disable-historical=true --db-schema=subql_ternoa --timeout "$TIMEOUT")
-subql_args+=("${@:1}") # Add any additional arguments passed in
+subql_args+=("${@:2}") # Add any additional arguments passed in
 subql-node -f . "${subql_args[@]}"
