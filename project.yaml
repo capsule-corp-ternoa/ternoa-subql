@@ -100,13 +100,6 @@ dataSources:
             module: transactionPayment
             method: TransactionFeePaid
 
-        # Bridge
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: bridge
-            method: DepositMade
-
         # NFT
         - handler: handleEvent
           kind: substrate/EventHandler
