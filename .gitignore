@@ -60,8 +60,8 @@ Thumbs.db
 .github
 .vscode
 
-# Networks folders
-networks/
-!networks/betanet/project.yaml
-!networks/alphanet/project.yaml
-!networks/mainnet/project.yaml
+# Ignore all files and directories within the networks directory
+networks/*
+
+# Allow only project.yaml files to be tracked under the networks directory
+!networks/*/project.yaml
