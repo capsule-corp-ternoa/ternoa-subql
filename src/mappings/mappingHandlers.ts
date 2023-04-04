@@ -65,6 +65,9 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "nft.CollectionLimited":
         await eventHandlers.nftCollectionLimitedHandler(event)
         break
+      case "nft.CollectionOffchainDataSet":
+        await eventHandlers.nftCollectionOffchainDataSetHandler(event)
+        break
       case "nft.NFTAddedToCollection":
         await eventHandlers.nftAddedToCollectionHandler(event)
         break

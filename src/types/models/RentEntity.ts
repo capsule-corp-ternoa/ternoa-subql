@@ -32,6 +32,8 @@ export class RentEntity implements Entity {
 
     public startBlockId?: number;
 
+    public creationBlockId: number;
+
     public durationType: string;
 
     public blockDuration?: number;

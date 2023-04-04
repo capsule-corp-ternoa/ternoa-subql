@@ -141,6 +141,11 @@ dataSources:
           filter:
             module: marketplace
             method: NFTSold
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTAddedToCollection
 
         # Secret NFT
         - handler: handleEvent
@@ -238,7 +243,7 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: nft
-            method: NFTAddedToCollection
+            method: CollectionOffchainDataSet
 
         # Marketplace
         - handler: handleEvent

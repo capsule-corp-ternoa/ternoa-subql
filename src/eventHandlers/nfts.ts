@@ -12,40 +12,37 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT created error, extrinsic isSuccess : false")
   const [nftId, owner, offchainData, royalty, collectionId, isSoulbound, mintFee] = event.event.data
-  let record = await NftEntity.get(nftId.toString())
-  if (record === undefined) {
-    record = new NftEntity(nftId.toString())
-    record.nftId = nftId.toString()
-    record.collectionId = collectionId?.toString() || null
-    record.owner = owner.toString()
-    record.creator = owner.toString()
-    record.offchainData = formatString(offchainData.toString())
-    record.royalty = Number(royalty.toString()) / 10000
-    record.isCapsule = false
-    record.isListed = false
-    record.typeOfListing = null
-    record.isSecret = false
-    record.isRented = false
-    record.isDelegated = false
-    record.isSoulbound = isSoulbound.toString() === "true"
-    record.isSecretSynced = false
-    record.isCapsuleSynced = false
-    record.isTransmission = false
-    record.createdAt = commonEventData.timestamp
-    record.updatedAt = commonEventData.timestamp
-    record.timestampCreated = commonEventData.timestamp
-    await record.save()
-    if (record.collectionId) {
-      let collectionRecord = await CollectionEntity.get(record.collectionId)
-      if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-      collectionRecord.nfts.push(record.nftId)
-      collectionRecord.nbNfts = collectionRecord.nbNfts + 1
-      if (collectionRecord.nfts.length === collectionRecord.limit) collectionRecord.hasReachedLimit = true
-      await collectionRecord.save()
-    }
-    await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()])
-    await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
+  const record = new NftEntity(nftId.toString())
+  record.nftId = nftId.toString()
+  record.collectionId = collectionId?.toString() || null
+  record.owner = owner.toString()
+  record.creator = owner.toString()
+  record.offchainData = formatString(offchainData.toString())
+  record.royalty = Number(royalty.toString()) / 10000
+  record.isCapsule = false
+  record.isListed = false
+  record.typeOfListing = null
+  record.isSecret = false
+  record.isRented = false
+  record.isDelegated = false
+  record.isSoulbound = isSoulbound.toString() === "true"
+  record.isSecretSynced = false
+  record.isCapsuleSynced = false
+  record.isTransmission = false
+  record.createdAt = commonEventData.timestamp
+  record.updatedAt = commonEventData.timestamp
+  record.timestampCreated = commonEventData.timestamp
+  await record.save()
+  if (record.collectionId) {
+    let collectionRecord = await CollectionEntity.get(record.collectionId)
+    if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
+    const newLength = collectionRecord.nfts.push(record.nftId)
+    collectionRecord.nbNfts = newLength
+    if (newLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
+    await collectionRecord.save()
   }
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()])
+  await genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
 }
 
 export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -141,20 +138,17 @@ export const nftCollectionCreatedHandler = async (event: SubstrateEvent): Promis
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("NFT collection creation error, extrinsic isSuccess : false")
   const [collectionId, owner, offchainData, limit] = event.event.data
-  let record = await CollectionEntity.get(collectionId.toString())
-  if (record === undefined) {
-    record = new CollectionEntity(collectionId.toString())
-    record.owner = owner.toString()
-    record.offchainData = formatString(offchainData.toString())
-    record.collectionId = collectionId.toString()
-    record.nfts = []
-    record.nbNfts = 0
-    record.hasReachedLimit = false
-    record.isClosed = false
-    record.limit = limit?.toString() ? Number(limit?.toString()) : null
-    record.timestampCreated = commonEventData.timestamp
-    await record.save()
-  }
+  const record = new CollectionEntity(collectionId.toString())
+  record.owner = owner.toString()
+  record.offchainData = formatString(offchainData.toString())
+  record.collectionId = collectionId.toString()
+  record.nfts = []
+  record.nbNfts = 0
+  record.hasReachedLimit = false
+  record.isClosed = false
+  record.limit = limit?.toString() ? Number(limit?.toString()) : null
+  record.timestampCreated = commonEventData.timestamp
+  await record.save()
 }
 
 export const nftCollectionBurnedHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -187,6 +181,14 @@ export const nftCollectionLimitedHandler = async (event: SubstrateEvent): Promis
   if (record === undefined) throw new Error("NFT collection to set limit not found in db")
   record.limit = Number(limit.toString())
   record.timestampLimited = commonEventData.timestamp
+  await record.save()
+}
+
+export const nftCollectionOffchainDataSetHandler = async (event: SubstrateEvent): Promise<void> => {
+  const [collectionId, offchainData] = event.event.data
+  const record = await CollectionEntity.get(collectionId.toString())
+  if (record === undefined) throw new Error("NFT collection to set offchain data not found in db")
+  record.offchainData = formatString(offchainData.toString())
   await record.save()
 }
 

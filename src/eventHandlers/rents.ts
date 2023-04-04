@@ -35,6 +35,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
 
   let record = new RentEntity(`${commonEventData.extrinsicId}-${nftId.toString()}`)
   record.nftId = nftId.toString()
+  record.creationBlockId = Number(commonEventData.blockId)
   record.hasStarted = false
   record.hasEnded = false
   record.hasBeenCanceled = false

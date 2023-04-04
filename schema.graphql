@@ -116,6 +116,7 @@ type RentEntity @entity {
   renter: String! @index
   rentee: String @index
   startBlockId: Int
+  creationBlockId: Int!
   durationType: String!
   blockDuration: Int
   maxSubscriptionBlockDuration: Int
