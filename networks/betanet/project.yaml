@@ -101,13 +101,6 @@ dataSources:
             module: transactionPayment
             method: TransactionFeePaid
 
-        # Bridge
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: bridge
-            method: DepositMade
-
         # NFT
         - handler: handleEvent
           kind: substrate/EventHandler
@@ -149,6 +142,11 @@ dataSources:
           filter:
             module: marketplace
             method: NFTSold
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
+            module: nft
+            method: NFTAddedToCollection
 
         # Secret NFT
         - handler: handleEvent
@@ -246,7 +244,7 @@ dataSources:
           kind: substrate/EventHandler
           filter:
             module: nft
-            method: NFTAddedToCollection
+            method: CollectionOffchainDataSet
 
         # Marketplace
         - handler: handleEvent
