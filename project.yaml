@@ -40,7 +40,7 @@ dataSources:
             method: forceBatch
 
         # Staking Calls
-        - handler: accountUpdateHandler # ??
+        - handler: handleCall # ??
           kind: substrate/CallHandler
           filter:
             module: staking
