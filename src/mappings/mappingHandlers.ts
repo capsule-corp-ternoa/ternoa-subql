@@ -6,6 +6,11 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
   const key = `${event.event.section}.${event.event.method}`
   logger.info(key)
   try {
+    const isStakingPayout =
+      event.extrinsic?.extrinsic.method.section === "staking" &&
+      event.extrinsic?.extrinsic.method.method === "payoutStakers"
+    const isBatchCall = event.extrinsic && checkIfAnyBatch(event.extrinsic)
+    const isTransferCall = event.extrinsic && checkIfTransfer(event.extrinsic)
     switch (key) {
       case "balances.BalanceSet":
       case "balances.Deposit":
@@ -15,11 +20,6 @@ export async function handleEvent(event: SubstrateEvent): Promise<void> {
       case "balances.Slashed":
       case "balances.Unreserved":
       case "balances.Withdraw":
-        const isStakingPayout =
-          event.extrinsic?.extrinsic.method.section === "staking" &&
-          event.extrinsic?.extrinsic.method.method === "payoutStakers"
-        const isBatchCall = event.extrinsic && checkIfAnyBatch(event.extrinsic)
-        const isTransferCall = event.extrinsic && checkIfTransfer(event.extrinsic)
         if (!isStakingPayout && !isBatchCall && !isTransferCall) {
           const [who] = event.event.data
           await updateAccounts([who.toString()])

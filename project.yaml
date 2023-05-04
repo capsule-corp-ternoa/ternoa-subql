@@ -22,25 +22,25 @@ dataSources:
       file: "./dist/index.js"
       handlers:
         # Batch Calls
-        - handler: accountUpdateHandler
+        - handler: handleCall
           kind: substrate/CallHandler
           filter:
             module: utility
             method: batchAll
             success: true
-        - handler: accountUpdateHandler
+        - handler: handleCall
           kind: substrate/CallHandler
           filter:
             module: utility
             method: batch
-        - handler: accountUpdateHandler
+        - handler: handleCall
           kind: substrate/CallHandler
           filter:
             module: utility
             method: forceBatch
 
         # Staking Calls
-        - handler: accountUpdateHandler
+        - handler: accountUpdateHandler # ??
           kind: substrate/CallHandler
           filter:
             module: staking

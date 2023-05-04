@@ -49,13 +49,13 @@ export const checkIfAnyBatch = (extrinsic: SubstrateExtrinsic): boolean => {
   return false
 }
 
-const checkIfBatch = (extrinsic: SubstrateExtrinsic): boolean => {
+export const checkIfBatch = (extrinsic: SubstrateExtrinsic): boolean => {
   const { section, method } = extrinsic.extrinsic.method
   if (section === "utility" && method === "batch") return true
   return false
 }
 
-const checkIfBatchAll = (extrinsic: SubstrateExtrinsic): boolean => {
+export const checkIfBatchAll = (extrinsic: SubstrateExtrinsic): boolean => {
   const { section, method } = extrinsic.extrinsic.method
   if (section === "utility" && method === "batchAll") return true
   return false

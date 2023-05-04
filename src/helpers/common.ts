@@ -52,3 +52,16 @@ export const roundPrice = (input: string) => {
   formatBalance.setDefaults({ decimals: 18, unit: "CAPS" })
   return Number(formatBalance(inputBN, { forceUnit: "-", withUnit: false }).split(",").join(""))
 }
+
+export const handlePromiseAllSettledErrors = (promiseResponse: PromiseSettledResult<void>[], action: string) => {
+  try {
+    for (const result of promiseResponse) {
+      if (result.status === "rejected") {
+        logger.error(result.status)
+        logger.error("Promise Error " + action + " - " + result.reason)
+      }
+    }
+  } catch (err) {
+    logger.error("Error while executing queues: " + err.toString())
+  }
+}
