@@ -1,7 +1,7 @@
 import { SubstrateExtrinsic } from "@subql/types"
 import { formatString, handlePromiseAllSettledErrors, updateAccounts } from "../helpers"
 import { NftEntity } from "../types"
-import { bulckCreateNFT, bulckCreatedNFTSideEffects } from "../helpers/nfts"
+import { bulkCreateNFT, bulkCreatedNFTSideEffects } from "../helpers/nfts"
 
 const balanceMethods = ["BalanceSet", "Deposit", "DustLost", "Endowed", "Reserved", "Slashed", "Unreserved", "Withdraw"]
 const nftMethods = ["NFTCreated", "NFTTransferred"]
@@ -22,21 +22,21 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     const key = `${section}.${method}`
     try {
       //Handle Balances
-      try {
-        if (section === "balances" && balanceMethods.includes(method)) {
+      if (section === "balances" && balanceMethods.includes(method)) {
+        try {
           logger.info(`handleCall - ${key}`)
           const [who] = data
           if (!addressStack.includes(who.toString()) && who.toString() !== signer) {
             addressStack.push(who.toString())
           }
+        } catch (err) {
+          logger.error("Error while handeling batch Balances queues: " + err.toString())
         }
-      } catch (err) {
-        logger.error("Error while handeling batch Balances queues: " + err.toString())
       }
 
       //Handle NFT
-      try {
-        if (section === "nft" && method === nftMethods[0]) {
+      if (section === "nft" && method === nftMethods[0]) {
+        try {
           logger.info(`handleCall - ${key}`)
           const [nftId, owner, offchainData, royalty, collectionId, isSoulbound, mintFee] = data
           nftMintFee = mintFee.toString()
@@ -68,9 +68,9 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
           if (!nftCreationStack.includes(nftEvent.get(nftId.toString()))) {
             nftCreationStack.push(Object.fromEntries(nftEvent))
           }
+        } catch (err) {
+          logger.error("Error while handeling batch NFT queues: " + err.toString())
         }
-      } catch (err) {
-        logger.error("Error while handeling batch NFT queues: " + err.toString())
       }
     } catch (err) {
       logger.error("Error in handleCall " + key + " at block " + extrinsic.block.block.header.number.toString())
@@ -81,8 +81,8 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
 
   const promiseRes = await Promise.allSettled([
     addressStack.length && (await updateAccounts(addressStack)),
-    nftCreationStack.length && (await bulckCreateNFT(nftCreationStack)),
+    nftCreationStack.length && (await bulkCreateNFT(nftCreationStack)),
   ])
   handlePromiseAllSettledErrors(promiseRes, "in handleCall Handler")
-  await bulckCreatedNFTSideEffects(nftCreationStack, extrinsic, nftMintFee)
+  await bulkCreatedNFTSideEffects(nftCreationStack, extrinsic, nftMintFee)
 }

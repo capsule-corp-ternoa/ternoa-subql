@@ -4,33 +4,35 @@ import { checkIfBatch, checkIfBatchAll } from "./event"
 import { NFTOperation, genericTransferHandler, nftOperationEntityHandler } from "../eventHandlers"
 import { handlePromiseAllSettledErrors } from "./common"
 
-export const bulckCreateNFT = async (nftList: NftEntity[]) => {
+export const bulkCreateNFT = async (nftList: NftEntity[]) => {
+  if (!nftList.length) {
+    throw new Error("Error at NFT bulk creation: Empty nftList")
+  }
   try {
     await store.bulkCreate(`NftEntity`, nftList)
   } catch (err) {
-    logger.error("Error at NFT bulck creation: " + err.toString())
-    if (err.sql) logger.error("Error at NFT bulck creation: " + JSON.stringify(err.sql))
+    logger.error("Error at NFT bulk creation: " + err.toString())
+    if (err.sql) logger.error("Error at NFT bulk creation: " + JSON.stringify(err.sql))
   }
 }
 
-export const bulckCreatedNFTSideEffects = async (
+export const bulkCreatedNFTSideEffects = async (
   nftList: NftEntity[],
   extrinsic: SubstrateExtrinsic,
   mintFee: string,
 ) => {
+  if (!extrinsic.success) {
+    throw new Error("bulk NFT side effects error, extrinsic success : false")
+  }
   try {
-    if (!extrinsic.success) {
-      throw new Error("Bulck NFT side effects error, extrinsic success : false")
-    }
-
     for (const nft of nftList) {
       const nftEvent = extrinsic.events.filter(
         (x) =>
           x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
       )[0]
-      logger.info(JSON.stringify(nftEvent))
-      const block = extrinsic.block.block
+      // logger.info(JSON.stringify(nftEvent))
 
+      const block = extrinsic.block.block
       const commonEventData = {
         isSuccess: extrinsic.success,
         blockId: block.header.number.toString(),
@@ -38,10 +40,11 @@ export const bulckCreatedNFTSideEffects = async (
         extrinsicId: nftEvent.phase.isApplyExtrinsic
           ? `${block.header.number.toString()}-${nftEvent.phase.asApplyExtrinsic.toString()}`
           : "", //`${block.header.number.toString()}-${nftEvent.event.index.toString()}`,
-        eventId: nftEvent.event.index.toString(),
+        // eventId with nftId to make them dissociable
+        eventId: `${nftEvent.event.index.toString()}-${nft.nftId}`, 
         isBatch: checkIfBatch(extrinsic),
         isBatchAll: checkIfBatchAll(extrinsic),
-        timestamp:extrinsic.block.timestamp, //nft.timestampCreated //all extrinsics have the same timestamp in a batch ?
+        timestamp: extrinsic.block.timestamp, //nft.timestampCreated
       }
 
       const record = await NftEntity.get(nft.nftId.toString())
@@ -60,13 +63,13 @@ export const bulckCreatedNFTSideEffects = async (
         })(),
 
         nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()]),
-        //issue because commonEventData are the same
+        //issue because commonEventData are the same - solved with adding the nftId in eventId
         genericTransferHandler(nft.owner, "Treasury", mintFee, commonEventData),
       ])
-      handlePromiseAllSettledErrors(promiseRes, "in bulckCreatedNFTSideEffects")
+      handlePromiseAllSettledErrors(promiseRes, "in bulkCreatedNFTSideEffects")
     }
   } catch (err) {
-    logger.error("Error at Bulck NFT side effects update: " + err.toString())
-    if (err.sql) logger.error("Error at Bulck NFT side effects update: " + JSON.stringify(err.sql))
+    logger.error("Error at bulk NFT side effects update: " + err.toString())
+    if (err.sql) logger.error("Error at bulk NFT side effects update: " + JSON.stringify(err.sql))
   }
 }
