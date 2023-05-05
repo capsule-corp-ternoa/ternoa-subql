@@ -23,53 +23,45 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     try {
       //Handle Balances
       if (section === "balances" && balanceMethods.includes(method)) {
-        try {
-          logger.info(`handleCall - ${key}`)
-          const [who] = data
-          if (!addressStack.includes(who.toString()) && who.toString() !== signer) {
-            addressStack.push(who.toString())
-          }
-        } catch (err) {
-          logger.error("Error while handeling batch Balances queues: " + err.toString())
+        logger.info(`handleCall - ${key}`)
+        const [who] = data
+        if (!addressStack.includes(who.toString()) && who.toString() !== signer) {
+          addressStack.push(who.toString())
         }
       }
 
       //Handle NFT
       if (section === "nft" && method === nftMethods[0]) {
-        try {
-          logger.info(`handleCall - ${key}`)
-          const [nftId, owner, offchainData, royalty, collectionId, isSoulbound, mintFee] = data
-          nftMintFee = mintFee.toString()
-          const nftEvent = new Map()
-          nftEvent.set("id", nftId.toString())
-          nftEvent.set("nftId", nftId.toString())
-          nftEvent.set("collectionId", collectionId?.toString() || null)
-          nftEvent.set("owner", owner.toString())
-          nftEvent.set("creator", owner.toString())
-          nftEvent.set("offchainData", formatString(offchainData.toString()))
-          nftEvent.set("royalty", Number(royalty.toString()) / 10000)
-          nftEvent.set("isCapsule", false)
-          nftEvent.set("isListed", false)
-          nftEvent.set("typeOfListing", null)
-          nftEvent.set("isSecret", false)
-          nftEvent.set("isRented", false)
-          nftEvent.set("isDelegated", false)
-          nftEvent.set("isSoulbound", isSoulbound.toString() === "true")
-          nftEvent.set("isSecretSynced", false)
-          nftEvent.set("isCapsuleSynced", false)
-          nftEvent.set("isTransmission", false)
-          nftEvent.set("createdAt", extrinsic.block.timestamp)
-          nftEvent.set("updatedAt", extrinsic.block.timestamp)
-          nftEvent.set("timestampCreated", extrinsic.block.timestamp)
-          // when using a new Set l.14
-          // if (!nftCreationStack.has(nftEvent.get(nftId.toString()))) {
-          //   nftCreationStack.add(Object.fromEntries(nftEvent))
-          // }
-          if (!nftCreationStack.includes(nftEvent.get(nftId.toString()))) {
-            nftCreationStack.push(Object.fromEntries(nftEvent))
-          }
-        } catch (err) {
-          logger.error("Error while handeling batch NFT queues: " + err.toString())
+        logger.info(`handleCall - ${key}`)
+        const [nftId, owner, offchainData, royalty, collectionId, isSoulbound, mintFee] = data
+        nftMintFee = mintFee.toString()
+        const nftEvent = new Map()
+        nftEvent.set("id", nftId.toString())
+        nftEvent.set("nftId", nftId.toString())
+        nftEvent.set("collectionId", collectionId?.toString() || null)
+        nftEvent.set("owner", owner.toString())
+        nftEvent.set("creator", owner.toString())
+        nftEvent.set("offchainData", formatString(offchainData.toString()))
+        nftEvent.set("royalty", Number(royalty.toString()) / 10000)
+        nftEvent.set("isCapsule", false)
+        nftEvent.set("isListed", false)
+        nftEvent.set("typeOfListing", null)
+        nftEvent.set("isSecret", false)
+        nftEvent.set("isRented", false)
+        nftEvent.set("isDelegated", false)
+        nftEvent.set("isSoulbound", isSoulbound.toString() === "true")
+        nftEvent.set("isSecretSynced", false)
+        nftEvent.set("isCapsuleSynced", false)
+        nftEvent.set("isTransmission", false)
+        nftEvent.set("createdAt", extrinsic.block.timestamp)
+        nftEvent.set("updatedAt", extrinsic.block.timestamp)
+        nftEvent.set("timestampCreated", extrinsic.block.timestamp)
+        // when using a new Set l.14
+        // if (!nftCreationStack.has(nftEvent.get(nftId.toString()))) {
+        //   nftCreationStack.add(Object.fromEntries(nftEvent))
+        // }
+        if (!nftCreationStack.includes(nftEvent.get(nftId.toString()))) {
+          nftCreationStack.push(Object.fromEntries(nftEvent))
         }
       }
     } catch (err) {

@@ -26,12 +26,15 @@ export const bulkCreatedNFTSideEffects = async (
   }
   try {
     for (const nft of nftList) {
-      const nftEvent = extrinsic.events.filter(
+      const nftEvent = extrinsic.events.find(
         (x) =>
           x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
-      )[0]
-      // logger.info(JSON.stringify(nftEvent))
-
+      )
+      const nftEventId =
+        extrinsic.events.findIndex(
+          (x) =>
+            x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
+        ) + 1
       const block = extrinsic.block.block
       const commonEventData = {
         isSuccess: extrinsic.success,
@@ -39,12 +42,11 @@ export const bulkCreatedNFTSideEffects = async (
         blockHash: block.hash.toString(),
         extrinsicId: nftEvent.phase.isApplyExtrinsic
           ? `${block.header.number.toString()}-${nftEvent.phase.asApplyExtrinsic.toString()}`
-          : "", //`${block.header.number.toString()}-${nftEvent.event.index.toString()}`,
-        // eventId with nftId to make them dissociable
-        eventId: `${nftEvent.event.index.toString()}-${nft.nftId}`, 
+          : "",
+        eventId: nftEventId.toString(),
         isBatch: checkIfBatch(extrinsic),
         isBatchAll: checkIfBatchAll(extrinsic),
-        timestamp: extrinsic.block.timestamp, //nft.timestampCreated
+        timestamp: extrinsic.block.timestamp,
       }
 
       const record = await NftEntity.get(nft.nftId.toString())
@@ -63,7 +65,6 @@ export const bulkCreatedNFTSideEffects = async (
         })(),
 
         nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()]),
-        //issue because commonEventData are the same - solved with adding the nftId in eventId
         genericTransferHandler(nft.owner, "Treasury", mintFee, commonEventData),
       ])
       handlePromiseAllSettledErrors(promiseRes, "in bulkCreatedNFTSideEffects")
