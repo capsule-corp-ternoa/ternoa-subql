@@ -31,7 +31,7 @@ services:
       - --timeout=270
 
   graphql-engine:
-    image: onfinality/subql-query:1.11.2
+    image: onfinality/subql-query:v1.11.2
     ports:
       - 3000:3000
     depends_on:
