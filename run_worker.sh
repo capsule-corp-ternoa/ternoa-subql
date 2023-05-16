@@ -23,7 +23,7 @@ env | grep DB_
 
 [ -z "$TIMEOUT" ] && export TIMEOUT="20000"
 
-npm install -g @subql/node@1.21.2
+npm install -g @subql/node@1.16.0
 
 ADDITIONAL_FLAGS="${@:1}" # Add any additional arguments passed in
 if [ -n "$ADDITIONAL_FLAGS" ]; then
