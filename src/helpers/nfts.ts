@@ -1,31 +1,33 @@
 import { SubstrateExtrinsic } from "@subql/types"
-import { CollectionEntity, NftEntity } from "../types"
-import { checkIfBatch, checkIfBatchAll } from "./event"
-import { NFTOperation, genericTransferHandler, nftOperationEntityHandler } from "../eventHandlers"
-import { handlePromiseAllSettledErrors } from "./common"
+import { CollectionEntity, NftEntity, NftOperationEntity } from "../types"
+import { NFTOperation } from "../eventHandlers"
+import { roundPrice } from "./common"
 
-export const bulkCreateNFT = async (nftList: NftEntity[]) => {
-  if (!nftList.length) {
-    throw new Error("Error at NFT bulk creation: Empty nftList")
+export const genericBulkCreate = async (entity: string, list: any) => {
+  if (!list.length) {
+    throw new Error("Error at bulk creation: Empty list")
   }
   try {
-    await store.bulkCreate(`NftEntity`, nftList)
+    await store.bulkCreate(entity, list)
   } catch (err) {
-    logger.error("Error at NFT bulk creation: " + err.toString())
-    if (err.sql) logger.error("Error at NFT bulk creation: " + JSON.stringify(err.sql))
+    logger.error("Error at bulk creation: " + err.toString())
+    if (err.sql) logger.error("Error at bulk creation: " + JSON.stringify(err.sql))
   }
 }
 
 export const bulkCreatedNFTSideEffects = async (
   nftList: NftEntity[],
+  collectionUpdateStack: Map<string, string[]>,
   extrinsic: SubstrateExtrinsic,
   mintFee: string,
 ) => {
   if (!extrinsic.success) {
     throw new Error("bulk NFT side effects error, extrinsic success : false")
   }
+  const nftOperationsStack: NftOperationEntity[] = []
   try {
     for (const nft of nftList) {
+      const operation = new Map()
       const nftEvent = extrinsic.events.find(
         (x) =>
           x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
@@ -35,40 +37,43 @@ export const bulkCreatedNFTSideEffects = async (
           (x) =>
             x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
         ) + 1
+
+      const { collectionId, nftId, owner, royalty } = nft
       const block = extrinsic.block.block
-      const commonEventData = {
-        isSuccess: extrinsic.success,
-        blockId: block.header.number.toString(),
-        blockHash: block.hash.toString(),
-        extrinsicId: nftEvent.phase.isApplyExtrinsic
-          ? `${block.header.number.toString()}-${nftEvent.phase.asApplyExtrinsic.toString()}`
-          : "",
-        eventId: nftEventId.toString(),
-        isBatch: checkIfBatch(extrinsic),
-        isBatchAll: checkIfBatchAll(extrinsic),
-        timestamp: extrinsic.block.timestamp,
-      }
+      const blockId = block.header.number.toString()
+      const blockHash = block.hash.toString()
+      const extrinsicId = nftEvent.phase.isApplyExtrinsic
+        ? `${block.header.number.toString()}-${nftEvent.phase.asApplyExtrinsic.toString()}`
+        : ""
+      const timestamp = extrinsic.block.timestamp
 
-      const record = await NftEntity.get(nft.nftId.toString())
-      if (record === undefined) throw new Error("NFT created from 'batch' not found in db")
+      operation.set("id", blockHash + "-" + nftEventId + "-" + NFTOperation.Created)
+      operation.set("blockId", blockId)
+      operation.set("extrinsicId", extrinsicId)
+      operation.set("nftId", nftId)
+      operation.set("royalty", royalty)
+      operation.set("collectionId", collectionId)
+      operation.set("from", null)
+      operation.set("to", owner)
+      operation.set("price", mintFee)
+      operation.set("priceRounded", roundPrice(mintFee))
+      operation.set("typeOfTransaction", NFTOperation.Created)
+      operation.set("timestamp", timestamp)
 
-      const promiseRes = await Promise.allSettled([
-        (async () => {
-          if (record.collectionId) {
-            let collectionRecord = await CollectionEntity.get(record.collectionId)
-            if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-            const newLength = collectionRecord.nfts.push(nft.nftId)
-            collectionRecord.nbNfts = newLength
-            if (newLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
-            await collectionRecord.save()
-          }
-        })(),
-
-        nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()]),
-        genericTransferHandler(nft.owner, "Treasury", mintFee, commonEventData),
-      ])
-      handlePromiseAllSettledErrors(promiseRes, "in bulkCreatedNFTSideEffects")
+      nftOperationsStack.push(Object.fromEntries(operation))
     }
+
+    for (let [collectionId, nfts] of collectionUpdateStack) {
+      let collectionRecord = await CollectionEntity.get(collectionId)
+      if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
+      const collectionLength = nfts.length
+      collectionRecord.nfts = nfts
+      collectionRecord.nbNfts = collectionLength
+      if (collectionLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
+      await collectionRecord.save()
+    }
+
+    await genericBulkCreate("NftOperationEntity", nftOperationsStack)
   } catch (err) {
     logger.error("Error at bulk NFT side effects update: " + err.toString())
     if (err.sql) logger.error("Error at bulk NFT side effects update: " + JSON.stringify(err.sql))

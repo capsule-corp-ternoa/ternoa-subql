@@ -1,7 +1,7 @@
 import { SubstrateExtrinsic } from "@subql/types"
-import { formatString, handlePromiseAllSettledErrors, updateAccounts } from "../helpers"
+import { formatString, updateAccounts } from "../helpers"
 import { NftEntity } from "../types"
-import { bulkCreateNFT, bulkCreatedNFTSideEffects } from "../helpers/nfts"
+import { bulkCreatedNFTSideEffects, genericBulkCreate } from "../helpers/nfts"
 
 const balanceMethods = ["BalanceSet", "Deposit", "DustLost", "Endowed", "Reserved", "Slashed", "Unreserved", "Withdraw"]
 const nftMethods = ["NFTCreated", "NFTTransferred"]
@@ -15,6 +15,7 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
   const addressStack: string[] = []
   // const nftCreationStack: Set<NftEntity[]> = new Set()
   const nftCreationStack: NftEntity[] = []
+  const collectionUpdateStack: Map<string, string[]> = new Map()
 
   let nftMintFee: string
   for (const event of events) {
@@ -33,12 +34,14 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
       //Handle NFT
       if (section === "nft" && method === nftMethods[0]) {
         logger.info(`handleCall - ${key}`)
-        const [nftId, owner, offchainData, royalty, collectionId, isSoulbound, mintFee] = data
+        const [rawNftId, owner, offchainData, royalty, rawCollectionId, isSoulbound, mintFee] = data
         nftMintFee = mintFee.toString()
         const nftEvent = new Map()
-        nftEvent.set("id", nftId.toString())
-        nftEvent.set("nftId", nftId.toString())
-        nftEvent.set("collectionId", collectionId?.toString() || null)
+        const nftId = rawNftId.toString()
+        const collectionId = rawCollectionId?.toString()
+
+        nftEvent.set("id", nftId)
+        nftEvent.set("nftId", nftId)
         nftEvent.set("owner", owner.toString())
         nftEvent.set("creator", owner.toString())
         nftEvent.set("offchainData", formatString(offchainData.toString()))
@@ -56,10 +59,22 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
         nftEvent.set("createdAt", extrinsic.block.timestamp)
         nftEvent.set("updatedAt", extrinsic.block.timestamp)
         nftEvent.set("timestampCreated", extrinsic.block.timestamp)
-        // when using a new Set l.14
-        // if (!nftCreationStack.has(nftEvent.get(nftId.toString()))) {
-        //   nftCreationStack.add(Object.fromEntries(nftEvent))
-        // }
+
+        if (collectionId) {
+          const nfts = collectionUpdateStack.get(collectionId)
+
+          if (nfts) {
+            if (!nfts.includes(nftId)) {
+              nfts.push(nftId)
+            }
+          } else {
+            collectionUpdateStack.set(collectionId, [nftId])
+          }
+          nftEvent.set("collectionId", collectionId)
+        } else {
+          nftEvent.set("collectionId", null)
+        }
+
         if (!nftCreationStack.includes(nftEvent.get(nftId.toString()))) {
           nftCreationStack.push(Object.fromEntries(nftEvent))
         }
@@ -71,10 +86,7 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
     }
   }
 
-  const promiseRes = await Promise.allSettled([
-    addressStack.length && (await updateAccounts(addressStack)),
-    nftCreationStack.length && (await bulkCreateNFT(nftCreationStack)),
-  ])
-  handlePromiseAllSettledErrors(promiseRes, "in handleCall Handler")
-  await bulkCreatedNFTSideEffects(nftCreationStack, extrinsic, nftMintFee)
+  if (addressStack.length > 0) await updateAccounts(addressStack)
+  if (nftCreationStack.length > 0) await genericBulkCreate("NftEntity", nftCreationStack)
+  await bulkCreatedNFTSideEffects(nftCreationStack, collectionUpdateStack, extrinsic, nftMintFee)
 }

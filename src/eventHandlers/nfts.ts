@@ -1,7 +1,7 @@
 import { SubstrateEvent } from "@subql/types"
 import { getCommonEventData, formatString } from "../helpers"
 import { CollectionEntity, NftEntity } from "../types"
-import { genericTransferHandler, nftOperationEntityHandler, NFTOperation } from "."
+import { nftOperationEntityHandler, NFTOperation } from "."
 
 export enum TypeOfListing {
   Auction = "auction",
@@ -35,17 +35,16 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
   await Promise.allSettled([
     record.save(),
     (async () => {
-    if (record.collectionId) {
-      let collectionRecord = await CollectionEntity.get(record.collectionId)
-      if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-      const newLength = collectionRecord.nfts.push(record.nftId)
-      collectionRecord.nbNfts = newLength
-      if (newLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
-      await collectionRecord.save()
-    }   
+      if (record.collectionId) {
+        let collectionRecord = await CollectionEntity.get(record.collectionId)
+        if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
+        const newLength = collectionRecord.nfts.push(record.nftId)
+        collectionRecord.nbNfts = newLength
+        if (newLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
+        await collectionRecord.save()
+      }
     })(),
-     nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()]),
-     genericTransferHandler(owner, "Treasury", mintFee, commonEventData)
+    nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()]),
   ])
 }
 
@@ -110,7 +109,7 @@ export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> =
   record.updatedAt = commonEventData.timestamp
   await Promise.allSettled([
     record.save(),
-    nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transferred)
+    nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transferred),
   ])
 }
 

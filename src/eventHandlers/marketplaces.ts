@@ -6,7 +6,6 @@ import { getCommonEventData, roundPrice } from "../helpers"
 import { parseConfigSetFee, parseList, parseOffchainData } from "../helpers/marketplace"
 import { MarketplaceEntity, NftEntity } from "../types"
 
-import { genericTransferHandler } from "./balances"
 import { nftOperationEntityHandler, NFTOperation } from "./nftOperations"
 import { TypeOfListing } from "./nfts"
 
@@ -15,7 +14,6 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Marketplace created error, extrinsic isSuccess : false")
   const [marketplaceId, owner, kind] = event.event.data
-  const fee = await api.query.marketplace.marketplaceMintFee()
   let record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) {
     record = new MarketplaceEntity(marketplaceId.toString())
@@ -26,7 +24,6 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
     record.updatedAt = commonEventData.timestamp
     record.timestampCreated = commonEventData.timestamp
     await record.save()
-    await genericTransferHandler(owner, "Treasury", fee.toString(), commonEventData)
   }
 }
 
