@@ -32,20 +32,20 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
   record.createdAt = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   record.timestampCreated = commonEventData.timestamp
-  await Promise.allSettled([
-    record.save(),
-    (async () => {
-      if (record.collectionId) {
-        let collectionRecord = await CollectionEntity.get(record.collectionId)
-        if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-        const newLength = collectionRecord.nfts.push(record.nftId)
-        collectionRecord.nbNfts = newLength
-        if (newLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
-        await collectionRecord.save()
-      }
-    })(),
-    nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()]),
-  ])
+  // await Promise.allSettled([
+  await record.save()
+  // (async () => {
+  if (record.collectionId) {
+    let collectionRecord = await CollectionEntity.get(record.collectionId)
+    if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
+    const newLength = collectionRecord.nfts.push(record.nftId)
+    collectionRecord.nbNfts = newLength
+    if (newLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
+    await collectionRecord.save()
+  }
+  // })(),
+  await nftOperationEntityHandler(record, null, commonEventData, NFTOperation.Created, [mintFee.toString()])
+  // ])
 }
 
 export const secretAddedToNFTHandler = async (event: SubstrateEvent): Promise<void> => {
@@ -107,10 +107,10 @@ export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> =
   if (record === undefined) throw new Error("NFT to transfer not found in db")
   record.owner = to.toString()
   record.updatedAt = commonEventData.timestamp
-  await Promise.allSettled([
-    record.save(),
-    nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transferred),
-  ])
+  // await Promise.allSettled([
+  await record.save()
+  await nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transferred)
+  // ])
 }
 
 export const nftDelegatedHandler = async (event: SubstrateEvent): Promise<void> => {

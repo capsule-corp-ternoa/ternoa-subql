@@ -27,18 +27,13 @@ export const bulkCreatedNFTSideEffects = async (
   const nftOperationsStack: NftOperationEntity[] = []
   try {
     for (const nft of nftList) {
-      const operation = new Map()
-      const nftEvent = extrinsic.events.find(
-        (x) =>
-          x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
-      )
-      const nftEventId =
-        extrinsic.events.findIndex(
-          (x) =>
-            x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data.toString().includes(nft.nftId),
-        ) + 1
-
       const { collectionId, nftId, owner, royalty } = nft
+      const nftEvent = extrinsic.events.find(
+        (x) => x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data[0].toString() === nftId,
+      )
+      const nftEventId = extrinsic.events.findIndex(
+          (x) => x.event.section === "nft" && x.event.method === "NFTCreated" && x.event.data[0].toString() === nftId,
+        ) + 1
       const block = extrinsic.block.block
       const blockId = block.header.number.toString()
       const blockHash = block.hash.toString()
@@ -46,6 +41,7 @@ export const bulkCreatedNFTSideEffects = async (
         ? `${block.header.number.toString()}-${nftEvent.phase.asApplyExtrinsic.toString()}`
         : ""
       const timestamp = extrinsic.block.timestamp
+      const operation = new Map()
 
       operation.set("id", blockHash + "-" + nftEventId + "-" + NFTOperation.Created)
       operation.set("blockId", blockId)
@@ -66,10 +62,11 @@ export const bulkCreatedNFTSideEffects = async (
     for (let [collectionId, nfts] of collectionUpdateStack) {
       let collectionRecord = await CollectionEntity.get(collectionId)
       if (collectionRecord === undefined) throw new Error("Collection where nft is added not found in db")
-      const collectionLength = nfts.length
-      collectionRecord.nfts = nfts
-      collectionRecord.nbNfts = collectionLength
-      if (collectionLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
+      const collectionStackLength = nfts.length
+      const newCollectionLength = collectionRecord.nbNfts + collectionStackLength
+      nfts.map((nft) => collectionRecord.nfts.push(nft))
+      collectionRecord.nbNfts = newCollectionLength
+      if (newCollectionLength === collectionRecord.limit) collectionRecord.hasReachedLimit = true
       await collectionRecord.save()
     }
 
