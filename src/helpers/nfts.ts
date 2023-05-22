@@ -43,7 +43,7 @@ export const bulkCreatedNFTSideEffects = async (
       const timestamp = extrinsic.block.timestamp
       const operation = new Map()
 
-      operation.set("id", blockHash + "-" + nftEventId + "-" + NFTOperation.Created)
+      operation.set("id", blockHash + "-" + extrinsicId + "-" + nftEventId + "-" + NFTOperation.Created)
       operation.set("blockId", blockId)
       operation.set("extrinsicId", extrinsicId)
       operation.set("nftId", nftId)

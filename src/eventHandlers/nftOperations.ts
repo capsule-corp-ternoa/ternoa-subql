@@ -9,7 +9,7 @@ export const nftOperationEntityHandler = async (
   args?: any[],
 ): Promise<void> => {
   const { blockHash, blockId, eventId, extrinsicId, timestamp } = commonEventData
-  const nftOperationRecord = new NftOperationEntity(blockHash + "-" + eventId + "-" + typeOfTransaction)
+  const nftOperationRecord = new NftOperationEntity(blockHash + "-" + extrinsicId + "-" + eventId + "-" + typeOfTransaction)
   nftOperationRecord.blockId = blockId
   nftOperationRecord.extrinsicId = extrinsicId
   nftOperationRecord.nftId = record.id
