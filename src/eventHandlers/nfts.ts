@@ -32,7 +32,7 @@ export const nftCreatedHandler = async (event: SubstrateEvent): Promise<void> =>
   record.createdAt = commonEventData.timestamp
   record.updatedAt = commonEventData.timestamp
   record.timestampCreated = commonEventData.timestamp
-  await Promise.allSettled([
+  await Promise.all([
     record.save(),
     (async () => {
     if (record.collectionId) {
@@ -108,7 +108,7 @@ export const nftTransferHandler = async (event: SubstrateEvent): Promise<void> =
   if (record === undefined) throw new Error("NFT to transfer not found in db")
   record.owner = to.toString()
   record.updatedAt = commonEventData.timestamp
-  await Promise.allSettled([
+  await Promise.all([
     record.save(),
     nftOperationEntityHandler(record, from.toString(), commonEventData, NFTOperation.Transferred)
   ])
