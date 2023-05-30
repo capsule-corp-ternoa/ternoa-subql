@@ -87,6 +87,8 @@ export async function handleCall(extrinsic: SubstrateExtrinsic): Promise<void> {
   }
 
   if (addressStack.length > 0) await updateAccounts(addressStack)
-  if (nftCreationStack.length > 0) await genericBulkCreate("NftEntity", nftCreationStack)
-  await bulkCreatedNFTSideEffects(nftCreationStack, collectionUpdateStack, extrinsic, nftMintFee)
+  if (nftCreationStack.length > 0) {
+    await genericBulkCreate("NftEntity", nftCreationStack)
+    await bulkCreatedNFTSideEffects(nftCreationStack, collectionUpdateStack, extrinsic, nftMintFee)
+  }
 }
