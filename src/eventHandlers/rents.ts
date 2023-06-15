@@ -149,6 +149,9 @@ export const rentContractStartedHandler = async (event: SubstrateEvent): Promise
   }
   record.rentOffers = []
   record.nbRentOffers = 0
+  record.nbTermsUpdate = 0
+  record.totalRentOffersReceived = 0
+  record.nbSubscriptionRenewal = 0
   record.timestampStarted = commonEventData.timestamp
   await record.save()
 
@@ -198,7 +201,7 @@ export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Pr
   if (record.rentOffers) record.rentOffers.push(rentee.toString())
   else record.rentOffers = [rentee.toString()]
   record.nbRentOffers = record.nbRentOffers + 1
-  record.totalRentOffersReceived = record.totalRentOffersReceived + 1
+  record.totalRentOffersReceived = record.totalRentOffersReceived ? record.totalRentOffersReceived + 1 : 1
   record.timestampLastOffer = commonEventData.timestamp
   await record.save()
 }
@@ -227,7 +230,7 @@ export const rentContractSubscriptionTermsChangedHandler = async (event: Substra
   record.newTermsAvailable = true
   record.rentFee = bnToBn(rentFee.toString()).toString()
   record.rentFeeRounded = roundPrice(record.rentFee)
-  record.nbTermsUpdate = record.nbTermsUpdate + 1
+  record.nbTermsUpdate = record.nbTermsUpdate ? record.nbTermsUpdate + 1 : 1
   record.timestampLastTermsUpdate = commonEventData.timestamp
   await record.save()
 }
@@ -375,7 +378,11 @@ export const rentContractSubscriptionPeriodStartedHandler = async (event: Substr
   const nextBlockRenewal = record.blockDuration + +commonEventData.blockId
   const lastBlockRenewal = record.startBlockId + record.maxSubscriptionBlockDuration
   record.nbSubscriptionRenewal =
-    lastBlockRenewal >= nextBlockRenewal ? record.nbSubscriptionRenewal + 1 : record.nbSubscriptionRenewal
+    lastBlockRenewal >= nextBlockRenewal
+      ? record.nbSubscriptionRenewal
+        ? record.nbSubscriptionRenewal + 1
+        : 1
+      : record.nbSubscriptionRenewal
   record.nextSubscriptionRenewalBlockId = lastBlockRenewal >= nextBlockRenewal ? nextBlockRenewal : lastBlockRenewal
   record.timestampLastSubscriptionRenewal = commonEventData.timestamp
   await record.save()
