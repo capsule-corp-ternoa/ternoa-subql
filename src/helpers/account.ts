@@ -9,15 +9,17 @@ export const updateAccounts = async (addresses: string[]) => {
     await Promise.all(
       res.map(async ({ data: balance }, idx) => {
         if (balance) {
-          const { free, miscFrozen, reserved } = balance
+          const { feeFrozen, free, miscFrozen, reserved } = balance
           const address = addresses[idx]
           const date = new Date()
           const balanceFrozenMisc = miscFrozen.toBigInt()
+          const balanceFrozenFee = feeFrozen.toBigInt()
+          const balanceFrozen = balanceFrozenFee > balanceFrozenMisc ? balanceFrozenFee : balanceFrozenMisc
           const balanceReserved = reserved.toBigInt()
           const balanceFree = free.toBigInt()
-          const capsAmountFrozen = balanceFrozenMisc.toString()
+          const capsAmountFrozen = balanceFrozen.toString()
           const capsAmountTotal = (balanceFree + balanceReserved).toString()
-          const capsAmount = (balanceFree - balanceFrozenMisc).toString()
+          const capsAmount = (balanceFree - balanceFrozen).toString()
           let record = await AccountEntity.get(address)
           if (record === undefined) {
             record = new AccountEntity(address)

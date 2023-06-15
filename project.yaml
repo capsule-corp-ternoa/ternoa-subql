@@ -97,6 +97,11 @@ dataSources:
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
+            module: balances
+            method: Transfer
+        - handler: handleEvent
+          kind: substrate/EventHandler
+          filter:
             module: transactionPayment
             method: TransactionFeePaid
 
