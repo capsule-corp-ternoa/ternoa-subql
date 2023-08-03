@@ -13,8 +13,9 @@ repository: "https://github.com/capsule-corp-ternoa/ternoa-subql"
 schema:
   file: ./schema.graphql
 network:
-  chainId: "0xb4cee653b8b087316d19233c994a0ca850fd165bc849897140bbf1353f984b1a"
+  chainId: "0xcecd6c6ceb9368f1cab590590640ff768ec502d9a45d4b2c94472ff76bb02ab3"
   endpoint: wss://dev-0.ternoa.network/
+  dictionary: https://app-cc41c55f-6d53-4781-868d-c1b55ea2f371.cleverapps.io/
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
