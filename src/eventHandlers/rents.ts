@@ -140,6 +140,8 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
       break
   }
   record.rentOffers = []
+  record.nbRentOffers = 0
+  record.totalRentOffersReceived = 0
   record.timestampCreated = commonEventData.timestamp
   await record.save()
 
@@ -223,6 +225,10 @@ export const rentContractOfferCreatedHandler = async (event: SubstrateEvent): Pr
   if (record.rentOffers) record.rentOffers.push(rentee.toString())
   else record.rentOffers = [rentee.toString()]
   record.nbRentOffers = record.nbRentOffers + 1
+  logger.info(commonEventData.blockId)
+  logger.info(commonEventData.extrinsicId)
+  logger.info(record.nbRentOffers + 1)
+  logger.info(record.nbRentOffers)
   record.totalRentOffersReceived = record.totalRentOffersReceived ? record.totalRentOffersReceived + 1 : 1
   record.timestampLastOffer = commonEventData.timestamp
   await record.save()
