@@ -16,15 +16,20 @@ export const marketplaceCreatedHandler = async (event: SubstrateEvent): Promise<
   if (!commonEventData.isSuccess) throw new Error("Marketplace created error, extrinsic isSuccess : false")
   const [marketplaceId, owner, kind] = event.event.data
   const fee = await api.query.marketplace.marketplaceMintFee()
+  const createdAt = commonEventData.timestamp
+  const updatedAt = commonEventData.timestamp
+  const timestampCreated = commonEventData.timestamp
   let record = await MarketplaceEntity.get(marketplaceId.toString())
   if (record === undefined) {
-    record = new MarketplaceEntity(marketplaceId.toString())
-    record.marketplaceId = marketplaceId.toString()
-    record.owner = owner.toString()
-    record.kind = kind.toString()
-    record.createdAt = commonEventData.timestamp
-    record.updatedAt = commonEventData.timestamp
-    record.timestampCreated = commonEventData.timestamp
+    record = new MarketplaceEntity(
+      marketplaceId.toString(),
+      marketplaceId.toString(),
+      owner.toString(),
+      kind.toString(),
+      createdAt,
+      updatedAt,
+      timestampCreated,
+    )
     await record.save()
     await genericTransferHandler(owner, "Treasury", fee.toString(), commonEventData)
   }

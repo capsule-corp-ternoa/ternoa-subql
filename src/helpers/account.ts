@@ -22,8 +22,7 @@ export const updateAccounts = async (addresses: string[]) => {
           const capsAmount = (balanceFree - balanceFrozen).toString()
           let record = await AccountEntity.get(address)
           if (record === undefined) {
-            record = new AccountEntity(address)
-            record.createdAt = date
+            record = new AccountEntity(address, date, date)
           }
           record.capsAmount = capsAmount
           record.capsAmountFrozen = capsAmountFrozen

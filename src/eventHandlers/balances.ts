@@ -19,16 +19,24 @@ export const genericTransferHandler = async (
   amount: Codec | string,
   commonEventData: CommonEventData,
 ): Promise<void> => {
-  const record = new TransferEntity(commonEventData.blockId + "-" + commonEventData.eventId)
-  record.blockId = commonEventData.blockId
-  record.blockHash = commonEventData.blockHash
-  record.extrinsicId = commonEventData.extrinsicId
-  record.isSuccess = commonEventData.isSuccess
-  record.timestamp = commonEventData.timestamp
-  record.from = from.toString()
-  record.to = to.toString()
-  record.currency = "CAPS"
-  record.amount = !(typeof amount === "string") ? (amount as Balance).toBigInt().toString() : amount
-  record.amountRounded = roundPrice(record.amount)
+  const { blockId, blockHash, eventId, extrinsicId, isSuccess, timestamp } = commonEventData
+
+  const transferEntityId = blockId + "-" + eventId
+  const currency = "CAPS"
+  const formattedAmount = !(typeof amount === "string") ? (amount as Balance).toBigInt().toString() : amount
+  const amountRounded = roundPrice(formattedAmount)
+  const record = new TransferEntity(
+    transferEntityId,
+    blockId,
+    blockHash,
+    extrinsicId,
+    isSuccess,
+    timestamp,
+    from.toString(),
+    to.toString(),
+    currency,
+    formattedAmount,
+    amountRounded,
+  )
   await record.save()
 }
