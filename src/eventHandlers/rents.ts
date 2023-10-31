@@ -33,16 +33,37 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
   const parsedRenteeCancellationFee =
     renteeCancellationFee.toString() !== CancellationFeeAction.None && JSON.parse(renteeCancellationFee.toString())
 
-  let record = new RentEntity(`${commonEventData.extrinsicId}-${nftId.toString()}`)
-  record.nftId = nftId.toString()
-  record.creationBlockId = Number(commonEventData.blockId)
-  record.hasStarted = false
-  record.hasEnded = false
-  record.hasBeenCanceled = false
-  record.isExpired = false
-  record.renter = renter.toString()
-  record.renterCanRevoke = renterCanRevoke.toString() === "true"
-  record.rentOffers = []
+  const rentEntityId = commonEventData.extrinsicId + "-" + nftId.toString()
+  const hasStarted = false
+  const hasEnded = false
+  const hasBeenCanceled = false
+  const isExpired = false
+  const creationBlockId = Number(commonEventData.blockId)
+  const canRevoke = renterCanRevoke.toString() === "true"
+  const defaultDuration = ""
+  const defaultAcceptance = ""
+  const defaultRentFeeType = ""
+  const defaultRentFee = ""
+  const defaultRentFeeRounded = 0
+  const timestampCreated = commonEventData.timestamp
+
+  let record = new RentEntity(
+    rentEntityId,
+    nftId.toString(),
+    hasStarted,
+    hasEnded,
+    hasBeenCanceled,
+    isExpired,
+    renter.toString(),
+    creationBlockId,
+    defaultDuration,
+    defaultAcceptance,
+    canRevoke,
+    defaultRentFeeType,
+    defaultRentFee,
+    defaultRentFeeRounded,
+    timestampCreated,
+  )
 
   if (isDurationFixed) {
     record.durationType = DurationAction.Fixed
@@ -118,6 +139,7 @@ export const rentContractCreatedHandler = async (event: SubstrateEvent): Promise
       record.renteeCancellationFeeRounded = null
       break
   }
+  record.rentOffers = []
   record.timestampCreated = commonEventData.timestamp
   await record.save()
 

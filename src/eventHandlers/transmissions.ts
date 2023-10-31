@@ -12,11 +12,19 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
   const commonEventData = getCommonEventData(event)
   if (!commonEventData.isSuccess) throw new Error("Transmission protocol creation error, extrinsic isSuccess : false")
   const [nftId, recipient, protocolKind, cancellationKind] = event.event.data
+
+  const transmissionId = commonEventData.blockId + "-" + nftId.toString()
   const signer = getSigner(event)
   const parsedProtocol = protocolKind.toJSON() as Protocols
   const protocol = Object.keys(parsedProtocol)[0]
   const parsedCancellation = cancellationKind.toJSON() as TransmissionCancellation
   const cancellation = Object.keys(parsedCancellation)[0]
+  const cancellationBlock = parsedCancellation[cancellation]
+  const isActive = true
+  const isThresholdReached = false
+  const createdAt = commonEventData.timestamp
+  const updatedAt = commonEventData.timestamp
+  const timestampCreated = commonEventData.timestamp
 
   let consentList = null
   let currentConsent = null
@@ -42,26 +50,25 @@ export const protocolSetHandler = async (event: SubstrateEvent): Promise<void> =
       break
   }
 
-  const cancellationBlock = parsedCancellation[cancellation]
+  const record = new TransmissionEntity(
+    transmissionId,
+    nftId.toString(),
+    signer,
+    recipient.toString(),
+    isActive,
+    isThresholdReached,
+    protocol,
+    createdAt,
+    updatedAt,
+    timestampCreated,
+  )
 
-  const transmissionId = `${commonEventData.blockId}-${nftId.toString()}`
-  const record = new TransmissionEntity(transmissionId)
-
-  record.nftId = nftId.toString()
-  record.from = signer
-  record.to = recipient.toString()
-  record.protocol = protocol
   record.consentList = consentList
   record.currentConsent = currentConsent
   record.endBlock = endBlock
   record.threshold = threshold
-  record.isActive = true
-  record.isThresholdReached = false
   record.cancellation = cancellation === TransmissionCancellationAction.None ? null : cancellation
   record.cancellationBlock = cancellationBlock
-  record.createdAt = commonEventData.timestamp
-  record.updatedAt = commonEventData.timestamp
-  record.timestampCreated = commonEventData.timestamp
   record.timestampRemoved = null
   record.timestampUpdated = null
   record.timestampTransmitted = null

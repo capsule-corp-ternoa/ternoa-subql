@@ -18,10 +18,23 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   if (!commonEventData.isSuccess) throw new Error("Auction creation error, extrinsic isSuccess : false")
   const [nftId, marketplaceId, creator, startPrice, buyItPrice, startBlockId, endBlockId] = event.event.data
 
-  let record = new AuctionEntity(`${commonEventData.extrinsicId}-${nftId.toString()}`)
-  record.nftId = nftId.toString()
+  const auctionEntityId = commonEventData.extrinsicId + "-" + nftId.toString()
+  const isCompleted = false
+  const isCancelled = false
+  const isExtendedPeriod = false
+  const bidders = []
+  const timestampCreated = commonEventData.timestamp
+  let record = new AuctionEntity(
+    auctionEntityId,
+    nftId.toString(),
+    creator.toString(),
+    isCompleted,
+    isCancelled,
+    isExtendedPeriod,
+    bidders,
+    timestampCreated,
+  )
   record.marketplaceId = marketplaceId.toString()
-  record.creator = creator.toString()
   record.startPrice = bnToBn(startPrice.toString()).toString()
   record.startPriceRounded = roundPrice(record.startPrice)
   const buyItPriceAmount = bnToBn(buyItPrice.toString()).toString()
@@ -29,15 +42,10 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   record.buyItNowPriceRounded = record.buyItNowPrice && roundPrice(record.buyItNowPrice)
   record.startBlockId = Number.parseInt(startBlockId.toString())
   record.endBlockId = Number.parseInt(endBlockId.toString())
-  record.isCompleted = false
-  record.isCancelled = false
-  record.isExtendedPeriod = false
-  record.bidders = []
   record.nbBidders = 0
   record.topBidAmount = null
   record.topBidAmountRounded = null
   record.typeOfSale = null
-  record.timestampCreated = commonEventData.timestamp
   record.timestampEnded = null
   record.timestampLastBid = null
   record.timestampCancelled = null
