@@ -1,5 +1,5 @@
 specVersion: 1.0.0
-name: Ternoa Indexer
+name: Ternoa Dictionary
 version: 1.0.0
 runner:
   node:
@@ -8,14 +8,15 @@ runner:
   query:
     name: "@subql/query"
     version: "*"
-description: Ternoa SubQuery Indexer project
-repository: "https://github.com/capsule-corp-ternoa/ternoa-subql"
+description: >-
+  Ternoa SubQuery Dictionary project
+repository: "https://github.com/capsule-corp-ternoa/ternoa-subql-dictionary"
 schema:
   file: ./schema.graphql
 network:
-  chainId: "0x6859c81ca95ef624c9dfe4dc6e3381c33e5d6509e35e147092bfbc780f777c4e"
-  endpoint: wss://mainnet.ternoa.network
-  dictionary: https://dictionary-mainnet.ternoa.dev/
+  chainId: "0xc89c1df76b3dec656009f2b5b8607e2a34509ef722cda1c3bbe6ae7040961b64"
+  endpoint: wss://betanet.ternoa.network
+  dictionary: https://dictionary-betanet.ternoa.dev/
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
@@ -94,11 +95,6 @@ dataSources:
           filter:
             module: balances
             method: Withdraw
-        - handler: handleEvent
-          kind: substrate/EventHandler
-          filter:
-            module: balances
-            method: Transfer
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
