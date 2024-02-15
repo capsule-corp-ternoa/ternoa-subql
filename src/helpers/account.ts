@@ -1,25 +1,40 @@
-import type { AccountInfo } from "@polkadot/types/interfaces"
-
 import { roundPrice } from "../helpers"
+import { AccountData } from "../genericTypes"
 import { AccountEntity } from "../types"
 
 export const updateAccounts = async (addresses: string[]) => {
   try {
-    const res = await api.query.system.account.multi<AccountInfo>(addresses)
+    const res = await api.query.system.account.multi(addresses) as any
     await Promise.all(
-      res.map(async ({ data: balance }, idx) => {
+      res.map(async ({ data: balance }: { data: AccountData }, idx: number) => {
         if (balance) {
-          const { feeFrozen, free, miscFrozen, reserved } = balance
+          const { free, reserved, frozen, miscFrozen, feeFrozen } = balance
           const address = addresses[idx]
           const date = new Date()
-          const balanceFrozenMisc = miscFrozen.toBigInt()
-          const balanceFrozenFee = feeFrozen.toBigInt()
-          const balanceFrozen = balanceFrozenFee > balanceFrozenMisc ? balanceFrozenFee : balanceFrozenMisc
-          const balanceReserved = reserved.toBigInt()
+
+          let balanceFrozen: bigint | undefined = undefined
+
+          if (frozen) {
+            balanceFrozen = frozen.toBigInt()
+          } else {
+            if (miscFrozen && feeFrozen) {
+              const balanceFrozenMisc = miscFrozen.toBigInt()
+              const balanceFrozenFee = feeFrozen.toBigInt()
+              balanceFrozen = balanceFrozenFee > balanceFrozenMisc ? balanceFrozenFee : balanceFrozenMisc
+            } else if (miscFrozen) {
+              balanceFrozen = miscFrozen.toBigInt()
+            } else if (feeFrozen) {
+              balanceFrozen = feeFrozen.toBigInt()
+            }
+          }
+
           const balanceFree = free.toBigInt()
+          const balanceReserved = reserved.toBigInt()
+
+          const capsAmount = (balanceFree - balanceFrozen).toString()
           const capsAmountFrozen = balanceFrozen.toString()
           const capsAmountTotal = (balanceFree + balanceReserved).toString()
-          const capsAmount = (balanceFree - balanceFrozen).toString()
+
           let record = await AccountEntity.get(address)
           if (record === undefined) {
             record = new AccountEntity(address)
