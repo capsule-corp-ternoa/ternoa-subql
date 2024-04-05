@@ -34,8 +34,7 @@
   "license": "MIT",
   "dependencies": {
     "bn.js": "5.2.1",
-    "node-fetch": "2.6.x",
-    "ternoa-js": "1.5.1"
+    "ternoa-js": "^1.6.3"
   },
   "devDependencies": {
     "@polkadot/api": "10.7.x",
@@ -46,6 +45,6 @@
     "typescript": "5.0.x"
   },
   "engines": {
-    "node": ">=16.13.0"
+    "node": ">=20"
   }
 }
