@@ -1,28 +1,29 @@
+# // Auto-generated , DO NOT EDIT
 specVersion: 1.0.0
-name: Ternoa Indexer
 version: 1.0.0
+name: Ternoa Indexer
+description: 'Ternoa Indexer: Indexes main events triggered by the Ternoa blockchain'
 runner:
   node:
-    name: "@subql/node"
-    version: "*"
+    name: '@subql/node'
+    version: '>=3.0.1'
   query:
-    name: "@subql/query"
-    version: "*"
-description: Ternoa SubQuery Indexer project
-repository: "https://github.com/capsule-corp-ternoa/ternoa-subql"
+    name: '@subql/query'
+    version: '*'
 schema:
   file: ./schema.graphql
 network:
-  chainId: "0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace"
-  endpoint: wss://alphanet.ternoa.com/
-  dictionary: https://dictionary-alphanet.ternoa.dev/
+  chainId: '0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace'
+  endpoint:
+    - 'wss://alphanet.ternoa.com'
+  dictionary:
+    - 'https://dictionary-alphanet.ternoa.dev'
 dataSources:
   - kind: substrate/Runtime
     startBlock: 1
     mapping:
-      file: "./dist/index.js"
+      file: ./dist/index.js
       handlers:
-        # Batch Calls
         - handler: accountUpdateHandler
           kind: substrate/CallHandler
           filter:
@@ -39,16 +40,12 @@ dataSources:
           filter:
             module: utility
             method: forceBatch
-
-        # Staking Calls
         - handler: accountUpdateHandler
           kind: substrate/CallHandler
           filter:
             module: staking
             method: payoutStakers
             success: true
-
-        # Balance
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -99,8 +96,6 @@ dataSources:
           filter:
             module: transactionPayment
             method: TransactionFeePaid
-
-        # NFT
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -146,8 +141,6 @@ dataSources:
           filter:
             module: nft
             method: NFTAddedToCollection
-
-        # Secret NFT
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -158,8 +151,6 @@ dataSources:
           filter:
             module: nft
             method: SecretNFTSynced
-
-        # Capsule NFT
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -185,8 +176,6 @@ dataSources:
           filter:
             module: nft
             method: CapsuleKeyUpdateNotified
-
-        # Transmission Protocols
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -217,8 +206,6 @@ dataSources:
           filter:
             module: transmissionProtocols
             method: Transmitted
-
-        # Collection
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -244,8 +231,6 @@ dataSources:
           filter:
             module: nft
             method: CollectionOffchainDataSet
-
-        # Marketplace
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -271,8 +256,6 @@ dataSources:
           filter:
             module: marketplace
             method: MarketplaceMintFeeSet
-
-        # Rent
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -328,8 +311,6 @@ dataSources:
           filter:
             module: rent
             method: ContractExpired
-
-        # Auction
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:
@@ -360,8 +341,6 @@ dataSources:
           filter:
             module: auction
             method: BalanceClaimed
-
-        # Misc
         - handler: handleEvent
           kind: substrate/EventHandler
           filter:

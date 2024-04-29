@@ -4,13 +4,12 @@
   "description": "Ternoa Indexer: Indexes main events triggered by the Ternoa blockchain",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -b",
+    "build": "subql build",
+    "codegen": "subql codegen",
+    "start:docker": "docker-compose pull && docker-compose up --remove-orphans",
+    "dev": "subql codegen && subql build && docker-compose pull && docker-compose up --remove-orphans",
     "prepack": "rm -rf dist && npm run build",
-    "test": "jest",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "codegen": "./node_modules/.bin/subql codegen",
-    "start": "bash run.sh",
-    "start:docker": "docker-compose pull && docker-compose up --remove-orphans"
+    "test": "subql build && subql-node test"
   },
   "homepage": "https://github.com/capsule-corp-ternoa/ternoa-subql",
   "repository": "github:capsule-corp-ternoa/ternoa-subql",
@@ -29,19 +28,22 @@
     },
     {
       "name": "Victor Salomon"
+    },
+    {
+      "name": "Mohsan Riaz"
     }
   ],
   "license": "MIT",
   "dependencies": {
     "bn.js": "5.2.1",
-    "ternoa-js": "^1.6.3"
+    "ternoa-js": "^1.6.4"
   },
   "devDependencies": {
-    "@polkadot/api": "10.7.x",
-    "@subql/cli": "4.1.0",
-    "@subql/common": "3.2.0",
-    "@subql/types": "3.2.0",
-    "prettier": "2.8.x",
-    "typescript": "5.0.x"
+    "@polkadot/api": "^10",
+    "@subql/cli": "latest",
+    "@subql/node": "latest",
+    "@subql/testing": "latest",
+    "@subql/types": "latest",
+    "typescript": "^5.2.2"
   }
 }

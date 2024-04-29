@@ -22,7 +22,7 @@ export const auctionCreatedHandler = async (event: SubstrateEvent): Promise<void
   const isCompleted = false
   const isCancelled = false
   const isExtendedPeriod = false
-  const bidders = []
+  const bidders:Bidder[] = []
   const timestampCreated = commonEventData.timestamp
   let record = new AuctionEntity(
     auctionEntityId,

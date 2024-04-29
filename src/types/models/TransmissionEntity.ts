@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity, FunctionPropertyNames, FieldsExpression} from "@subql/types-core";
+import {Entity, FunctionPropertyNames, FieldsExpression, GetOptions } from "@subql/types-core";
 import assert from 'assert';
 
 
@@ -85,7 +85,13 @@ export class TransmissionEntity implements Entity {
       return records.map(record => this.create(record as TransmissionEntityProps));
     }
 
-    static async getByFields(filter: FieldsExpression<TransmissionEntityProps>[], options?: { offset?: number, limit?: number}): Promise<TransmissionEntity[]> {
+
+    /**
+     * Gets entities matching the specified filters and options.
+     *
+     * ⚠️ This function will first search cache data followed by DB data. Please consider this when using order and offset options.⚠️
+     * */
+    static async getByFields(filter: FieldsExpression<TransmissionEntityProps>[], options?: GetOptions<TransmissionEntityProps>): Promise<TransmissionEntity[]> {
         const records = await store.getByFields('TransmissionEntity', filter, options);
         return records.map(record => this.create(record as TransmissionEntityProps));
     }

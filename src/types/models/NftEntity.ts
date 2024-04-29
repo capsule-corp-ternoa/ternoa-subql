@@ -1,5 +1,5 @@
 // Auto-generated , DO NOT EDIT
-import {Entity, FunctionPropertyNames, FieldsExpression} from "@subql/types-core";
+import {Entity, FunctionPropertyNames, FieldsExpression, GetOptions } from "@subql/types-core";
 import assert from 'assert';
 
 
@@ -151,7 +151,13 @@ export class NftEntity implements Entity {
       return records.map(record => this.create(record as NftEntityProps));
     }
 
-    static async getByFields(filter: FieldsExpression<NftEntityProps>[], options?: { offset?: number, limit?: number}): Promise<NftEntity[]> {
+
+    /**
+     * Gets entities matching the specified filters and options.
+     *
+     * ⚠️ This function will first search cache data followed by DB data. Please consider this when using order and offset options.⚠️
+     * */
+    static async getByFields(filter: FieldsExpression<NftEntityProps>[], options?: GetOptions<NftEntityProps>): Promise<NftEntity[]> {
         const records = await store.getByFields('NftEntity', filter, options);
         return records.map(record => this.create(record as NftEntityProps));
     }
