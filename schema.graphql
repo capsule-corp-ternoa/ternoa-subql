@@ -69,7 +69,7 @@ type NftEntity @entity {
 
 type NftOperationEntity @entity {
   id: ID!
-  blockId: String!
+  blockId: String! @index
   extrinsicId: String!
   nft: NftEntity!
   from: String @index
@@ -102,8 +102,8 @@ type NftOperationEntity @entity {
   rentalContractFeeRounded: Float
   transmissionProtocol: String
   transmissionEndBlock: Int
-  timestamp: Date!
-  typeOfTransaction: String!
+  timestamp: Date! @index
+  typeOfTransaction: String! @index
 }
 
 type RentEntity @entity {
