@@ -39,11 +39,11 @@
     "ternoa-js": "^1.6.4"
   },
   "devDependencies": {
-    "@polkadot/api": "^11",
-    "@subql/cli": "^4.15.0",
-    "@subql/node": "^4.7.0",
-    "@subql/testing": "^2.2.0",
-    "@subql/types": "^3.8.0",
-    "typescript": "^5.2.2"
+   "@polkadot/api": "^10",
+    "@subql/cli": "4.6.0",
+    "@subql/node": "4.2.0",
+    "@subql/testing": "2.1.1",
+    "@subql/types": "3.5.0",
+    "typescript": "5.2.2"
   }
 }

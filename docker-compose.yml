@@ -18,7 +18,7 @@ services:
       retries: 5
 
   subquery-node:
-    image: subquerynetwork/subql-node-substrate:latest
+    image: subquerynetwork/subql-node-substrate:v4.2.0
     depends_on:
       "postgres":
         condition: service_healthy
@@ -38,8 +38,9 @@ services:
       - --db-schema=app
       - --workers=4
       - --batch-size=30
-      - --unfinalized-blocks=true
+      # - --unfinalized-blocks=true
       - --scale-batch-size=true
+      # - --disable-historical=false
       - --timeout=30000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://subquery-node:3000/ready"]
@@ -48,7 +49,7 @@ services:
       retries: 10
 
   graphql-engine:
-    image: subquerynetwork/subql-query:latest
+    image: subquerynetwork/subql-query:v2.10.1
     ports:
       - 3000:3000
     depends_on:
@@ -64,7 +65,7 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
     command:
-      - --name=subql_ternoa
+      - --name=app
       - --playground
       - --indexer=http://subquery-node:3000
       - --query-timeout=20000

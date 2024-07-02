@@ -6,25 +6,45 @@ description: 'Ternoa Indexer: Indexes main events triggered by the Ternoa blockc
 runner:
   node:
     name: '@subql/node'
-    version: '>=4.7.0'
+    version: '>=3.0.1'
   query:
     name: '@subql/query'
-    version: '>=2.13.1'
+    version: '*'
 schema:
   file: ./schema.graphql
 network:
-  chainId: '0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace'
+  chainId: '0x6859c81ca95ef624c9dfe4dc6e3381c33e5d6509e35e147092bfbc780f777c4e'
   endpoint:
-    - 'wss://alphanet.ternoa.com'
+    - 'wss://mainnet.ternoa.network'
   dictionary:
-    - 'https://dictionary-alphanet.ternoa.dev'
+    - 'https://do-dictionary-mainnet.ternoa.dev'
 dataSources:
   - kind: substrate/Runtime
-    startBlock: 0
+    startBlock: 1
     mapping:
       file: ./dist/index.js
       handlers:
-        - handler: handleCall
+        - handler: accountUpdateHandler
           kind: substrate/CallHandler
+          filter:
+            module: utility
+            method: batchAll
+            success: true
+        - handler: accountUpdateHandler
+          kind: substrate/CallHandler
+          filter:
+            module: utility
+            method: batch
+        - handler: accountUpdateHandler
+          kind: substrate/CallHandler
+          filter:
+            module: utility
+            method: forceBatch
+        - handler: accountUpdateHandler
+          kind: substrate/CallHandler
+          filter:
+            module: staking
+            method: payoutStakers
+            success: true
         - handler: handleEvent
           kind: substrate/EventHandler
