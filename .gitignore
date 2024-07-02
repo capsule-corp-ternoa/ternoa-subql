@@ -59,3 +59,9 @@ Thumbs.db
 
 .github
 .vscode
+
+# Networks folders
+networks/
+!networks/betanet/project.ts
+!networks/alphanet/project.ts
+!networks/mainnet/project.ts
