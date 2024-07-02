@@ -16,6 +16,10 @@ do
   rm ${MAIN_DIRECTORY}/networks/$item/docker-compose.yml
   fi
 
+  if [ -d "${MAIN_DIRECTORY}/networks/$item/docker" ]; then
+  rm -r ${MAIN_DIRECTORY}/networks/$item/docker
+  fi
+  
   if [ -d "${MAIN_DIRECTORY}/networks/$item/node_modules" ]; then
   rm -r ${MAIN_DIRECTORY}/networks/$item/node_modules
   fi

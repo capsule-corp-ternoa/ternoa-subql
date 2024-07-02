@@ -12,6 +12,7 @@ do
   scp ${MAIN_DIRECTORY}/schema.graphql ${MAIN_DIRECTORY}/networks/$item
   scp ${MAIN_DIRECTORY}/local-runner.sh ${MAIN_DIRECTORY}/networks/$item
   scp ${MAIN_DIRECTORY}/docker-compose.yml ${MAIN_DIRECTORY}/networks/$item
+  scp -r ${MAIN_DIRECTORY}/docker ${MAIN_DIRECTORY}/networks/$item
 done
 
 printf "Done !"
