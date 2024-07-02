@@ -46,10 +46,41 @@ const project: SubstrateProject = {
       mapping: {
         file: "./dist/index.js",
         handlers: [
-          // All Calls
+          // Batch Calls
           {
-            handler: "handleCall",
+            handler: "accountUpdateHandler",
             kind: SubstrateHandlerKind.Call,
+            filter: {
+              module: "utility",
+              method: "batchAll",
+              success: true,
+            },
+          },
+          {
+            handler: "accountUpdateHandler",
+            kind: SubstrateHandlerKind.Call,
+            filter: {
+              module: "utility",
+              method: "batch",
+            },
+          },
+          {
+            handler: "accountUpdateHandler",
+            kind: SubstrateHandlerKind.Call,
+            filter: {
+              module: "utility",
+              method: "forceBatch",
+            },
+          },
+          // Staking Calls
+          {
+            handler: "accountUpdateHandler",
+            kind: SubstrateHandlerKind.Call,
+            filter: {
+              module: "staking",
+              method: "payoutStakers",
+              success: true,
+            },
           },
           // All events
           {
