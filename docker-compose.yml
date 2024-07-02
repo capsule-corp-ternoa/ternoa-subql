@@ -66,3 +66,4 @@ services:
       - --name=subql_ternoa
       - --playground
       - --indexer=http://subquery-node:3000
+      - --query-timeout=20000
