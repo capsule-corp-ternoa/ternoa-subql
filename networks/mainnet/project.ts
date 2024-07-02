@@ -27,7 +27,7 @@ const project: SubstrateProject = {
   network: {
     /* The genesis hash of the network (hash of block 0) */
     chainId:
-      "0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace",
+      "0x6859c81ca95ef624c9dfe4dc6e3381c33e5d6509e35e147092bfbc780f777c4e",
     /**
      * These endpoint(s) should be public non-pruned archive node
      * We recommend providing more than one endpoint for improved reliability, performance, and uptime
@@ -36,8 +36,8 @@ const project: SubstrateProject = {
      * If you use a rate limited endpoint, adjust the --batch-size and --workers parameters
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
-    endpoint: ["wss://alphanet.ternoa.com"],
-    dictionary: ["https://dictionary-alphanet.ternoa.dev"],
+    endpoint: ["wss://mainnet.ternoa.network"],
+    dictionary: ["https://dictionary-mainnet.ternoa.dev"],
   },
   dataSources: [
     {

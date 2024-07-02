@@ -27,7 +27,7 @@ const project: SubstrateProject = {
   network: {
     /* The genesis hash of the network (hash of block 0) */
     chainId:
-      "0x18bcdb75a0bba577b084878db2dc2546eb21504eaad4b564bb7d47f9d02b6ace",
+      "0x535f8421af34dfbb87736b3b2231ddb3c598b0b2cd73a4c5e93b13bf6e65f4c0",
     /**
      * These endpoint(s) should be public non-pruned archive node
      * We recommend providing more than one endpoint for improved reliability, performance, and uptime
