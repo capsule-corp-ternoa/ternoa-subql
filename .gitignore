@@ -59,9 +59,3 @@ Thumbs.db
 
 .github
 .vscode
-
-# Networks folders
-networks/
-!networks/betanet/project.yaml
-!networks/alphanet/project.yaml
-!networks/mainnet/project.yaml

@@ -1,141 +1,122 @@
-# SubQuery - Example Project for Bittensor
+# ⛓ Ternoa Indexer
 
-[SubQuery](https://subquery.network) is a fast, flexible, and reliable open-source data indexer that provides you with custom APIs for your web3 project across all of our supported networks. To learn about how to get started with SubQuery, [visit our docs](https://academy.subquery.network).
+Ternoa Indexer scans through each block and their events to see what happened on the Ternoa chain. It then parses all that data into custom entities and store them inside a queryable GraphQL database. Allowing users and developers to query specific filtered data in a simplified manner for various implementations.
 
-**This SubQuery project indexes all asset transfers using the balances pallet on the Bittensor Network**
+Ternoa deploys its own indexer for the Mainnet network [here](https://indexer-mainnet.ternoa.dev/).
 
-## Start
+> Since Ternoa Indexer is based on the **[SubQuery Framework](https://doc.subquery.network/)**, you can get more information on the **[SubQuery official documentation](https://doc.subquery.network/faqs/faqs.html)**.
 
-First, install SubQuery CLI globally on your terminal by using NPM `npm install -g @subql/cli`
+**Table of Contents :**
 
-You can either clone this GitHub repo, or use the `subql` CLI to bootstrap a clean project in the network of your choosing by running `subql init` and following the prompts.
+- [Introduction](#introduction)
+  - [Error-Reporting](#error-reporting)
+- [Installation](#installation)
+- [Code Architecture](#code-architecture)
 
-Don't forget to install dependencies with `npm install` or `yarn install`!
+## Introduction
 
-## Editing your SubQuery project
+**Ternoa is a Decentralised, Open source, NFT-centric Layer 1 blockchain that is multi-chain by design and aims to provide a technical stack to build scalable and secure NFTs with native support for advanced features.**
 
-Although this is a working example SubQuery project, you can edit the SubQuery project by changing the following files:
+#### For Builders By Builders
 
-- The project manifest in `project.yaml` defines the key project configuration and mapping handler filters
-- The GraphQL Schema (`schema.graphql`) defines the shape of the resulting data that you are using SubQuery to index
-- The Mapping functions in `src/mappings/` directory are typescript functions that handle transformation logic
+NFTs native to our chain can be minted using High-level programming languages and doesn't require smart contract functionality.
 
-SubQuery supports various layer-1 blockchain networks and provides [dedicated quick start guides](https://academy.subquery.network/quickstart/quickstart.html) as well as [detailed technical documentation](https://academy.subquery.network/build/introduction.html) for each of them.
+#### Native support for Advanced Features
 
-## Run your project
+With native support for Secret NFTs, Delegating and Lending, Transaction Batching and much more, you might want to give it a try.
 
-_If you get stuck, find out how to get help below._
+### Error Reporting
 
-The simplest way to run your project is by running `yarn dev` or `npm run-script dev`. This does all of the following:
+If you encounter any errors along the way, technical or otherwise. Let us know and we'll deal with it swiftly.
+It'll help us further improve the overall experience for our users.
 
-1.  `yarn codegen` - Generates types from the GraphQL schema definition and contract ABIs and saves them in the `/src/types` directory. This must be done after each change to the `schema.graphql` file or the contract ABIs
-2.  `yarn build` - Builds and packages the SubQuery project into the `/dist` directory
-3.  `docker-compose pull && docker-compose up` - Runs a Docker container with an indexer, PostgeSQL DB, and a query service. This requires [Docker to be installed](https://docs.docker.com/engine/install) and running locally. The configuration for this container is set from your `docker-compose.yml`
+- Open a discussion of type `General` in the [Discussions section](https://github.com/capsule-corp-ternoa/ternoa-subql/discussions) if you encounter any unexpected behaviour.
+- Open a Bug report using the [bug template](https://github.com/capsule-corp-ternoa/ternoa-subql/issues/new) if the bug persists.
+- If you can, suggest a fix in a pull request to resolve that issue.
 
-You can observe the three services start, and once all are running (it may take a few minutes on your first start), please open your browser and head to [http://localhost:3000](http://localhost:3000) - you should see a GraphQL playground showing with the schemas ready to query. [Read the docs for more information](https://academy.subquery.network/run_publish/run.html) or [explore the possible service configuration for running SubQuery](https://academy.subquery.network/run_publish/references.html).
+## Installation
 
-## Query your project
+> #### Pre requisites
+>
+> Have **yarn** installed, **docker** and **docker-compose** installed and running on your machine.
 
-For this project, you can try to query with the following GraphQL code to get a taste of how it works.
+If you check **[our repository](https://github.com/capsule-corp-ternoa/ternoa-subql)**, you will see that we have many branches.
+Each branch correspond to a chain spec version and a chain network:
 
-```graphql
-{
-  query {
-    transfers(first: 2) {
-      totalCount
-      nodes {
-        id
-        blockNumber
-        amount
-        date
-        to {
-          id
-          publicKey
-          firstTransferBlock
-          lastTransferBlock
-        }
-        from {
-          id
-          publicKey
-          firstTransferBlock
-          lastTransferBlock
-        }
-      }
-    }
-  }
-}
+- **mainnet** for the Mainnet Network
+- **alphanet** for the Alphanet Network
+- **dev** for the Developement Networks
+- others refers to the old Testnet Network (soon deprecated))
+
+### Run an indexer
+
+The example below use the Alphanet Network:
+
+```bash
+git clone https://github.com/capsule-corp-ternoa/ternoa-subql.git
+cd ternoa-subql
+git checkout alphanet
+yarn install
+yarn codegen
+yarn build
 ```
 
-In response, you can expect to receive something similar to this:
+Every time the graphQl Schema change, you need to run the yarn codegen command.
+Every time the code change, you need to build it again with the yarn build command.
+Now everything is built, you can launch it on with docker.
 
-```graphql
-{
-  "data": {
-    "query": {
-      "transfers": {
-        "nodes": [
-          {
-            "id": "2770553-87",
-            "blockNumber": 2770553,
-            "amount": "230000000",
-            "date": "2024-04-16T07:04:48",
-            "to": {
-              "id": "5dp98jb1tw6ddp8sekhi1uuu9d6j9br8stj5dnvstltn3ajy",
-              "publicKey": "58,75,189,159,154,170,52,232,106,241,120,137,73,234,30,253,40,177,17,163,14,180,158,208,222,88,27,230,212,238,238,99",
-              "firstTransferBlock": 2770553,
-              "lastTransferBlock": 2770553
-            },
-            "from": {
-              "id": "5fef8cmcydwkmzqhzptgetepjaig2mmjrx8x44vsehuv2irg",
-              "publicKey": "140,75,251,17,241,118,34,30,212,76,136,53,67,118,233,61,14,174,245,211,248,65,30,193,196,197,212,241,164,224,194,57",
-              "firstTransferBlock": 2770551,
-              "lastTransferBlock": 2770553
-            }
-          },
-          {
-            "id": "2770558-60",
-            "blockNumber": 2770558,
-            "amount": "28189544",
-            "date": "2024-04-16T07:05:48",
-            "to": {
-              "id": "5fnfza3ze5sqcttyi59h6mckopqz7jrxqnqc7pm4zaerdev3",
-              "publicKey": "164,101,241,49,59,163,109,227,95,3,192,85,195,124,241,65,72,61,124,59,44,188,26,255,68,21,130,141,7,46,210,4",
-              "firstTransferBlock": 2770558,
-              "lastTransferBlock": 2770558
-            },
-            "from": {
-              "id": "5g7et4qk6wgkhhhsrefz7frfe7wuh3zq6rylvami5dtmexg3",
-              "publicKey": "178,223,220,83,96,245,190,44,39,63,221,188,136,203,245,167,232,203,137,73,135,154,235,213,39,143,185,201,109,37,186,82",
-              "firstTransferBlock": 2770527,
-              "lastTransferBlock": 2770563
-            }
-          }
-        ]
-      }
-    }
-  }
-}
+```bash
+docker-compose pull
+docker-compose up
 ```
 
-You can explore the different possible queries and entities to help you with GraphQL using the documentation draw on the right.
+docker-compose pull need to be run to pull the last version and does not need to be ran again, unless you change any docker image.
 
-## Publish your project
+> After a few seconds, the indexing starts. You can see in the shell every blocks indexed. To check the blockchain data stored, run a query in your local graphql playground in a browser (default **[localhost:3000](http://localhost:3000)**).
+> More documentation on basic queries is available [here](https://docs.ternoa.network/for-developers/indexer/queries/basic-queries).
 
-SubQuery is open-source, meaning you have the freedom to run it in the following three ways:
+### Deployment
 
-- Locally on your own computer (or a cloud provider of your choosing), [view the instructions on how to run SubQuery Locally](https://academy.subquery.network/run_publish/run.html)
-- By publishing it to our enterprise-level [Managed Service](https://managedservice.subquery.network), where we'll host your SubQuery project in production ready services for mission critical data with zero-downtime blue/green deployments. We even have a generous free tier. [Find out how](https://academy.subquery.network/run_publish/publish.html)
-- [Coming Soon] By publishing it to the decentralised [SubQuery Network](https://subquery.network/network), the most open, performant, reliable, and scalable data service for dApp developers. The SubQuery Network indexes and services data to the global community in an incentivised and verifiable way
+Documentation on how to deploy Indexer is available [here](https://docs.ternoa.network/for-developers/indexer/deployment).
 
-## What Next?
+### Dictionary
 
-Take a look at some of our advanced features to take your project to the next level!
+Ternoa Dictionary records all the native substrate on-chain data of the Ternoa blockchain: blocks, extrinsics, and events. It is a glossary of data that pre-indexes chain events, drastically improving the overall indexing performance. Unlike the Indexer, no data relating to the Ternoa pallets is covered by the Dictionary.
 
-- [**Multi-chain indexing support**](https://academy.subquery.network/build/multi-chain.html) - SubQuery allows you to index data from across different layer-1 networks into the same database, this allows you to query a single endpoint to get data for all supported networks.
-- [**Dynamic Data Sources**](https://academy.subquery.network/build/dynamicdatasources.html) - When you want to index factory contracts, for example on a DEX or generative NFT project.
-- [**Project Optimisation Advice**](https://academy.subquery.network/build/optimisation.html) - Some common tips on how to tweak your project to maximise performance.
-- [**GraphQL Subscriptions**](https://academy.subquery.network/run_publish/subscription.html) - Build more reactive front end applications that subscribe to changes in your SubQuery project.
+Ternoa deploys its own indexer [here](https://dictionary-mainnet.ternoa.dev/) on which you can submit GraphQL queries to retrieve on-chain data.
+More information on Dictionary is available [here](https://docs.ternoa.network/for-developers/indexer/dictionary/).
 
-## Need Help?
+#### Add the dictionary to indexer
 
-The fastest way to get support is by [searching our documentation](https://academy.subquery.network), or by [joining our discord](https://discord.com/invite/subquery) and messaging us in the `#technical-support` channel.
+You can couple a dictionnary to the indexer inside the [project.yaml](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/project.yaml) file, in the network section. In the example below we use the Mainnet network Ternoa Dictionary available [here](https://dictionary-mainnet.ternoa.dev/).
+
+```yaml
+###
+schema:
+  file: ./schema.graphql
+network:
+  genesisHash: "0x6859c81ca95ef624c9dfe4dc6e3381c33e5d6509e35e147092bfbc780f777c4e"
+  endpoint: wss://mainnet.ternoa.network
+  dictionary: https://dictionary-mainnet.ternoa.dev/
+###
+```
+
+## Code Architecture
+
+Ternoa Indexer integrates the main features from the Ternoa pallets. The most important concepts are:
+
+### Setup
+
+Configuration is setup in the [project.yaml](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/project.yaml) file. It constains chain wss endpoint, the genesis hash, the types file, and the different filter to get only the specific events / extrinsics needed. We can also filter on the success status of the event / extrinsic (More details on the **[subquery documentation](https://doc.subquery.network/build/manifest/polkadot.html)**).
+
+### Schema
+
+The parsed data is structured in GraphQL entities specified in the [schema.graphql](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/schema.graphql) file. These entities contain the form of the data stored in the database.
+
+### Mappings
+
+[mappingHandlers](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/src/mappings/mappingHandlers.ts) will map listened events with the corresponding handlers to parse on-chain data according to the specified GraphQL entities (More info in the **[subquery documentation](https://academy.subquery.network/build/mapping/polkadot.html)**).
+
+### Events handlers
+
+[eventHandlers](/capsule-corp-ternoa/ternoa-subql/blob/mainnet/src/eventHandlers) folder contains the handlers sorted by pallets.
