@@ -14,11 +14,11 @@ const project: SubstrateProject = {
   runner: {
     node: {
       name: "@subql/node",
-      version: ">=4.7.0",
+      version: ">=3.0.1",
     },
     query: {
       name: "@subql/query",
-      version: ">=2.13.1",
+      version: "*",
     },
   },
   schema: {
@@ -42,7 +42,7 @@ const project: SubstrateProject = {
   dataSources: [
     {
       kind: SubstrateDatasourceKind.Runtime,
-      startBlock: 0,
+      startBlock: 1,
       mapping: {
         file: "./dist/index.js",
         handlers: [
