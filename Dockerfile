@@ -1,5 +1,12 @@
 FROM onfinality/subql-node:v0.16.2
 
 COPY . /app
-RUN cd /app && yarn
-RUN cd /app && yarn build
+WORKDIR /app
+
+# Install dependencies
+RUN yarn install
+RUN npm install @ethersproject/abi
+
+# Generate code and build
+RUN yarn codegen
+RUN yarn build
