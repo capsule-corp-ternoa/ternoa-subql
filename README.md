@@ -56,9 +56,6 @@ The example below use the Alphanet Network:
 git clone https://github.com/capsule-corp-ternoa/ternoa-subql.git
 cd ternoa-subql
 git checkout alphanet
-yarn install
-yarn codegen
-yarn build
 ```
 
 Every time the graphQl Schema change, you need to run the yarn codegen command.
