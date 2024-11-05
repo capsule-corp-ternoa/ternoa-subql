@@ -1,0 +1,4 @@
+yarn install
+npm install @ethersproject/abi
+yarn codegen  
+yarn build
