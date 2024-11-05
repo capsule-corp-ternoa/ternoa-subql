@@ -1,35 +1,40 @@
-# Use a multi-stage build to keep the final image smaller
+# Build stage
 FROM node:18 AS builder
 
-# Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install
+# Install ALL dependencies (including dev dependencies)
+RUN yarn install --frozen-lockfile
 
 # Copy project files
 COPY . .
 
-# Install additional dependencies
+# Install specific dependency
 RUN npm install @ethersproject/abi
 
 # Generate code and build
-RUN yarn codegen
-RUN yarn build
+RUN yarn codegen && yarn build
 
-# Final stage
+# Final stage - using specific SubQuery node version
 FROM onfinality/subql-node:v0.16.2
 
-# Copy built files from builder stage
+# Set working directory
+WORKDIR /app
+
+# Copy necessary files from builder
 COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/node_modules /app/node_modules
 COPY --from=builder /app/package.json /app/package.json
 COPY --from=builder /app/schema.graphql /app/schema.graphql
 COPY --from=builder /app/project.yaml /app/project.yaml
 
-WORKDIR /app
+# Ensure correct permissions
+RUN chown -R node:node /app
+
+# Switch to non-root user
+USER node
 
 # The entry point and cmd will be inherited from the base image
