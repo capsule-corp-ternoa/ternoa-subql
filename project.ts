@@ -37,7 +37,7 @@ const project: SubstrateProject = {
      * These settings can be found in your docker-compose.yaml, they will slow indexing but prevent your project being rate limited
      */
     endpoint: ["wss://mainnet.ternoa.network"],
-    dictionary: ["https://do-dictionary-mainnet.ternoa.dev"],
+    dictionary: ["https://dictionary-mainnet.ternoa.dev"],
   },
   dataSources: [
     {

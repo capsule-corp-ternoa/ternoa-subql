@@ -41,7 +41,7 @@
   "devDependencies": {
    "@polkadot/api": "^10",
     "@subql/cli": "4.6.0",
-    "@subql/node": "4.2.0",
+    "@subql/node": "4.7.0",
     "@subql/testing": "2.1.1",
     "@subql/types": "3.5.0",
     "typescript": "5.2.2"
